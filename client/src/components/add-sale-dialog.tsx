@@ -1,21 +1,28 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import type { Product } from "@shared/schema";
 
 export function AddSaleDialog() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
+    productId: "",
     productName: "",
     customer: "",
     quantity: "",
     unitPrice: "",
+  });
+
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
   });
 
   const createSale = useMutation({
@@ -31,23 +38,28 @@ export function AddSaleDialog() {
         unitPrice: unitPrice.toString(),
         total: total.toString(),
         date: new Date().toISOString(),
-        productId: null,
+        productId: data.productId || null,
       });
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/sales"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
         title: "Sale added",
         description: `${formData.productName} sale recorded successfully.`,
       });
-      setFormData({ productName: "", customer: "", quantity: "", unitPrice: "" });
+      setFormData({ productId: "", productName: "", customer: "", quantity: "", unitPrice: "" });
       setOpen(false);
     },
-    onError: () => {
+    onError: (error: any) => {
+      const errorMessage = error?.response?.error === "Insufficient stock" 
+        ? error.response.details 
+        : "Failed to add sale. Please try again.";
+      
       toast({
-        title: "Error",
-        description: "Failed to add sale. Please try again.",
+        title: error?.response?.error || "Error",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -55,6 +67,27 @@ export function AddSaleDialog() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate product selection
+    if (!formData.productId) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a product",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Validate quantity and price
+    if (!formData.quantity || !formData.unitPrice) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter quantity",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     createSale.mutate(formData);
   };
 
@@ -74,14 +107,33 @@ export function AddSaleDialog() {
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="productName">Product Name *</Label>
-              <Input
-                id="productName"
-                value={formData.productName}
-                onChange={(e) => setFormData({ ...formData, productName: e.target.value })}
+              <Label htmlFor="product">Product *</Label>
+              <Select
+                value={formData.productId}
+                onValueChange={(value) => {
+                  const product = products.find(p => p.id === value);
+                  if (product) {
+                    setFormData({
+                      ...formData,
+                      productId: value,
+                      productName: product.name,
+                      unitPrice: product.price.toString(),
+                    });
+                  }
+                }}
                 required
-                data-testid="input-product-name"
-              />
+              >
+                <SelectTrigger data-testid="select-product">
+                  <SelectValue placeholder="Select a product" />
+                </SelectTrigger>
+                <SelectContent>
+                  {products.map((product) => (
+                    <SelectItem key={product.id} value={product.id}>
+                      {product.name} - ₦{parseFloat(product.price.toString()).toLocaleString()} (Stock: {product.quantity})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="customer">Customer</Label>
@@ -109,13 +161,12 @@ export function AddSaleDialog() {
                 <Label htmlFor="unitPrice">Unit Price *</Label>
                 <Input
                   id="unitPrice"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.unitPrice}
-                  onChange={(e) => setFormData({ ...formData, unitPrice: e.target.value })}
-                  required
+                  type="text"
+                  value={formData.unitPrice ? `₦${parseFloat(formData.unitPrice).toLocaleString()}` : ""}
+                  readOnly
+                  disabled
                   data-testid="input-unit-price"
+                  className="bg-muted"
                 />
               </div>
             </div>

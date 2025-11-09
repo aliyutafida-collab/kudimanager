@@ -204,6 +204,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/sales", authMiddleware, async (req: AuthRequest, res) => {
     try {
       const validatedData = insertSaleSchema.parse(req.body);
+      
+      // Check product stock BEFORE creating sale
+      if (validatedData.productId) {
+        const product = await storage.getProduct(validatedData.productId, req.userId!);
+        if (!product) {
+          return res.status(404).json({ 
+            error: "Product not found",
+            details: "The selected product does not exist"
+          });
+        }
+        
+        // Validate sufficient stock
+        if (product.quantity < validatedData.quantity) {
+          return res.status(400).json({ 
+            error: "Insufficient stock", 
+            details: `Only ${product.quantity} units available, but ${validatedData.quantity} requested` 
+          });
+        }
+        
+        // Create sale only after validation passes
+        const sale = await storage.createSale(validatedData, req.userId!);
+        
+        // Update product quantity
+        const newQuantity = product.quantity - validatedData.quantity;
+        await storage.updateProduct(validatedData.productId, req.userId!, {
+          quantity: newQuantity
+        });
+        
+        return res.status(201).json(sale);
+      }
+      
+      // If no productId, just create the sale (manual entry)
       const sale = await storage.createSale(validatedData, req.userId!);
       res.status(201).json(sale);
     } catch (error) {
@@ -630,7 +662,7 @@ Provide 3 specific, actionable recommendations. Be concise and practical. Focus 
 
       console.log("[AI_ADVICE] Calling Gemini API...");
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-pro",
+        model: "gemini-1.5-pro",
         contents: prompt
       });
       const advice = response.text || "";

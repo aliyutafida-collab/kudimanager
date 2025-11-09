@@ -22,7 +22,7 @@ export default function Sales() {
 
   const filteredSales = formattedSales.filter(sale =>
     sale.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (sale.customer && sale.customer.toLowerCase().includes(searchQuery.toLowerCase()))
+    (sale.customer?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (

@@ -229,7 +229,7 @@ export default function SetupWizard() {
                               type="number"
                               placeholder="0"
                               {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              onChange={(e) => field.onChange(e.target.value)}
                               data-testid="input-product-price"
                             />
                           </FormControl>

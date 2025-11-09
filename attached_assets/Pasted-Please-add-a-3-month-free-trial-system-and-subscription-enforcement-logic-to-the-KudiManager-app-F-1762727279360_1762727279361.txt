@@ -1,0 +1,88 @@
+Please add a 3-month free trial system and subscription enforcement logic to the KudiManager app:
+
+Free Trial Rules:
+
+When a user registers, automatically record created_at (current date) and set their plan to "trial".
+
+The free trial lasts 90 days (3 months) from the registration date.
+
+During this period, users can access all features.
+
+7 days before expiration, display a warning banner on the dashboard:
+
+“Your free trial ends on [date]. Subscribe now for ₦2,500/month to continue using KudiManager.”
+
+After the 90th day:
+
+Restrict access to the main dashboard and all API calls.
+
+Redirect users to the Subscription Page with this message:
+
+“Your trial has ended. Please subscribe to continue using KudiManager.”
+
+Subscription Activation:
+
+When payment succeeds via Paystack webhook:
+
+Update user record:
+
+{
+  "plan": "basic",
+  "subscribed_on": "2025-11-06",
+  "expires_on": "2025-12-06",
+  "is_active": true
+}
+
+
+Unlock dashboard access again.
+
+UI Requirements:
+
+Add a trial banner at the top of the dashboard:
+
+Shows “Trial active — X days left” in gold color.
+
+If expired, show “Trial expired — Subscribe to continue” in red.
+
+Add logic to compute remaining trial days:
+
+const daysLeft = 90 - Math.floor((Date.now() - new Date(user.created_at)) / (1000*60*60*24));
+
+
+Display this on dashboard dynamically.
+
+Access Control Logic:
+
+Check user plan status before allowing dashboard access:
+
+If plan === "trial" and less than 90 days → allow.
+
+If plan === "trial" and ≥ 90 days → redirect to /subscribe.
+
+If plan === "basic" or plan === "premium" and expires_on is in future → allow.
+
+Otherwise → lock access and show subscription prompt.
+
+Subscription Page Updates:
+
+When user subscribes successfully, replace their “trial” plan with “basic”.
+
+Reset expiration every month.
+
+Auto-renew logic: optional — can display “Renew manually” for now.
+
+Visuals:
+
+Use Emerald Green (#007F5F) for active banners, Gold (#F4C542) for warnings, and Red (#D93A3A) for expired status.
+
+Ensure logic works across mobile and desktop.
+
+Once complete, confirm that:
+
+Trial users can access full features for 3 months.
+
+Warning appears 7 days before expiry.
+
+Dashboard locks automatically after expiry.
+
+Paystack payment re-activates access instantly.

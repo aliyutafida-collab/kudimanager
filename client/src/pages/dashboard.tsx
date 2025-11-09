@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { SalesTable } from "@/components/sales-table";
 import { ExpensesTable } from "@/components/expenses-table";
+import { TrialBanner } from "@/components/trial-banner";
 import type { Sale, Expense, Product } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -22,6 +23,15 @@ interface AIAdviceResponse {
   };
   insights: string[];
   generatedBy: string;
+}
+
+interface SubscriptionInfo {
+  planType: "trial" | "basic" | "premium";
+  trialStatus: "active" | "warning" | "expired";
+  trialDaysRemaining: number;
+  canAccess: boolean;
+  subscriptionActive: boolean;
+  subscriptionEndsAt: string | null;
 }
 
 const MOTIVATIONAL_QUOTES = [
@@ -54,6 +64,10 @@ export default function Dashboard() {
 
   const { data: products = [], isLoading: productsLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
+  });
+
+  const { data: subscriptionInfo } = useQuery<SubscriptionInfo>({
+    queryKey: ["/api/user/subscription"],
   });
 
   const totalSales = sales.reduce((sum, sale) => sum + parseFloat(sale.total.toString()), 0);
@@ -168,6 +182,10 @@ export default function Dashboard() {
         <h1 className="text-3xl font-semibold mb-2">Dashboard</h1>
         <p className="text-muted-foreground">Overview of your business performance</p>
       </div>
+
+      {subscriptionInfo && (
+        <TrialBanner subscriptionInfo={subscriptionInfo} />
+      )}
 
       {dailyQuote && (
         <Card className="border-accent/50 bg-gradient-to-r from-accent/5 to-transparent" data-testid="card-daily-quote">

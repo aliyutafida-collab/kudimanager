@@ -1,21 +1,25 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AddExpenseDialog } from "@/components/add-expense-dialog";
 import { ExpensesTable } from "@/components/expenses-table";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import type { Expense } from "@shared/schema";
 
 export default function Expenses() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const mockExpenses = [
-    { id: "1", date: "2024-11-08", description: "Office Rent", category: "Rent", amount: 50000 },
-    { id: "2", date: "2024-11-05", description: "Electricity Bill", category: "Utilities", amount: 15000 },
-    { id: "3", date: "2024-11-03", description: "Marketing Campaign", category: "Marketing", amount: 25000 },
-    { id: "4", date: "2024-11-02", description: "Office Supplies", category: "Supplies", amount: 8500 },
-    { id: "5", date: "2024-11-01", description: "Staff Salaries", category: "Salaries", amount: 120000 },
-  ];
+  const { data: expenses = [] } = useQuery<Expense[]>({
+    queryKey: ["/api/expenses"],
+  });
 
-  const filteredExpenses = mockExpenses.filter(expense =>
+  const formattedExpenses = expenses.map(expense => ({
+    ...expense,
+    date: new Date(expense.date).toLocaleDateString(),
+    amount: parseFloat(expense.amount.toString()),
+  }));
+
+  const filteredExpenses = formattedExpenses.filter(expense =>
     expense.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     expense.category.toLowerCase().includes(searchQuery.toLowerCase())
   );

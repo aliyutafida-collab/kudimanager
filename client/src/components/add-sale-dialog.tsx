@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export function AddSaleDialog() {
   const [open, setOpen] = useState(false);
@@ -16,15 +18,44 @@ export function AddSaleDialog() {
     unitPrice: "",
   });
 
+  const createSale = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const quantity = parseInt(data.quantity);
+      const unitPrice = parseFloat(data.unitPrice);
+      const total = quantity * unitPrice;
+
+      const response = await apiRequest("POST", "/api/sales", {
+        productName: data.productName,
+        customer: data.customer || null,
+        quantity,
+        unitPrice: unitPrice.toString(),
+        total: total.toString(),
+        date: new Date().toISOString(),
+        productId: null,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/sales"] });
+      toast({
+        title: "Sale added",
+        description: `${formData.productName} sale recorded successfully.`,
+      });
+      setFormData({ productName: "", customer: "", quantity: "", unitPrice: "" });
+      setOpen(false);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add sale. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Sale submitted:", formData);
-    toast({
-      title: "Sale added",
-      description: `${formData.productName} sale recorded successfully.`,
-    });
-    setFormData({ productName: "", customer: "", quantity: "", unitPrice: "" });
-    setOpen(false);
+    createSale.mutate(formData);
   };
 
   return (
@@ -98,7 +129,9 @@ export function AddSaleDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)} data-testid="button-cancel">
               Cancel
             </Button>
-            <Button type="submit" data-testid="button-submit-sale">Add Sale</Button>
+            <Button type="submit" disabled={createSale.isPending} data-testid="button-submit-sale">
+              {createSale.isPending ? "Adding..." : "Add Sale"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -1,23 +1,28 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AddSaleDialog } from "@/components/add-sale-dialog";
 import { SalesTable } from "@/components/sales-table";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import type { Sale } from "@shared/schema";
 
 export default function Sales() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const mockSales = [
-    { id: "1", date: "2024-11-08", customer: "John Doe", productName: "Widget A", quantity: 5, unitPrice: 1200, total: 6000 },
-    { id: "2", date: "2024-11-07", customer: "Jane Smith", productName: "Widget B", quantity: 3, unitPrice: 2500, total: 7500 },
-    { id: "3", date: "2024-11-07", customer: "", productName: "Widget C", quantity: 10, unitPrice: 500, total: 5000 },
-    { id: "4", date: "2024-11-06", customer: "Mike Johnson", productName: "Widget A", quantity: 2, unitPrice: 1200, total: 2400 },
-    { id: "5", date: "2024-11-05", customer: "Sarah Williams", productName: "Widget D", quantity: 8, unitPrice: 750, total: 6000 },
-  ];
+  const { data: sales = [] } = useQuery<Sale[]>({
+    queryKey: ["/api/sales"],
+  });
 
-  const filteredSales = mockSales.filter(sale =>
+  const formattedSales = sales.map(sale => ({
+    ...sale,
+    date: new Date(sale.date).toLocaleDateString(),
+    unitPrice: parseFloat(sale.unitPrice.toString()),
+    total: parseFloat(sale.total.toString()),
+  }));
+
+  const filteredSales = formattedSales.filter(sale =>
     sale.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    sale.customer.toLowerCase().includes(searchQuery.toLowerCase())
+    (sale.customer && sale.customer.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (

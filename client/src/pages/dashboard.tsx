@@ -1,19 +1,46 @@
+import { useQuery } from "@tanstack/react-query";
 import { DollarSign, ShoppingCart, TrendingDown, Package } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SalesTable } from "@/components/sales-table";
 import { ExpensesTable } from "@/components/expenses-table";
+import type { Sale, Expense, Product } from "@shared/schema";
 
 export default function Dashboard() {
-  const mockSales = [
-    { id: "1", date: "2024-11-08", customer: "John Doe", productName: "Widget A", quantity: 5, unitPrice: 1200, total: 6000 },
-    { id: "2", date: "2024-11-07", customer: "Jane Smith", productName: "Widget B", quantity: 3, unitPrice: 2500, total: 7500 },
-  ];
+  const { data: sales = [] } = useQuery<Sale[]>({
+    queryKey: ["/api/sales"],
+  });
 
-  const mockExpenses = [
-    { id: "1", date: "2024-11-08", description: "Office Rent", category: "Rent", amount: 50000 },
-    { id: "2", date: "2024-11-05", description: "Electricity Bill", category: "Utilities", amount: 15000 },
-  ];
+  const { data: expenses = [] } = useQuery<Expense[]>({
+    queryKey: ["/api/expenses"],
+  });
+
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
+  });
+
+  const totalSales = sales.reduce((sum, sale) => sum + parseFloat(sale.total.toString()), 0);
+  const totalExpenses = expenses.reduce((sum, expense) => sum + parseFloat(expense.amount.toString()), 0);
+  const netProfit = totalSales - totalExpenses;
+
+  const recentSales = sales
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5)
+    .map(sale => ({
+      ...sale,
+      date: new Date(sale.date).toLocaleDateString(),
+      unitPrice: parseFloat(sale.unitPrice.toString()),
+      total: parseFloat(sale.total.toString()),
+    }));
+
+  const recentExpenses = expenses
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5)
+    .map(expense => ({
+      ...expense,
+      date: new Date(expense.date).toLocaleDateString(),
+      amount: parseFloat(expense.amount.toString()),
+    }));
 
   return (
     <div className="space-y-6">
@@ -25,28 +52,25 @@ export default function Dashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Sales"
-          value="₦250,450"
+          value={`₦${totalSales.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           icon={DollarSign}
-          trend={{ value: 12.5, isPositive: true }}
           testId="card-total-sales"
         />
         <StatCard
           title="Total Expenses"
-          value="₦89,230"
+          value={`₦${totalExpenses.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           icon={TrendingDown}
-          trend={{ value: 5.2, isPositive: false }}
           testId="card-total-expenses"
         />
         <StatCard
           title="Net Profit"
-          value="₦161,220"
+          value={`₦${netProfit.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           icon={ShoppingCart}
-          trend={{ value: 18.3, isPositive: true }}
           testId="card-net-profit"
         />
         <StatCard
           title="Products"
-          value="48"
+          value={products.length.toString()}
           icon={Package}
           testId="card-products"
         />
@@ -59,7 +83,7 @@ export default function Dashboard() {
             <CardDescription>Latest transactions</CardDescription>
           </CardHeader>
           <CardContent>
-            <SalesTable sales={mockSales} />
+            <SalesTable sales={recentSales} />
           </CardContent>
         </Card>
 
@@ -69,7 +93,7 @@ export default function Dashboard() {
             <CardDescription>Latest expenses recorded</CardDescription>
           </CardHeader>
           <CardContent>
-            <ExpensesTable expenses={mockExpenses} />
+            <ExpensesTable expenses={recentExpenses} />
           </CardContent>
         </Card>
       </div>

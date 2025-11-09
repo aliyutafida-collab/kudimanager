@@ -34,14 +34,24 @@ export const expenses = pgTable("expenses", {
 
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
+}).extend({
+  sku: z.string().nullish(),
+  category: z.string().nullish(),
+  lowStockThreshold: z.number().nullish(),
 });
 
 export const insertSaleSchema = createInsertSchema(sales).omit({
   id: true,
+}).extend({
+  productId: z.string().nullish(),
+  customer: z.string().nullish(),
+  date: z.union([z.string(), z.date()]).optional().transform(val => val ? (typeof val === 'string' ? new Date(val) : val) : new Date()),
 });
 
 export const insertExpenseSchema = createInsertSchema(expenses).omit({
   id: true,
+}).extend({
+  date: z.union([z.string(), z.date()]).optional().transform(val => val ? (typeof val === 'string' ? new Date(val) : val) : new Date()),
 });
 
 export type InsertProduct = z.infer<typeof insertProductSchema>;

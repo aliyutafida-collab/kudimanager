@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 const expenseCategories = ["Rent", "Utilities", "Salaries", "Marketing", "Supplies", "Transportation", "Other"];
 
@@ -18,15 +20,37 @@ export function AddExpenseDialog() {
     amount: "",
   });
 
+  const createExpense = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const response = await apiRequest("POST", "/api/expenses", {
+        description: data.description,
+        category: data.category,
+        amount: parseFloat(data.amount).toString(),
+        date: new Date().toISOString(),
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });
+      toast({
+        title: "Expense added",
+        description: `${formData.description} recorded successfully.`,
+      });
+      setFormData({ description: "", category: "", amount: "" });
+      setOpen(false);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add expense. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Expense submitted:", formData);
-    toast({
-      title: "Expense added",
-      description: `${formData.description} recorded successfully.`,
-    });
-    setFormData({ description: "", category: "", amount: "" });
-    setOpen(false);
+    createExpense.mutate(formData);
   };
 
   return (
@@ -87,7 +111,9 @@ export function AddExpenseDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)} data-testid="button-cancel">
               Cancel
             </Button>
-            <Button type="submit" data-testid="button-submit-expense">Add Expense</Button>
+            <Button type="submit" disabled={createExpense.isPending} data-testid="button-submit-expense">
+              {createExpense.isPending ? "Adding..." : "Add Expense"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

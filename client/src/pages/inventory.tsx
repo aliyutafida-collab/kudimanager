@@ -1,24 +1,28 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AddProductDialog } from "@/components/add-product-dialog";
 import { InventoryTable } from "@/components/inventory-table";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import type { Product } from "@shared/schema";
 
 export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const mockProducts = [
-    { id: "1", name: "Widget A", sku: "WGT-001", category: "Electronics", price: 1200, quantity: 45, lowStockThreshold: 10 },
-    { id: "2", name: "Widget B", sku: "WGT-002", category: "Electronics", price: 2500, quantity: 8, lowStockThreshold: 10 },
-    { id: "3", name: "Widget C", sku: "WGT-003", category: "Accessories", price: 500, quantity: 0, lowStockThreshold: 5 },
-    { id: "4", name: "Widget D", sku: "WGT-004", category: "Tools", price: 3000, quantity: 25, lowStockThreshold: 10 },
-    { id: "5", name: "Widget E", sku: "WGT-005", category: "Electronics", price: 1800, quantity: 15, lowStockThreshold: 10 },
-  ];
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
+  });
 
-  const filteredProducts = mockProducts.filter(product =>
+  const formattedProducts = products.map(product => ({
+    ...product,
+    price: parseFloat(product.price.toString()),
+    lowStockThreshold: product.lowStockThreshold ?? 10,
+  }));
+
+  const filteredProducts = formattedProducts.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchQuery.toLowerCase())
+    (product.sku && product.sku.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (product.category && product.category.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (

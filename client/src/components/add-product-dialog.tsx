@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export function AddProductDialog() {
   const [open, setOpen] = useState(false);
@@ -18,15 +20,42 @@ export function AddProductDialog() {
     lowStockThreshold: "10",
   });
 
+  const createProduct = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const payload = {
+        name: data.name,
+        sku: data.sku || null,
+        category: data.category || null,
+        price: parseFloat(data.price).toString(),
+        quantity: parseInt(data.quantity),
+        lowStockThreshold: parseInt(data.lowStockThreshold),
+      };
+      
+      const response = await apiRequest("POST", "/api/products", payload);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      toast({
+        title: "Product added",
+        description: `${formData.name} added to inventory.`,
+      });
+      setFormData({ name: "", sku: "", category: "", price: "", quantity: "", lowStockThreshold: "10" });
+      setOpen(false);
+    },
+    onError: (error) => {
+      console.error("Product creation error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add product. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Product submitted:", formData);
-    toast({
-      title: "Product added",
-      description: `${formData.name} added to inventory.`,
-    });
-    setFormData({ name: "", sku: "", category: "", price: "", quantity: "", lowStockThreshold: "10" });
-    setOpen(false);
+    createProduct.mutate(formData);
   };
 
   return (
@@ -117,7 +146,9 @@ export function AddProductDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)} data-testid="button-cancel">
               Cancel
             </Button>
-            <Button type="submit" data-testid="button-submit-product">Add Product</Button>
+            <Button type="submit" disabled={createProduct.isPending} data-testid="button-submit-product">
+              {createProduct.isPending ? "Adding..." : "Add Product"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

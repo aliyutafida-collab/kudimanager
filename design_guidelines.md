@@ -9,6 +9,21 @@
 
 ---
 
+## Brand Colors
+
+**Primary Color:** Emerald Green `#007F5F` - Trust, growth, prosperity
+**Accent Color:** Gold `#F4C542` - Success, premium quality
+**Background:** Light Gray `#F6F7F9` - Clean, professional
+**Text Primary:** Charcoal `#333333` - High readability
+
+**Application:**
+- Primary buttons, active nav items, success states: Emerald Green
+- Highlights, badges, premium features: Gold
+- Page backgrounds: Light Gray
+- All body text: Charcoal
+
+---
+
 ## Core Design Principles
 
 1. **Data Clarity First:** Information must be scannable and actionable
@@ -52,47 +67,41 @@
 ## Component Library
 
 ### Navigation
-**Sidebar Navigation (Desktop):**
-- Fixed left sidebar, w-64
-- Logo at top
-- Menu items with icons (Heroicons)
-- Active state with subtle background
-- Sections: Dashboard, Sales, Expenses, Inventory, Reports, Settings
+**Sidebar Navigation:**
+- Uses shadcn Sidebar component
+- Emerald green active state
+- Sections: Dashboard, Sales, Expenses, Inventory, Tax Calculator, AI Advisor, Vendors, Learn, Subscription
 
 **Mobile Navigation:**
-- Top bar with hamburger menu
-- Slide-out drawer navigation
+- Collapsible sidebar with trigger button
+- Full-height slide-out drawer
 
 ### Dashboard Cards
 **Stats Overview Cards:**
 - Grid of 3-4 metric cards
 - Large currency value with mono font
 - Label above value
-- Small trend indicator (↑ ↓) with percentage
-- Subtle border, rounded corners
+- Emerald green for positive trends, red for negative
+- Rounded corners (8px)
+- Subtle elevation on hover
 
 ### Data Tables
 **List Views (Sales, Expenses, Inventory):**
 - Sticky header row
-- Zebra striping for rows
 - Action column (right-aligned) with edit/delete icons
 - Sortable columns
 - Pagination at bottom
 - Mobile: Card-based layout stacking info vertically
-
-**Table Columns Example (Sales):**
-- Date | Customer | Product | Quantity | Unit Price | Total | Actions
 
 ### Forms
 **Input Forms (Add/Edit):**
 - Clear section headers
 - Label above each field
 - Required field indicators (*)
-- Input fields with border, focus ring
-- Dropdown selects styled consistently
+- Focus ring in emerald green
 - Number inputs for currency (step="0.01")
 - Date pickers for transaction dates
-- Primary action button (large, prominent)
+- Primary action button (emerald green, rounded-lg)
 - Secondary cancel button (ghost style)
 
 **Form Validation:**
@@ -100,38 +109,66 @@
 - Error state border (red)
 - Success confirmation toast notification
 
-### Reports Section
-**Monthly Report View:**
-- Date range selector at top
-- Summary cards grid: Total Sales, Total Expenses, Net Profit
-- Bar chart showing sales vs expenses over time
-- Top products table
-- Expense breakdown by category
-- Export button (PDF/CSV)
-
 ### Buttons & Actions
 **Button Hierarchy:**
-- Primary: Solid background, medium shadow
-- Secondary: Border outline, transparent
-- Danger: Used for delete actions
-- Icon buttons: Square, minimal padding
-- Sizes: btn-sm, btn-md, btn-lg
+- Primary: Emerald green background, white text, 8px border radius
+- Secondary: Border outline in emerald, transparent background
+- Accent: Gold background for premium features
+- Danger: Red for delete actions
+- Hover transitions: All buttons have smooth 200ms transitions
 
 ### Status Indicators
-- Profit (positive): Green badge/text
+- Profit (positive): Emerald green badge/text
 - Loss (negative): Red badge/text
-- Low stock warnings: Yellow/orange badge
-- Out of stock: Red badge with bold text
+- Low stock warnings: Gold badge
+- Premium features: Gold accent color
+
+---
+
+## Page-Specific Guidelines
+
+### Tax Calculator Page
+- Simple two-column form (Sales, Expenses inputs)
+- Large emerald green "Calculate Tax" button
+- Results card with breakdown (Corporate Tax, VAT, Total)
+- AI tips section below results with gold accent
+
+### AI Business Advisor Page
+- Chat-like interface with message cards
+- User inputs on right, AI insights on left
+- Gold accent for AI avatar/icon
+- Clean, conversational design
+
+### Learning Resources Page
+- Topic cards with icons (from lucide-react)
+- Expandable sections for each topic
+- Emerald green icons
+- Clear, simple formatting for SME owners
+
+### Vendor Directory Page
+- Search bar at top
+- Vendor cards in grid (3 columns on desktop)
+- Gold badges for featured vendors
+- Contact info clearly displayed
+
+### Subscription/Billing Page
+- Two pricing cards side-by-side
+- Basic plan: Standard card
+- Premium plan: Gold accent border, "Most Popular" badge
+- Feature comparison list
+- Emerald green "Subscribe Now" buttons
+- Paystack integration
 
 ---
 
 ## Icons
-**Library:** Heroicons (outline style via CDN)
+**Library:** Lucide React
 **Usage:**
 - Navigation menu items
 - Action buttons (edit, delete, view)
 - Stats cards (trending up/down)
 - Empty states
+- Topic icons for learning resources
 
 ---
 
@@ -140,11 +177,11 @@
 **Breakpoints:**
 - Mobile: Base (< 768px) - Single column, stacked cards
 - Tablet: md (768px+) - 2-column layouts where appropriate
-- Desktop: lg (1024px+) - Full multi-column layouts, fixed sidebar
+- Desktop: lg (1024px+) - Full multi-column layouts, sidebar navigation
 
 **Critical Adaptations:**
 - Tables become cards on mobile
-- Sidebar collapses to hamburger menu
+- Sidebar collapses with hamburger trigger
 - Form layouts stack to single column
 - Stats cards stack vertically on mobile
 
@@ -153,7 +190,7 @@
 ## Accessibility
 - All form inputs have associated labels
 - Buttons have clear text or aria-labels
-- Sufficient color contrast for all text
+- Sufficient color contrast (emerald on white, white on emerald)
 - Focus indicators on all interactive elements
 - Keyboard navigation support throughout
 
@@ -167,8 +204,8 @@
 
 **Loading States:** Skeleton screens for tables, spinner for form submissions
 
-**Animations:** Minimal - only subtle transitions on hover/focus. No distracting motion.
+**Animations:** Smooth hover transitions (200ms), rounded corners (8px), subtle elevation changes
 
 ---
 
-This design creates a professional, trustworthy business tool that prioritizes clarity and efficiency over decorative elements.
+This design creates a professional, trustworthy business tool with KudiManager's emerald green and gold branding that prioritizes clarity and efficiency.

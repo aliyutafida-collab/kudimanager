@@ -3,8 +3,21 @@ import { pgTable, text, varchar, numeric, integer, timestamp } from "drizzle-orm
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(),
+  businessType: text("business_type").notNull(),
+  planType: text("plan_type").notNull().default("free"),
+  expiryDate: timestamp("expiry_date"),
+  paystackReference: text("paystack_reference"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const products = pgTable("products", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
   name: text("name").notNull(),
   sku: text("sku"),
   category: text("category"),
@@ -15,6 +28,7 @@ export const products = pgTable("products", {
 
 export const sales = pgTable("sales", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
   productId: varchar("product_id").references(() => products.id),
   productName: text("product_name").notNull(),
   customer: text("customer"),
@@ -26,6 +40,7 @@ export const sales = pgTable("sales", {
 
 export const expenses = pgTable("expenses", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
   description: text("description").notNull(),
   category: text("category").notNull(),
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
@@ -34,6 +49,7 @@ export const expenses = pgTable("expenses", {
 
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
+  userId: true,
 }).extend({
   sku: z.string().nullish(),
   category: z.string().nullish(),
@@ -42,6 +58,7 @@ export const insertProductSchema = createInsertSchema(products).omit({
 
 export const insertSaleSchema = createInsertSchema(sales).omit({
   id: true,
+  userId: true,
 }).extend({
   productId: z.string().nullish(),
   customer: z.string().nullish(),
@@ -50,6 +67,7 @@ export const insertSaleSchema = createInsertSchema(sales).omit({
 
 export const insertExpenseSchema = createInsertSchema(expenses).omit({
   id: true,
+  userId: true,
 }).extend({
   date: z.union([z.string(), z.date()]).optional().transform(val => val ? (typeof val === 'string' ? new Date(val) : val) : new Date()),
 });
@@ -62,14 +80,6 @@ export type Sale = typeof sales.$inferSelect;
 
 export type InsertExpense = z.infer<typeof insertExpenseSchema>;
 export type Expense = typeof expenses.$inferSelect;
-
-export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  email: text("email").notNull(),
-  planType: text("plan_type").notNull().default("free"),
-  expiryDate: timestamp("expiry_date"),
-  paystackReference: text("paystack_reference"),
-});
 
 export type User = typeof users.$inferSelect;
 
@@ -116,3 +126,25 @@ export const vendorSuggestionSchema = z.object({
 });
 
 export type VendorSuggestionRequest = z.infer<typeof vendorSuggestionSchema>;
+
+export const registerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  businessType: z.enum([
+    "Retail & Products",
+    "Restaurants & Food Services",
+    "Hospitality (Hotels, Shortlets)",
+    "Services (Salons, Repairs, Logistics, etc.)",
+    "Agriculture & Farming"
+  ], { errorMap: () => ({ message: "Invalid business type" }) }),
+});
+
+export type RegisterRequest = z.infer<typeof registerSchema>;
+
+export const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export type LoginRequest = z.infer<typeof loginSchema>;

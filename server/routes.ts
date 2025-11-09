@@ -205,33 +205,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertSaleSchema.parse(req.body);
       
-      // Check product stock BEFORE creating sale
+      // Atomically reserve and decrement stock BEFORE creating sale
       if (validatedData.productId) {
-        const product = await storage.getProduct(validatedData.productId, req.userId!);
-        if (!product) {
-          return res.status(404).json({ 
-            error: "Product not found",
-            details: "The selected product does not exist"
-          });
-        }
+        const result = await storage.reserveAndDecrementStock(
+          validatedData.productId, 
+          req.userId!, 
+          validatedData.quantity
+        );
         
-        // Validate sufficient stock
-        if (product.quantity < validatedData.quantity) {
+        if (!result.success) {
           return res.status(400).json({ 
-            error: "Insufficient stock", 
-            details: `Only ${product.quantity} units available, but ${validatedData.quantity} requested` 
+            error: result.error === "Product not found" ? "Product not found" : "Insufficient stock",
+            details: result.error
           });
         }
         
-        // Create sale only after validation passes
+        // Create sale only after stock reservation succeeds
         const sale = await storage.createSale(validatedData, req.userId!);
-        
-        // Update product quantity
-        const newQuantity = product.quantity - validatedData.quantity;
-        await storage.updateProduct(validatedData.productId, req.userId!, {
-          quantity: newQuantity
-        });
-        
         return res.status(201).json(sale);
       }
       

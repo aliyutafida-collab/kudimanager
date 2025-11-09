@@ -8,6 +8,7 @@ export interface IStorage {
   createProduct(product: InsertProduct, userId: string): Promise<Product>;
   updateProduct(id: string, userId: string, product: Partial<InsertProduct>): Promise<Product | undefined>;
   deleteProduct(id: string, userId: string): Promise<boolean>;
+  reserveAndDecrementStock(productId: string, userId: string, quantity: number): Promise<{ success: boolean; error?: string; product?: Product }>;
 
   // Sales (scoped by userId)
   getSales(userId: string): Promise<Sale[]>;
@@ -35,12 +36,14 @@ export class MemStorage implements IStorage {
   private sales: Map<string, Sale>;
   private expenses: Map<string, Expense>;
   private users: Map<string, User>;
+  private productLocks: Map<string, Promise<void>>;
 
   constructor() {
     this.products = new Map();
     this.sales = new Map();
     this.expenses = new Map();
     this.users = new Map();
+    this.productLocks = new Map();
   }
 
   // Products (scoped by userId)
@@ -82,6 +85,54 @@ export class MemStorage implements IStorage {
     const product = this.products.get(id);
     if (!product || product.userId !== userId) return false;
     return this.products.delete(id);
+  }
+
+  async reserveAndDecrementStock(
+    productId: string, 
+    userId: string, 
+    quantity: number
+  ): Promise<{ success: boolean; error?: string; product?: Product }> {
+    // Wait for any existing lock on this product
+    while (this.productLocks.has(productId)) {
+      await this.productLocks.get(productId);
+    }
+
+    // Create a new lock for this product
+    let releaseLock: () => void;
+    const lockPromise = new Promise<void>((resolve) => {
+      releaseLock = resolve;
+    });
+    this.productLocks.set(productId, lockPromise);
+
+    try {
+      // Atomically check stock and decrement
+      const product = this.products.get(productId);
+      
+      if (!product) {
+        return { success: false, error: "Product not found" };
+      }
+      
+      if (product.userId !== userId) {
+        return { success: false, error: "Product not found" };
+      }
+      
+      if (product.quantity < quantity) {
+        return { 
+          success: false, 
+          error: `Only ${product.quantity} units available, but ${quantity} requested` 
+        };
+      }
+      
+      // Decrement stock
+      const updated = { ...product, quantity: product.quantity - quantity };
+      this.products.set(productId, updated);
+      
+      return { success: true, product: updated };
+    } finally {
+      // Release the lock
+      this.productLocks.delete(productId);
+      releaseLock!();
+    }
   }
 
   // Sales (scoped by userId)

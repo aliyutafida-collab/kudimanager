@@ -3,6 +3,38 @@
 ## Overview
 KudiManager is a comprehensive business management system for Nigerian small businesses, enabling them to track sales, expenses, and inventory. It offers a dashboard for performance monitoring, product and transaction management, and report generation. Key features include Nigerian tax calculations, AI-powered business advisory, vendor recommendations, learning resources, and Paystack-based subscription management. The platform aims to provide clear data and efficient workflows for informed decision-making.
 
+## Recent Changes (November 2025)
+
+### Dashboard Enhancements
+- Added 6-month analytics chart showing Sales vs Expenses vs Profit trends with Recharts
+- Implemented smart reminder banners with contextual business advice
+- Added daily rotating motivational quotes with gold accent styling
+- Created footer component with brand messaging
+
+### Onboarding Flow
+- Built two-step setup wizard for new users (welcome → product setup)
+- Registration now redirects to setup wizard before dashboard access
+- Multiple product setup with visual chip display
+- Fixed price validation to support Drizzle numeric type (string-based)
+
+### Sales & Inventory Integration
+- **Product Selector**: Sales dialog now uses dropdown to select from inventory
+- **Auto-fill**: Unit price automatically populated when product selected
+- **Stock Visibility**: Dropdown shows available stock for each product
+- **Inventory Sync**: Sales automatically decrement product quantities
+- **Validation**: Backend prevents overselling with stock checks
+- **Error Handling**: Clear "Insufficient stock" messages to users
+
+### Bug Fixes
+- Fixed Gemini AI model name (gemini-1.5-pro)
+- Fixed setup wizard price validation (numeric → string compatibility)
+- Reordered backend sale creation logic to check stock BEFORE creating sale
+- Added read-only unit price field to prevent NaN calculations
+- Enhanced form validations with required product selection
+
+### Known Limitations
+- **Concurrent Sales**: Race condition possible with simultaneous sales (requires database transactions for full prevention, acceptable for MVP/demo scenarios)
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 

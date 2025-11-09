@@ -19,11 +19,39 @@ interface TrialBannerProps {
 export function TrialBanner({ subscriptionInfo }: TrialBannerProps) {
   const { trialStatus, trialDaysRemaining, planType, subscriptionActive } = subscriptionInfo;
 
-  // Don't show banner for active subscribers
-  if (planType !== "trial" && subscriptionActive) {
-    return null;
+  // Handle paid subscription users
+  if (planType !== "trial") {
+    // Active paid subscription - no banner needed
+    if (subscriptionActive) {
+      return null;
+    }
+    
+    // Expired paid subscription - show subscription expired banner
+    return (
+      <Card className="border-red-500/50 bg-red-50 dark:bg-red-950/20" data-testid="banner-subscription-expired">
+        <CardContent className="flex items-center justify-between gap-4 p-4">
+          <div className="flex items-center gap-3">
+            <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+            <div>
+              <p className="font-medium text-red-900 dark:text-red-100">
+                Subscription Expired
+              </p>
+              <p className="text-sm text-red-700 dark:text-red-300">
+                Your subscription has ended. Renew now to continue using KudiManager
+              </p>
+            </div>
+          </div>
+          <Button asChild size="sm" className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600" data-testid="button-subscribe">
+            <Link href="/subscribe">
+              Renew Subscription
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
+    );
   }
 
+  // Handle trial users below
   // Trial active - show days remaining in emerald
   if (trialStatus === "active" && trialDaysRemaining > 7) {
     return (

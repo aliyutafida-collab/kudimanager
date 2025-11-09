@@ -1,11 +1,21 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+interface SubscriptionInfo {
+  planType: "trial" | "basic" | "premium";
+  trialStatus: "active" | "warning" | "expired";
+  trialDaysRemaining: number;
+  canAccess: boolean;
+  subscriptionActive: boolean;
+  subscriptionEndsAt: string | null;
+}
+
 interface User {
   id: string;
   name: string;
   email: string;
   businessType: string;
   planType: string;
+  subscriptionInfo?: SubscriptionInfo;
 }
 
 interface AuthContextType {
@@ -15,6 +25,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, businessType: string) => Promise<void>;
   logout: () => void;
+  refreshSubscription: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -76,8 +87,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('auth_user');
   };
 
+  const refreshSubscription = async () => {
+    if (!token) return;
+    
+    try {
+      const response = await fetch('/api/user/subscription', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const subscriptionInfo = await response.json();
+        setUser(prevUser => prevUser ? { ...prevUser, subscriptionInfo } : null);
+        if (user) {
+          localStorage.setItem('auth_user', JSON.stringify({ ...user, subscriptionInfo }));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to refresh subscription info:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, refreshSubscription }}>
       {children}
     </AuthContext.Provider>
   );

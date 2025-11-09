@@ -89,7 +89,7 @@ export function getSubscriptionInfo(user: User) {
     trialDaysRemaining: calculateTrialDaysRemaining(user),
     trialStatus: getTrialStatus(user),
     isTrialActive: isTrialActive(user),
-    isSubscriptionActive: isSubscriptionActive(user),
+    subscriptionActive: isSubscriptionActive(user),
     canAccess: canAccessDashboard(user),
     trialEndsAt: user.trialEndsAt,
     subscriptionEndsAt: user.subscriptionEndsAt,

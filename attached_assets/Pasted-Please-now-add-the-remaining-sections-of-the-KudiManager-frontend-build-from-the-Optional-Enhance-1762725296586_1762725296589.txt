@@ -1,0 +1,71 @@
+Please now add the remaining sections of the KudiManager frontend build — from the “Optional Enhancements” down to “Final Checks.”
+The app is already functional; I just want it fully polished and production-ready.
+
+Specifically, please include:
+
+📈 Optional Enhancements
+
+Add a Reports & Analytics section on the dashboard using Chart.js or Recharts to visualize:
+
+Monthly Sales vs Expenses vs Profit trend.
+
+Simple line or bar chart, labeled with ₦ values.
+
+Add AI-generated reminders or small banners that display friendly messages like:
+
+“Remember to record today’s sales.”
+“Expenses look high this week — want to see why?”
+
+Add a dark mode toggle (button in top-right corner) that switches background, text, and card colors.
+
+Add a daily motivational banner or quote section that rotates from a predefined list of quotes.
+
+Add a small footer with this message:
+
+“Built with ❤️ by KudiManager – Empowering Nigerian SMEs.”
+
+🧩 Functional Connections
+
+Verify that all frontend forms and pages are properly connected to these backend APIs:
+
+/api/sales, /api/expenses, /api/products
+
+/api/tax
+
+/api/ai/advice
+
+/api/vendors/suggest
+
+/api/subscribe
+
+/api/guide
+
+/api/register, /api/login
+
+Ensure form validation, loading animations, and clear error/success notifications for every submission.
+
+🎨 UX & UI Finishing
+
+Make all components responsive and easy to use on mobile screens.
+
+Ensure ₦ (Naira) is used consistently across all prices, totals, and summaries.
+
+Use Emerald Green (#007F5F) and Gold (#F4C542) as brand anchors for all buttons, highlights, and cards.
+
+Add smooth transitions for hover states and modal popups.
+
+✅ Final Checks
+
+The app should open to the Login page by default.
+
+After registration → redirect to Setup Wizard.
+
+After setup → redirect to Dashboard.
+
+Save login sessions with a simple token (persistent login).
+
+Ensure all routes (Dashboard, Tax, AI Advisor, Vendors, Learn, Subscription) are linked in the sidebar.
+
+Add “Logout” button that clears localStorage and redirects to login.
+
+Run through the full flow once to confirm smooth navigation and no console errors.

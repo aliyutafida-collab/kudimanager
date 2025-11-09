@@ -17,6 +17,11 @@ import Sales from "@/pages/sales";
 import Expenses from "@/pages/expenses";
 import Inventory from "@/pages/inventory";
 import Reports from "@/pages/reports";
+import TaxCalculator from "@/pages/tax-calculator";
+import AIAdvisor from "@/pages/ai-advisor";
+import Vendors from "@/pages/vendors";
+import Learn from "@/pages/learn";
+import Subscription from "@/pages/subscription";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 import NotFound from "@/pages/not-found";
@@ -50,6 +55,11 @@ function ProtectedRouter() {
         <Route path="/expenses" component={Expenses} />
         <Route path="/inventory" component={Inventory} />
         <Route path="/reports" component={Reports} />
+        <Route path="/tax-calculator" component={TaxCalculator} />
+        <Route path="/ai-advisor" component={AIAdvisor} />
+        <Route path="/vendors" component={Vendors} />
+        <Route path="/learn" component={Learn} />
+        <Route path="/subscription" component={Subscription} />
         <Route component={NotFound} />
       </Switch>
     </ProtectedRoute>

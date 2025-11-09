@@ -102,11 +102,46 @@ Preferred communication style: Simple, everyday language.
 
 ### Authentication & Authorization
 
-**Current State**: No authentication system implemented
-- Application is single-user focused
-- No login/signup flows
-- No session management
-- Future consideration: Would benefit from user authentication for multi-business support
+**JWT-Based Authentication System** (Implemented November 2025)
+- **User Registration** (`POST /api/register`):
+  - Fields: name, email, password, businessType
+  - Password hashing with bcrypt (10 salt rounds)
+  - Business type validation (5 categories: Retail & Products, Restaurants & Food Services, Hospitality, Services, Agriculture & Farming)
+  - Duplicate email prevention
+  - Returns user_id and confirmation message
+
+- **User Login** (`POST /api/login`):
+  - Email and password validation
+  - Bcrypt password verification
+  - JWT token generation (7-day expiry)
+  - Returns JWT token and user profile (excluding password)
+
+- **Authentication Middleware**:
+  - Bearer token validation for protected endpoints
+  - JWT payload extraction (userId)
+  - 401 Unauthorized responses for missing/invalid tokens
+
+- **Protected Endpoints** (require JWT token in Authorization header):
+  - All product endpoints: GET, GET/:id, POST, PATCH/:id, DELETE/:id
+  - All sales endpoints: GET, GET/:id, POST, PATCH/:id, DELETE/:id
+  - All expense endpoints: GET, GET/:id, POST, PATCH/:id, DELETE/:id
+  - Monthly reports: GET /api/reports/monthly
+
+- **Public Endpoints** (no authentication required):
+  - /api/subscribe, /api/paystack/webhook, /api/guide, /api/tax, /api/ai/advice, /api/vendors/suggest
+
+- **Data Isolation**:
+  - All products, sales, and expenses scoped to userId
+  - Foreign key references from products/sales/expenses to users table
+  - Users can only view/modify their own data
+  - Storage layer enforces userId-based filtering on all operations
+
+- **Security Notes**:
+  - JWT_SECRET uses environment variable with development fallback
+  - Password never returned in API responses
+  - 7-day token expiry for security/UX balance
+  - Production deployment requires strong JWT_SECRET configuration
+  - Recommended: Add rate limiting for login endpoint to prevent brute-force attacks
 
 ### External Dependencies
 

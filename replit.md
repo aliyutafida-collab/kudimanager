@@ -40,17 +40,48 @@ Preferred communication style: Simple, everyday language.
 - **Architecture Pattern**: RESTful API with JSON responses
 
 **API Design**
-- RESTful endpoints organized by resource (products, sales, expenses)
+- RESTful endpoints organized by resource (products, sales, expenses, subscriptions, learning, tax, AI, vendors)
 - Standard HTTP methods (GET, POST, PATCH, DELETE)
 - JSON request/response format
 - Error handling with appropriate status codes (404, 400, 500)
 - Request logging middleware for debugging
 
+**Extended API Features (November 2025)**
+1. **Subscription Management**
+   - `POST /api/subscribe` - Initiates Paystack subscription (Basic: ₦2,500, Premium: ₦5,000)
+   - `POST /api/paystack/webhook` - Processes payment confirmations and updates user plans
+   - Reference format: `KM-{plan}-{timestamp}-{random}` for plan extraction
+   - **Security Note**: Webhook needs HMAC signature verification in production
+
+2. **Learning Resources**
+   - `GET /api/guide` - Returns comprehensive financial management guide
+   - Topics: Sales tracking, expense management, inventory, profit calculation, Nigerian tax law, consistency
+   - Nigerian-specific business tips and CAC/FIRS registration guidance
+
+3. **Tax Calculator**
+   - `POST /api/tax` - Calculates Nigerian company tax and VAT estimates
+   - Tax bands: 0% (≤₦25M turnover), 20% (₦25-100M), 30% (>₦100M)
+   - Returns annual/monthly tax obligations and compliance guidance
+   - VAT calculation at 7.5% for applicable sales
+
+4. **AI Business Advisory**
+   - `POST /api/ai/advice` - Generates business insights using Gemini AI
+   - Analyzes sales, expenses, profit margins for Nigerian businesses
+   - Graceful fallback with static advice when AI unavailable (returns 200)
+   - Integrated via Replit AI Integrations (no API key required)
+
+5. **Vendor Suggestions**
+   - `POST /api/vendors/suggest` - Recommends Nigerian suppliers/vendors
+   - Mock database includes 9 major markets (Computer Village, Alaba, Onitsha, etc.)
+   - Category-based filtering (Electronics, Fashion, Food, Building materials)
+   - Returns 3 suggestions with contact, payment terms, delivery options
+
 **Storage Layer**
 - **Interface-Based Design**: IStorage interface defines all data operations
 - **Current Implementation**: In-memory storage (MemStorage class) using Map collections
 - **Future-Ready**: Interface allows easy migration to database persistence
-- **Data Models**: Products, Sales, Expenses with UUID identifiers
+- **Data Models**: Products, Sales, Expenses, User Subscriptions with UUID identifiers
+- **Subscription Storage**: Users tracked by email with plan type, expiry date, and payment reference
 
 ### Data Storage Solutions
 
@@ -82,6 +113,8 @@ Preferred communication style: Simple, everyday language.
 **Third-Party Services**
 - **Google Fonts**: Inter and JetBrains Mono font families
 - **Neon Database**: Serverless PostgreSQL (configured but not actively used)
+- **Paystack**: Nigerian payment gateway (placeholder integration, needs production webhook security)
+- **Google Gemini AI**: Business advisory via Replit AI Integrations (fallback mechanism for reliability)
 
 **UI Libraries**
 - **Radix UI**: Comprehensive set of unstyled, accessible components

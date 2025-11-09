@@ -62,3 +62,57 @@ export type Sale = typeof sales.$inferSelect;
 
 export type InsertExpense = z.infer<typeof insertExpenseSchema>;
 export type Expense = typeof expenses.$inferSelect;
+
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull(),
+  planType: text("plan_type").notNull().default("free"),
+  expiryDate: timestamp("expiry_date"),
+  paystackReference: text("paystack_reference"),
+});
+
+export type User = typeof users.$inferSelect;
+
+export const subscribeSchema = z.object({
+  email: z.string().email(),
+  plan: z.enum(["basic", "premium"]),
+});
+
+export type SubscribeRequest = z.infer<typeof subscribeSchema>;
+
+export const paystackWebhookSchema = z.object({
+  event: z.string(),
+  data: z.object({
+    reference: z.string(),
+    status: z.string(),
+    customer: z.object({
+      email: z.string(),
+    }),
+  }),
+});
+
+export const taxCalculationSchema = z.object({
+  monthlyProfit: z.number(),
+  monthlySales: z.number(),
+  businessType: z.enum(["personal", "small_business", "company"]).optional().default("small_business"),
+});
+
+export type TaxCalculationRequest = z.infer<typeof taxCalculationSchema>;
+
+export const aiAdviceSchema = z.object({
+  totalSales: z.number(),
+  totalExpenses: z.number(),
+  netProfit: z.number(),
+  salesCount: z.number().optional(),
+  context: z.string().optional(),
+});
+
+export type AIAdviceRequest = z.infer<typeof aiAdviceSchema>;
+
+export const vendorSuggestionSchema = z.object({
+  productName: z.string().optional(),
+  category: z.string().optional(),
+  location: z.string().optional().default("Nigeria"),
+});
+
+export type VendorSuggestionRequest = z.infer<typeof vendorSuggestionSchema>;

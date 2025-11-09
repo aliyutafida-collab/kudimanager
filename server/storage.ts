@@ -1,4 +1,4 @@
-import { type Product, type InsertProduct, type Sale, type InsertSale, type Expense, type InsertExpense } from "@shared/schema";
+import { type Product, type InsertProduct, type Sale, type InsertSale, type Expense, type InsertExpense, type User } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -22,17 +22,24 @@ export interface IStorage {
   createExpense(expense: InsertExpense): Promise<Expense>;
   updateExpense(id: string, expense: Partial<InsertExpense>): Promise<Expense | undefined>;
   deleteExpense(id: string): Promise<boolean>;
+
+  // Users/Subscriptions
+  getUser(email: string): Promise<User | undefined>;
+  createUser(email: string, planType: string, expiryDate: Date, reference: string): Promise<User>;
+  updateUserSubscription(email: string, planType: string, expiryDate: Date, reference: string): Promise<User | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private products: Map<string, Product>;
   private sales: Map<string, Sale>;
   private expenses: Map<string, Expense>;
+  private users: Map<string, User>;
 
   constructor() {
     this.products = new Map();
     this.sales = new Map();
     this.expenses = new Map();
+    this.users = new Map();
   }
 
   // Products
@@ -143,6 +150,38 @@ export class MemStorage implements IStorage {
 
   async deleteExpense(id: string): Promise<boolean> {
     return this.expenses.delete(id);
+  }
+
+  // Users/Subscriptions
+  async getUser(email: string): Promise<User | undefined> {
+    return this.users.get(email.toLowerCase());
+  }
+
+  async createUser(email: string, planType: string, expiryDate: Date, reference: string): Promise<User> {
+    const id = randomUUID();
+    const user: User = {
+      id,
+      email: email.toLowerCase(),
+      planType,
+      expiryDate,
+      paystackReference: reference,
+    };
+    this.users.set(email.toLowerCase(), user);
+    return user;
+  }
+
+  async updateUserSubscription(email: string, planType: string, expiryDate: Date, reference: string): Promise<User | undefined> {
+    const user = this.users.get(email.toLowerCase());
+    if (!user) return undefined;
+
+    const updated: User = {
+      ...user,
+      planType,
+      expiryDate,
+      paystackReference: reference,
+    };
+    this.users.set(email.toLowerCase(), updated);
+    return updated;
   }
 }
 

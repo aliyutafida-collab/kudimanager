@@ -428,17 +428,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         const planType = planMatch[1] as "basic" | "premium";
-        const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + planDurations[planType]);
+        const subscriptionEndsAt = new Date();
+        subscriptionEndsAt.setDate(subscriptionEndsAt.getDate() + planDurations[planType]);
 
-        const existingUser = await storage.getUser(email);
+        const existingUser = await storage.getUserByEmail(email);
         
         if (existingUser) {
-          await storage.updateUserSubscription(email, planType, expiryDate, reference);
-          console.log(`[WEBHOOK] Updated subscription for ${email} - Plan: ${planType}, Expires: ${expiryDate}`);
+          await storage.updateUserSubscription(email, planType, subscriptionEndsAt, reference);
+          console.log(`[WEBHOOK] Updated subscription for ${email} - Plan: ${planType}, Expires: ${subscriptionEndsAt}`);
         } else {
-          await storage.createUser(email, planType, expiryDate, reference);
-          console.log(`[WEBHOOK] Created new subscription for ${email} - Plan: ${planType}, Expires: ${expiryDate}`);
+          console.error(`[WEBHOOK] User not found for email: ${email}`);
+          return res.status(404).json({ error: "User not found" });
         }
 
         res.status(200).json({ success: true, message: "Subscription updated" });

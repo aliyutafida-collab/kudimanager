@@ -28,7 +28,7 @@ export interface IStorage {
   getUserById(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(name: string, email: string, hashedPassword: string, businessType: string): Promise<User>;
-  updateUserSubscription(email: string, planType: string, expiryDate: Date, reference: string): Promise<User | undefined>;
+  updateUserSubscription(email: string, planType: string, subscriptionEndsAt: Date, reference: string): Promise<User | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -227,30 +227,41 @@ export class MemStorage implements IStorage {
 
   async createUser(name: string, email: string, hashedPassword: string, businessType: string): Promise<User> {
     const id = randomUUID();
+    const createdAt = new Date();
+    
+    // Set trial to end 90 days from creation
+    const trialEndsAt = new Date(createdAt);
+    trialEndsAt.setDate(trialEndsAt.getDate() + 90);
+    
     const user: User = {
       id,
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
       businessType,
-      planType: "free",
-      expiryDate: null,
+      planType: "trial",
+      trialEndsAt,
+      subscriptionStartedAt: null,
+      subscriptionEndsAt: null,
+      isActive: true,
       paystackReference: null,
-      createdAt: new Date(),
+      createdAt,
     };
     this.users.set(email.toLowerCase(), user);
     return user;
   }
 
-  async updateUserSubscription(email: string, planType: string, expiryDate: Date, reference: string): Promise<User | undefined> {
+  async updateUserSubscription(email: string, planType: string, subscriptionEndsAt: Date, reference: string): Promise<User | undefined> {
     const user = this.users.get(email.toLowerCase());
     if (!user) return undefined;
 
     const updated: User = {
       ...user,
       planType,
-      expiryDate,
+      subscriptionStartedAt: new Date(),
+      subscriptionEndsAt,
       paystackReference: reference,
+      isActive: true,
     };
     this.users.set(email.toLowerCase(), updated);
     return updated;

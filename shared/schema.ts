@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, numeric, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, numeric, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -9,8 +9,11 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   businessType: text("business_type").notNull(),
-  planType: text("plan_type").notNull().default("free"),
-  expiryDate: timestamp("expiry_date"),
+  planType: text("plan_type").notNull().default("trial"),
+  trialEndsAt: timestamp("trial_ends_at"),
+  subscriptionStartedAt: timestamp("subscription_started_at"),
+  subscriptionEndsAt: timestamp("subscription_ends_at"),
+  isActive: boolean("is_active").notNull().default(true),
   paystackReference: text("paystack_reference"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

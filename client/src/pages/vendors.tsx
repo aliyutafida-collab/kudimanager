@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Search, Loader2, MapPin, Phone, CreditCard, Truck, Award } from "lucide-react";
+import { Search, Loader2, MapPin, Phone, CreditCard, Truck, Award, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,23 +11,25 @@ import { apiRequest } from "@/lib/queryClient";
 
 interface Vendor {
   name: string;
-  category: string;
   location: string;
+  specialties: string[];
   contact: string;
+  whyRecommended: string;
+  estimatedDelivery: string;
   paymentTerms: string;
-  deliveryTime: string;
   featured?: boolean;
 }
 
 interface VendorResponse {
   success: boolean;
-  vendors: Vendor[];
-  message: string;
+  suggestions: Vendor[];
+  aiInsight?: string;
 }
 
 export default function Vendors() {
   const [category, setCategory] = useState("");
   const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [aiInsight, setAiInsight] = useState<string>("");
   const { toast } = useToast();
 
   const vendorMutation = useMutation({
@@ -39,10 +41,11 @@ export default function Vendors() {
       return response.json();
     },
     onSuccess: (data: VendorResponse) => {
-      setVendors(data.vendors || []);
+      setVendors(data.suggestions || []);
+      setAiInsight(data.aiInsight || "");
       toast({
         title: "Vendors Found",
-        description: `Found ${data.vendors?.length || 0} vendors matching your criteria.`,
+        description: `Found ${data.suggestions?.length || 0} vendors matching your criteria.`,
       });
     },
     onError: (error) => {
@@ -119,6 +122,20 @@ export default function Vendors() {
         </CardContent>
       </Card>
 
+      {aiInsight && (
+        <Card className="border-accent">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-accent">
+              <Sparkles className="w-5 h-5" />
+              AI Recommendation
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm" data-testid="text-ai-insight">{aiInsight}</p>
+          </CardContent>
+        </Card>
+      )}
+
       {vendors.length > 0 && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {vendors.map((vendor, index) => (
@@ -137,9 +154,14 @@ export default function Vendors() {
                     </Badge>
                   )}
                 </div>
-                <CardDescription>{vendor.category}</CardDescription>
+                <CardDescription>{vendor.specialties.join(", ")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
+                {vendor.whyRecommended && (
+                  <p className="text-sm text-muted-foreground italic border-l-2 border-accent pl-3">
+                    {vendor.whyRecommended}
+                  </p>
+                )}
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="w-4 h-4 text-muted-foreground" />
                   <span>{vendor.location}</span>
@@ -154,7 +176,7 @@ export default function Vendors() {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Truck className="w-4 h-4 text-muted-foreground" />
-                  <span>{vendor.deliveryTime}</span>
+                  <span>{vendor.estimatedDelivery}</span>
                 </div>
               </CardContent>
             </Card>

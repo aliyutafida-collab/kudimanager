@@ -1,0 +1,84 @@
+Yes, please go ahead and build all of these frontend pages so users can access every feature of KudiManager.
+
+Include the following pages and sections with a consistent, mobile-friendly UI:
+
+1️⃣ Tax Calculator Page:
+A simple page where users can input total monthly sales and expenses.
+It should calculate estimated tax based on Nigerian small business tax rules (20% corporate tax under ₦25M turnover, 7.5% VAT, and state tax advisory).
+Show results clearly with an “AI tip” section below.
+
+2️⃣ AI Business Advisor Section:
+A page where users can input their sales, expenses, and profit for the month.
+The AI should return 3 short insights using the /api/ai/advice endpoint.
+Design it like a conversation card or chat interface with “Your Insight” messages from the AI.
+
+3️⃣ Learning Resources / Tutorial Page:
+Include the full Financial Management Guide content (as we discussed earlier).
+It should explain topics like: sales recording, expense management, inventory, profit calculation, tax basics, and AI advice.
+Add an icon for each topic and use simple, clear formatting suitable for Nigerian SME owners.
+
+4️⃣ Vendor Directory / Suggestion Page:
+A page where users can type in what they want to buy (e.g., “flour,” “POS machine,” “cement”) and get 3 AI-suggested vendors from the /api/vendors/suggest endpoint.
+Show results as vendor cards with name, category, and contact suggestion.
+
+5️⃣ Subscription / Billing Page:
+A clean pricing plan page connected to the /api/subscribe endpoint.
+Plans:
+
+Basic (₦2,500/month): Core features (sales, expenses, inventory, reports)
+
+Premium (₦5,000/month): All features + AI + tax calculator + learning tools
+Include Paystack integration button for “Subscribe Now.”
+
+6️⃣ Dashboard Summary Page:
+Add a simple dashboard that displays:
+
+Total Sales (₦)
+
+Total Expenses (₦)
+
+Net Profit (₦)
+
+Stock Level Summary
+Include a “Smart Tips” area that fetches AI advice automatically, and show a small “low stock” alert area.
+
+7️⃣ Color Theme and Branding:
+Use the KudiManager color theme:
+
+Primary Color: Emerald Green #007F5F
+
+Accent Color: Gold #F4C542
+
+Background: Light Gray #F6F7F9
+
+Text: Charcoal #333333
+Use Inter or Poppins font for a modern, professional look.
+Buttons should have rounded corners (8px) and hover transitions.
+
+8️⃣ Layout & Navigation:
+Add a simple top navigation bar or sidebar with links to:
+
+Dashboard
+
+Sales
+
+Expenses
+
+Inventory
+
+Tax Calculator
+
+AI Advisor
+
+Vendors
+
+Learn
+
+Subscription
+
+Profile / Logout
+
+Ensure all pages share the same consistent layout, theme, and smooth navigation.
+Make sure the app looks clean and modern on both desktop and mobile screens.
+
+Finally, ensure that after registration or login, the user is redirected to the Setup Wizard, and after completing setup, they land on the Dashboard.

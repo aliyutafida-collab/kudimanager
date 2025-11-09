@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -9,24 +9,133 @@ import {
   paystackWebhookSchema,
   taxCalculationSchema,
   aiAdviceSchema,
-  vendorSuggestionSchema
+  vendorSuggestionSchema,
+  registerSchema,
+  loginSchema
 } from "@shared/schema";
 import { GoogleGenAI } from "@google/genai";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || "kudiman ager-secret-key-change-in-production";
+const SALT_ROUNDS = 10;
+
+interface AuthRequest extends Request {
+  userId?: string;
+}
+
+async function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Unauthorized - No token provided" });
+    }
+
+    const token = authHeader.substring(7);
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    req.userId = decoded.userId;
+    next();
+  } catch (error) {
+    console.error("[AUTH] Token verification failed:", error);
+    return res.status(401).json({ error: "Unauthorized - Invalid token" });
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Products endpoints
-  app.get("/api/products", async (req, res) => {
+  // Authentication endpoints
+  app.post("/api/register", async (req, res) => {
     try {
-      const products = await storage.getProducts();
+      console.log("[REGISTER] Registration request received:", { email: req.body.email, name: req.body.name, businessType: req.body.businessType });
+      const validatedData = registerSchema.parse(req.body);
+      
+      const existingUser = await storage.getUserByEmail(validatedData.email);
+      if (existingUser) {
+        console.log("[REGISTER] Registration failed - email already exists:", validatedData.email);
+        return res.status(400).json({ error: "Email already registered" });
+      }
+
+      const hashedPassword = await bcrypt.hash(validatedData.password, SALT_ROUNDS);
+      const user = await storage.createUser(
+        validatedData.name,
+        validatedData.email,
+        hashedPassword,
+        validatedData.businessType
+      );
+
+      console.log("[REGISTER] User registered successfully:", { userId: user.id, email: user.email, businessType: user.businessType });
+
+      res.status(201).json({
+        success: true,
+        message: "Registration successful",
+        user_id: user.id,
+        name: user.name,
+        email: user.email,
+        businessType: user.businessType
+      });
+    } catch (error) {
+      console.error("[REGISTER] Registration error:", error);
+      if (error instanceof Error && 'errors' in error) {
+        return res.status(400).json({ error: "Validation failed", details: error.message });
+      }
+      res.status(500).json({ error: "Registration failed" });
+    }
+  });
+
+  app.post("/api/login", async (req, res) => {
+    try {
+      console.log("[LOGIN] Login attempt:", { email: req.body.email });
+      const validatedData = loginSchema.parse(req.body);
+
+      const user = await storage.getUserByEmail(validatedData.email);
+      if (!user) {
+        console.log("[LOGIN] Login failed - user not found:", validatedData.email);
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+
+      const passwordMatch = await bcrypt.compare(validatedData.password, user.password);
+      if (!passwordMatch) {
+        console.log("[LOGIN] Login failed - invalid password for:", validatedData.email);
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+
+      const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "7d" });
+      
+      console.log("[LOGIN] Login successful:", { userId: user.id, email: user.email });
+
+      res.json({
+        success: true,
+        message: "Login successful",
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          businessType: user.businessType,
+          planType: user.planType
+        }
+      });
+    } catch (error) {
+      console.error("[LOGIN] Login error:", error);
+      if (error instanceof Error && 'errors' in error) {
+        return res.status(400).json({ error: "Validation failed", details: error.message });
+      }
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  // Products endpoints (protected)
+  app.get("/api/products", authMiddleware, async (req: AuthRequest, res) => {
+    try {
+      const products = await storage.getProducts(req.userId!);
       res.json(products);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch products" });
     }
   });
 
-  app.get("/api/products/:id", async (req, res) => {
+  app.get("/api/products/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const product = await storage.getProduct(req.params.id);
+      const product = await storage.getProduct(req.params.id, req.userId!);
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
@@ -36,19 +145,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/products", async (req, res) => {
+  app.post("/api/products", authMiddleware, async (req: AuthRequest, res) => {
     try {
       const validatedData = insertProductSchema.parse(req.body);
-      const product = await storage.createProduct(validatedData);
+      const product = await storage.createProduct(validatedData, req.userId!);
       res.status(201).json(product);
     } catch (error) {
       res.status(400).json({ error: "Invalid product data" });
     }
   });
 
-  app.patch("/api/products/:id", async (req, res) => {
+  app.patch("/api/products/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const product = await storage.updateProduct(req.params.id, req.body);
+      const product = await storage.updateProduct(req.params.id, req.userId!, req.body);
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
@@ -58,9 +167,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/products/:id", async (req, res) => {
+  app.delete("/api/products/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const deleted = await storage.deleteProduct(req.params.id);
+      const deleted = await storage.deleteProduct(req.params.id, req.userId!);
       if (!deleted) {
         return res.status(404).json({ error: "Product not found" });
       }
@@ -71,18 +180,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Sales endpoints
-  app.get("/api/sales", async (req, res) => {
+  app.get("/api/sales", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const sales = await storage.getSales();
+      const sales = await storage.getSales(req.userId!);
       res.json(sales);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch sales" });
     }
   });
 
-  app.get("/api/sales/:id", async (req, res) => {
+  app.get("/api/sales/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const sale = await storage.getSale(req.params.id);
+      const sale = await storage.getSale(req.params.id, req.userId!);
       if (!sale) {
         return res.status(404).json({ error: "Sale not found" });
       }
@@ -92,10 +201,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/sales", async (req, res) => {
+  app.post("/api/sales", authMiddleware, async (req: AuthRequest, res) => {
     try {
       const validatedData = insertSaleSchema.parse(req.body);
-      const sale = await storage.createSale(validatedData);
+      const sale = await storage.createSale(validatedData, req.userId!);
       res.status(201).json(sale);
     } catch (error) {
       console.error("Sale validation error:", error);
@@ -103,9 +212,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/sales/:id", async (req, res) => {
+  app.patch("/api/sales/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const sale = await storage.updateSale(req.params.id, req.body);
+      const sale = await storage.updateSale(req.params.id, req.userId!, req.body);
       if (!sale) {
         return res.status(404).json({ error: "Sale not found" });
       }
@@ -115,9 +224,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/sales/:id", async (req, res) => {
+  app.delete("/api/sales/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const deleted = await storage.deleteSale(req.params.id);
+      const deleted = await storage.deleteSale(req.params.id, req.userId!);
       if (!deleted) {
         return res.status(404).json({ error: "Sale not found" });
       }
@@ -128,18 +237,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Expenses endpoints
-  app.get("/api/expenses", async (req, res) => {
+  app.get("/api/expenses", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const expenses = await storage.getExpenses();
+      const expenses = await storage.getExpenses(req.userId!);
       res.json(expenses);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch expenses" });
     }
   });
 
-  app.get("/api/expenses/:id", async (req, res) => {
+  app.get("/api/expenses/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const expense = await storage.getExpense(req.params.id);
+      const expense = await storage.getExpense(req.params.id, req.userId!);
       if (!expense) {
         return res.status(404).json({ error: "Expense not found" });
       }
@@ -149,19 +258,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/expenses", async (req, res) => {
+  app.post("/api/expenses", authMiddleware, async (req: AuthRequest, res) => {
     try {
       const validatedData = insertExpenseSchema.parse(req.body);
-      const expense = await storage.createExpense(validatedData);
+      const expense = await storage.createExpense(validatedData, req.userId!);
       res.status(201).json(expense);
     } catch (error) {
       res.status(400).json({ error: "Invalid expense data" });
     }
   });
 
-  app.patch("/api/expenses/:id", async (req, res) => {
+  app.patch("/api/expenses/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const expense = await storage.updateExpense(req.params.id, req.body);
+      const expense = await storage.updateExpense(req.params.id, req.userId!, req.body);
       if (!expense) {
         return res.status(404).json({ error: "Expense not found" });
       }
@@ -171,9 +280,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/expenses/:id", async (req, res) => {
+  app.delete("/api/expenses/:id", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const deleted = await storage.deleteExpense(req.params.id);
+      const deleted = await storage.deleteExpense(req.params.id, req.userId!);
       if (!deleted) {
         return res.status(404).json({ error: "Expense not found" });
       }
@@ -184,10 +293,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Monthly reports endpoint
-  app.get("/api/reports/monthly", async (req, res) => {
+  app.get("/api/reports/monthly", authMiddleware, async (req: AuthRequest, res) => {
     try {
-      const sales = await storage.getSales();
-      const expenses = await storage.getExpenses();
+      const sales = await storage.getSales(req.userId!);
+      const expenses = await storage.getExpenses(req.userId!);
       
       const totalSales = sales.reduce((sum, sale) => sum + parseFloat(sale.total.toString()), 0);
       const totalExpenses = expenses.reduce((sum, expense) => sum + parseFloat(expense.amount.toString()), 0);

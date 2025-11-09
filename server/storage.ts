@@ -2,30 +2,31 @@ import { type Product, type InsertProduct, type Sale, type InsertSale, type Expe
 import { randomUUID } from "crypto";
 
 export interface IStorage {
-  // Products
-  getProducts(): Promise<Product[]>;
-  getProduct(id: string): Promise<Product | undefined>;
-  createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product | undefined>;
-  deleteProduct(id: string): Promise<boolean>;
+  // Products (scoped by userId)
+  getProducts(userId: string): Promise<Product[]>;
+  getProduct(id: string, userId: string): Promise<Product | undefined>;
+  createProduct(product: InsertProduct, userId: string): Promise<Product>;
+  updateProduct(id: string, userId: string, product: Partial<InsertProduct>): Promise<Product | undefined>;
+  deleteProduct(id: string, userId: string): Promise<boolean>;
 
-  // Sales
-  getSales(): Promise<Sale[]>;
-  getSale(id: string): Promise<Sale | undefined>;
-  createSale(sale: InsertSale): Promise<Sale>;
-  updateSale(id: string, sale: Partial<InsertSale>): Promise<Sale | undefined>;
-  deleteSale(id: string): Promise<boolean>;
+  // Sales (scoped by userId)
+  getSales(userId: string): Promise<Sale[]>;
+  getSale(id: string, userId: string): Promise<Sale | undefined>;
+  createSale(sale: InsertSale, userId: string): Promise<Sale>;
+  updateSale(id: string, userId: string, sale: Partial<InsertSale>): Promise<Sale | undefined>;
+  deleteSale(id: string, userId: string): Promise<boolean>;
 
-  // Expenses
-  getExpenses(): Promise<Expense[]>;
-  getExpense(id: string): Promise<Expense | undefined>;
-  createExpense(expense: InsertExpense): Promise<Expense>;
-  updateExpense(id: string, expense: Partial<InsertExpense>): Promise<Expense | undefined>;
-  deleteExpense(id: string): Promise<boolean>;
+  // Expenses (scoped by userId)
+  getExpenses(userId: string): Promise<Expense[]>;
+  getExpense(id: string, userId: string): Promise<Expense | undefined>;
+  createExpense(expense: InsertExpense, userId: string): Promise<Expense>;
+  updateExpense(id: string, userId: string, expense: Partial<InsertExpense>): Promise<Expense | undefined>;
+  deleteExpense(id: string, userId: string): Promise<boolean>;
 
-  // Users/Subscriptions
-  getUser(email: string): Promise<User | undefined>;
-  createUser(email: string, planType: string, expiryDate: Date, reference: string): Promise<User>;
+  // Users & Authentication
+  getUserById(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(name: string, email: string, hashedPassword: string, businessType: string): Promise<User>;
   updateUserSubscription(email: string, planType: string, expiryDate: Date, reference: string): Promise<User | undefined>;
 }
 
@@ -42,19 +43,21 @@ export class MemStorage implements IStorage {
     this.users = new Map();
   }
 
-  // Products
-  async getProducts(): Promise<Product[]> {
-    return Array.from(this.products.values());
+  // Products (scoped by userId)
+  async getProducts(userId: string): Promise<Product[]> {
+    return Array.from(this.products.values()).filter(p => p.userId === userId);
   }
 
-  async getProduct(id: string): Promise<Product | undefined> {
-    return this.products.get(id);
+  async getProduct(id: string, userId: string): Promise<Product | undefined> {
+    const product = this.products.get(id);
+    return product && product.userId === userId ? product : undefined;
   }
 
-  async createProduct(insertProduct: InsertProduct): Promise<Product> {
+  async createProduct(insertProduct: InsertProduct, userId: string): Promise<Product> {
     const id = randomUUID();
     const product: Product = {
       id,
+      userId,
       name: insertProduct.name,
       sku: insertProduct.sku ?? null,
       category: insertProduct.category ?? null,
@@ -66,32 +69,36 @@ export class MemStorage implements IStorage {
     return product;
   }
 
-  async updateProduct(id: string, updates: Partial<InsertProduct>): Promise<Product | undefined> {
+  async updateProduct(id: string, userId: string, updates: Partial<InsertProduct>): Promise<Product | undefined> {
     const product = this.products.get(id);
-    if (!product) return undefined;
+    if (!product || product.userId !== userId) return undefined;
     
     const updated = { ...product, ...updates };
     this.products.set(id, updated);
     return updated;
   }
 
-  async deleteProduct(id: string): Promise<boolean> {
+  async deleteProduct(id: string, userId: string): Promise<boolean> {
+    const product = this.products.get(id);
+    if (!product || product.userId !== userId) return false;
     return this.products.delete(id);
   }
 
-  // Sales
-  async getSales(): Promise<Sale[]> {
-    return Array.from(this.sales.values());
+  // Sales (scoped by userId)
+  async getSales(userId: string): Promise<Sale[]> {
+    return Array.from(this.sales.values()).filter(s => s.userId === userId);
   }
 
-  async getSale(id: string): Promise<Sale | undefined> {
-    return this.sales.get(id);
+  async getSale(id: string, userId: string): Promise<Sale | undefined> {
+    const sale = this.sales.get(id);
+    return sale && sale.userId === userId ? sale : undefined;
   }
 
-  async createSale(insertSale: InsertSale): Promise<Sale> {
+  async createSale(insertSale: InsertSale, userId: string): Promise<Sale> {
     const id = randomUUID();
     const sale: Sale = {
       id,
+      userId,
       productId: insertSale.productId ?? null,
       productName: insertSale.productName,
       customer: insertSale.customer ?? null,
@@ -104,32 +111,36 @@ export class MemStorage implements IStorage {
     return sale;
   }
 
-  async updateSale(id: string, updates: Partial<InsertSale>): Promise<Sale | undefined> {
+  async updateSale(id: string, userId: string, updates: Partial<InsertSale>): Promise<Sale | undefined> {
     const sale = this.sales.get(id);
-    if (!sale) return undefined;
+    if (!sale || sale.userId !== userId) return undefined;
     
     const updated = { ...sale, ...updates };
     this.sales.set(id, updated);
     return updated;
   }
 
-  async deleteSale(id: string): Promise<boolean> {
+  async deleteSale(id: string, userId: string): Promise<boolean> {
+    const sale = this.sales.get(id);
+    if (!sale || sale.userId !== userId) return false;
     return this.sales.delete(id);
   }
 
-  // Expenses
-  async getExpenses(): Promise<Expense[]> {
-    return Array.from(this.expenses.values());
+  // Expenses (scoped by userId)
+  async getExpenses(userId: string): Promise<Expense[]> {
+    return Array.from(this.expenses.values()).filter(e => e.userId === userId);
   }
 
-  async getExpense(id: string): Promise<Expense | undefined> {
-    return this.expenses.get(id);
+  async getExpense(id: string, userId: string): Promise<Expense | undefined> {
+    const expense = this.expenses.get(id);
+    return expense && expense.userId === userId ? expense : undefined;
   }
 
-  async createExpense(insertExpense: InsertExpense): Promise<Expense> {
+  async createExpense(insertExpense: InsertExpense, userId: string): Promise<Expense> {
     const id = randomUUID();
     const expense: Expense = {
       id,
+      userId,
       description: insertExpense.description,
       category: insertExpense.category,
       amount: insertExpense.amount,
@@ -139,32 +150,42 @@ export class MemStorage implements IStorage {
     return expense;
   }
 
-  async updateExpense(id: string, updates: Partial<InsertExpense>): Promise<Expense | undefined> {
+  async updateExpense(id: string, userId: string, updates: Partial<InsertExpense>): Promise<Expense | undefined> {
     const expense = this.expenses.get(id);
-    if (!expense) return undefined;
+    if (!expense || expense.userId !== userId) return undefined;
     
     const updated = { ...expense, ...updates };
     this.expenses.set(id, updated);
     return updated;
   }
 
-  async deleteExpense(id: string): Promise<boolean> {
+  async deleteExpense(id: string, userId: string): Promise<boolean> {
+    const expense = this.expenses.get(id);
+    if (!expense || expense.userId !== userId) return false;
     return this.expenses.delete(id);
   }
 
-  // Users/Subscriptions
-  async getUser(email: string): Promise<User | undefined> {
+  // Users & Authentication
+  async getUserById(id: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(u => u.id === id);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
     return this.users.get(email.toLowerCase());
   }
 
-  async createUser(email: string, planType: string, expiryDate: Date, reference: string): Promise<User> {
+  async createUser(name: string, email: string, hashedPassword: string, businessType: string): Promise<User> {
     const id = randomUUID();
     const user: User = {
       id,
+      name,
       email: email.toLowerCase(),
-      planType,
-      expiryDate,
-      paystackReference: reference,
+      password: hashedPassword,
+      businessType,
+      planType: "free",
+      expiryDate: null,
+      paystackReference: null,
+      createdAt: new Date(),
     };
     this.users.set(email.toLowerCase(), user);
     return user;

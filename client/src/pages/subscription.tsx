@@ -1,12 +1,21 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { Check, Loader2, Crown } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Check, Loader2, Crown, AlertTriangle, Clock, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
+
+interface SubscriptionInfo {
+  planType: "trial" | "basic" | "premium";
+  trialStatus: "active" | "warning" | "expired";
+  trialDaysRemaining: number;
+  canAccess: boolean;
+  subscriptionActive: boolean;
+  subscriptionEndsAt: string | null;
+}
 
 interface SubscriptionResponse {
   success: boolean;
@@ -61,6 +70,10 @@ export default function Subscription() {
   const { toast } = useToast();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
+  const { data: subscriptionInfo } = useQuery<SubscriptionInfo>({
+    queryKey: ["/api/user/subscription"],
+  });
+
   const subscribeMutation = useMutation({
     mutationFn: async (plan: string) => {
       const response = await apiRequest("POST", "/api/subscribe", {
@@ -100,14 +113,85 @@ export default function Subscription() {
     subscribeMutation.mutate(plan);
   };
 
+  const getTrialStatusBanner = () => {
+    if (!subscriptionInfo || subscriptionInfo.planType !== "trial") return null;
+
+    if (subscriptionInfo.trialStatus === "expired") {
+      return (
+        <Card className="border-red-500/50 bg-red-50 dark:bg-red-950/20" data-testid="banner-trial-expired">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium text-red-900 dark:text-red-100 mb-1">
+                  Your Trial Has Ended
+                </p>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  Subscribe to one of our plans below to continue managing your business with KudiManager
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (subscriptionInfo.trialStatus === "warning") {
+      return (
+        <Card className="border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20" data-testid="banner-trial-warning">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium text-yellow-900 dark:text-yellow-100 mb-1">
+                  Trial Ending Soon
+                </p>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  You have {subscriptionInfo.trialDaysRemaining} days left in your free trial. Subscribe now to avoid interruption
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (subscriptionInfo.trialStatus === "active") {
+      return (
+        <Card className="border-emerald-500/50 bg-emerald-50 dark:bg-emerald-950/20" data-testid="banner-trial-active">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium text-emerald-900 dark:text-emerald-100 mb-1">
+                  Free Trial Active
+                </p>
+                <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                  You have {subscriptionInfo.trialDaysRemaining} days remaining. Upgrade anytime to unlock premium features
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-3xl font-semibold mb-2">Choose Your Plan</h1>
         <p className="text-muted-foreground">
-          Upgrade to unlock powerful features for your business
+          {subscriptionInfo?.planType === "trial" 
+            ? "Upgrade to unlock powerful features for your business"
+            : "Manage your subscription and explore plan options"
+          }
         </p>
       </div>
+
+      {getTrialStatusBanner()}
 
       <div className="grid gap-6 md:grid-cols-2 lg:gap-8 max-w-4xl mx-auto">
         {plans.map((planInfo) => (

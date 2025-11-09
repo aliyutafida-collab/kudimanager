@@ -143,6 +143,42 @@ Preferred communication style: Simple, everyday language.
   - Production deployment requires strong JWT_SECRET configuration
   - Recommended: Add rate limiting for login endpoint to prevent brute-force attacks
 
+**Frontend Authentication Implementation** (Implemented November 2025)
+- **AuthContext** (`client/src/contexts/AuthContext.tsx`):
+  - Global authentication state management using React Context
+  - localStorage persistence for auth tokens and user data
+  - Auto-restoration of session on page reload
+  - Login, register, and logout functions
+  - Token and user data stored under 'auth_token' and 'auth_user' keys
+
+- **Authentication Pages**:
+  - Login page (`client/src/pages/login.tsx`): Email/password form with error handling
+  - Registration page (`client/src/pages/register.tsx`): Full registration with business type dropdown
+  - useEffect-based redirects to dashboard after successful login/registration (prevents race conditions)
+  - Auto-login after successful registration
+
+- **Route Protection**:
+  - ProtectedRoute component wraps authenticated content
+  - PublicRouter handles unauthenticated access with catch-all redirect to /login
+  - ProtectedRouter renders dashboard, sales, expenses, inventory, and reports pages
+  - All protected routes redirect to /login when accessed without authentication
+
+- **API Integration**:
+  - getAuthHeaders() helper in queryClient automatically adds Authorization header
+  - JWT token retrieved from localStorage and included in all API requests
+  - 401 responses trigger logout and redirect to login
+
+- **User Interface**:
+  - UserProfile component displays username and logout button in header
+  - Conditional rendering of sidebar/navigation based on authentication state
+  - Loading states during authentication check
+
+- **Implementation Details**:
+  - useEffect-based redirects prevent React render errors
+  - justLoggedIn/justRegistered flags ensure redirect only after user state updates
+  - Separate PublicRouter and ProtectedRouter prevent route conflicts
+  - App structure: AppContent conditionally renders Public or Protected router based on user state
+
 ### External Dependencies
 
 **Third-Party Services**

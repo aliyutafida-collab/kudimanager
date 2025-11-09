@@ -8,6 +8,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeProvider } from "@/hooks/use-theme";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Footer } from "@/components/footer";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/protected-route";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ import Learn from "@/pages/learn";
 import Subscription from "@/pages/subscription";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
+import SetupWizard from "@/pages/setup-wizard";
 import NotFound from "@/pages/not-found";
 
 function Redirect({ to }: { to: string }) {
@@ -51,6 +53,7 @@ function ProtectedRouter() {
     <ProtectedRoute>
       <Switch>
         <Route path="/" component={Dashboard} />
+        <Route path="/setup-wizard" component={SetupWizard} />
         <Route path="/sales" component={Sales} />
         <Route path="/expenses" component={Expenses} />
         <Route path="/inventory" component={Inventory} />
@@ -128,6 +131,7 @@ function AppContent() {
           <main className="flex-1 overflow-auto p-6">
             <ProtectedRouter />
           </main>
+          <Footer />
         </div>
       </div>
     </SidebarProvider>

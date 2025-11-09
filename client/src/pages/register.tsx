@@ -29,7 +29,7 @@ export default function Register() {
 
   useEffect(() => {
     if (justRegistered && user) {
-      setLocation('/');
+      setLocation('/setup-wizard');
     }
   }, [user, justRegistered, setLocation]);
 

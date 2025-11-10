@@ -57,6 +57,10 @@
   --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.10);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+  
+  /* Currency display colors */
+  --currency-symbol-color: 162 100% 25%;
+  --currency-amount-color: 0 0% 20%;
 
 /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -127,6 +131,11 @@
   --chart-3: 221 83% 70%;
   --chart-4: 280 87% 72%;
   --chart-5: 340 82% 68%;
+  
+  /* Currency display colors in dark mode */
+  --currency-symbol-color: 162 100% 45%;
+  --currency-amount-color: 0 0% 98%;
+  
   --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
   --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.05);
   --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.06), 0px 1px 2px -1px hsl(0 0% 0% / 0.04);
@@ -284,6 +293,31 @@
   .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
+  }
+}
+
+/* Currency Display Styling */
+@layer components {
+  .currency-symbol {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: hsl(var(--currency-symbol-color));
+    vertical-align: baseline;
+    letter-spacing: -0.01em;
+  }
+  
+  .currency-amount {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: hsl(var(--currency-amount-color));
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .currency-display {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.15em;
   }
 }
 

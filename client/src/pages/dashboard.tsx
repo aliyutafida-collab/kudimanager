@@ -11,6 +11,7 @@ import { ExpensesTable } from "@/components/expenses-table";
 import { TrialBanner } from "@/components/trial-banner";
 import type { Sale, Expense, Product } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import { formatCurrency } from "@/lib/currency";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface AIAdviceResponse {
@@ -253,21 +254,21 @@ export default function Dashboard() {
           <>
             <StatCard
               title="Total Sales"
-              value={`₦${totalSales.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              value={formatCurrency(totalSales)}
               icon={DollarSign}
               testId="text-total-sales"
               valueClassName="text-emerald-600 dark:text-emerald-400"
             />
             <StatCard
               title="Total Expenses"
-              value={`₦${totalExpenses.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              value={formatCurrency(totalExpenses)}
               icon={TrendingDown}
               testId="text-total-expenses"
               valueClassName="text-destructive"
             />
             <StatCard
               title="Net Profit"
-              value={`₦${netProfit.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              value={formatCurrency(netProfit)}
               icon={netProfit >= 0 ? TrendingUp : TrendingDown}
               testId="text-net-profit"
               valueClassName={netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}
@@ -312,7 +313,7 @@ export default function Dashboard() {
                     borderRadius: '8px',
                     color: 'hsl(var(--foreground))'
                   }}
-                  formatter={(value: number) => `₦${value.toLocaleString('en-NG')}`}
+                  formatter={(value: number) => formatCurrency(value)}
                 />
                 <Legend />
                 <Line 

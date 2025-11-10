@@ -40,6 +40,29 @@ KudiManager is a comprehensive business management system for Nigerian small bus
 - **Validation**: Backend prevents overselling with stock checks
 - **Error Handling**: Clear "Insufficient stock" messages to users
 
+### Authentication Security & UX Improvements (November 2025)
+- **Strong Password Validation**: Registration enforces 8+ characters, uppercase, lowercase, number, and special character requirements with real-time visual feedback
+- **Confirm Password Field**: Added password confirmation with match validation and green/red visual indicators
+- **Forgot Password Feature**: Login page now includes "Forgot Password?" link with email validation and toast notifications (placeholder implementation - backend email integration pending)
+- **Personalized Welcome Messages**: 
+  - Registration shows "Welcome to KudiManager!" toast message
+  - Login shows "Welcome back, [User Name]!" using actual user name from login response
+  - Fixed AuthContext login function to return User object for proper name display
+- **Password Security**: Client-side validation complements backend security (server-side validation recommended for defense in depth)
+
+### UI/Design Modernization (November 2025)
+- **Modern Fintech Aesthetic**: Updated border radius from 9px to 10px across all cards and components
+- **Subtle Shadows**: Replaced zero-opacity shadows with properly configured subtle shadows (sm, md, lg variants) for depth and hierarchy
+- **Typography**: Verified Inter font properly configured and applied globally for clean, professional text rendering
+- **Design Consistency**: All UI elements use 10px rounded edges with balanced spacing for cohesive modern look
+
+### Mobile Responsiveness Enhancements (November 2025)
+- **Sidebar Auto-Collapse**: Sidebar automatically closes after menu selection on mobile/tablet devices using useSidebar hook
+- **Touch-Friendly Interactions**: Enforced 44px minimum tap targets for all buttons, inputs, and interactive elements
+- **Responsive Typography**: 14px minimum font size on mobile devices for better readability
+- **Adaptive Header**: Header now uses responsive gaps and flex-wrap to accommodate small screens
+- **Mobile-First CSS**: Added media queries for optimal mobile experience without desktop regressions
+
 ### Bug Fixes
 - Fixed Gemini AI model name (gemini-1.5-pro)
 - Fixed setup wizard price validation (numeric → string compatibility)
@@ -47,9 +70,11 @@ KudiManager is a comprehensive business management system for Nigerian small bus
 - Added read-only unit price field to prevent NaN calculations
 - Enhanced form validations with required product selection
 - Fixed subscription field naming mismatch (isSubscriptionActive → subscriptionActive)
+- Fixed login welcome message to use returned User data instead of stale context state
 
 ### Known Limitations
 - **Concurrent Sales**: Race condition possible with simultaneous sales (requires database transactions for full prevention, acceptable for MVP/demo scenarios)
+- **Forgot Password Backend**: Email sending functionality requires backend email service integration (placeholder UI complete)
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

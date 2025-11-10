@@ -1,0 +1,97 @@
+Please fix the currency display and font styling on the Dashboard page to make it consistent, clean, and localized for Nigerian users.
+
+💰 1️⃣ Remove Dollar Sign
+
+Remove any hard-coded $ symbols from the Dashboard UI, especially:
+
+The top-right corner of the Sales summary card.
+
+Any chart labels or total summaries showing $.
+
+Replace with:
+
+₦ (Naira sign), or
+
+Leave blank if a generic “Total Sales” label already shows.
+
+Example replacement:
+
+<h3>Total Sales</h3>
+<p>₦{formatCurrency(totalSales)}</p>
+
+
+Ensure there are no $ characters left anywhere in the dashboard markup.
+
+🧩 2️⃣ Improve ₦ Font and Alignment
+
+The current ₦ font looks robotic or mismatched.
+
+Update it to match the app’s main font (Poppins or Inter) for a sleek, modern appearance.
+
+CSS Fix:
+
+.currency-symbol {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.2em;
+  vertical-align: middle;
+  color: #007F5F;
+  margin-right: 4px;
+}
+.dashboard-amount {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 1.4em;
+  font-weight: 500;
+  color: #333333;
+  letter-spacing: 0.5px;
+}
+
+
+Example usage:
+
+<span className="currency-symbol">₦</span>
+<span className="dashboard-amount">{Number(totalSales).toLocaleString()}</span>
+
+🧮 3️⃣ Formatting for Readability
+
+Apply proper currency formatting to all dashboard totals:
+
+const formatCurrency = (amount) => {
+  return amount
+    ? amount.toLocaleString("en-NG", { minimumFractionDigits: 0 })
+    : "0";
+};
+
+
+Example output:
+₦12,500 instead of $12500 or NGN12500.00.
+
+🎨 4️⃣ UI Polish
+
+Ensure that the Naira sign and number align horizontally (same baseline).
+
+Adjust spacing in cards so the numbers feel balanced.
+
+Make all currency text use font-weight: 600 for consistency.
+
+Add hover animation for dashboard cards (subtle shadow or scale).
+
+✅ 5️⃣ Final Check
+
+Verify:
+
+No $ symbols appear anywhere in dashboard or reports.
+
+All currency displays use ₦ or clean numeric format.
+
+Fonts look human-friendly and consistent across devices.
+
+Layout spacing remains visually balanced.
+
+Summarize all changes made to currency display and fonts.
+
+💡 Optional Enhancement (Future-Proofing)
+
+Once the font fix is done, you can also prompt later:
+
+“Add a currency selector in settings so users from other countries can view their preferred currency (₦, $, ₵, KSh, etc.), while defaulting to Naira for Nigerian users.”

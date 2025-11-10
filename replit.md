@@ -1,112 +1,7 @@
 # KudiManager - Business Management System
 
 ## Overview
-KudiManager is a comprehensive business management system for Nigerian small businesses, enabling them to track sales, expenses, and inventory. It offers a dashboard for performance monitoring, product and transaction management, and report generation. Key features include Nigerian tax calculations, AI-powered business advisory, vendor recommendations, learning resources, and Paystack-based subscription management. The platform aims to provide clear data and efficient workflows for informed decision-making.
-
-## Recent Changes (November 2025)
-
-### Subscription & Trial System (New)
-- **3-Month Free Trial**: All new users automatically receive 90-day free trial with full access
-- **Trial Status Tracking**: Backend utilities calculate trial days remaining and status (active/warning/expired)
-- **Access Enforcement**: Subscription middleware protects all API routes (products, sales, expenses, reports)
-- **TrialBanner Component**: Color-coded banners on dashboard
-  - Emerald green: Active trial (>7 days remaining)
-  - Yellow/gold: Warning (≤7 days remaining)
-  - Red: Trial expired (redirects to subscription page)
-- **ProtectedRoute Updates**: Frontend redirects expired users to /subscription page
-- **Subscription Page Enhancements**: Shows trial status with contextual messaging
-- **AuthContext Integration**: Stores subscription info in user object with refreshSubscription() method
-- **Paystack Integration**: Webhook handler activates subscriptions after successful payment
-- **User Schema Updates**: Added planType, trialEndsAt, subscriptionStartedAt, subscriptionEndsAt, isActive fields
-
-### Dashboard Enhancements
-- Added 6-month analytics chart showing Sales vs Expenses vs Profit trends with Recharts
-- Implemented smart reminder banners with contextual business advice
-- Added daily rotating motivational quotes with gold accent styling
-- Created footer component with brand messaging
-- Integrated TrialBanner showing subscription status
-
-### Onboarding Flow
-- Built two-step setup wizard for new users (welcome → product setup)
-- Registration now redirects to setup wizard before dashboard access
-- Multiple product setup with visual chip display
-- Fixed price validation to support Drizzle numeric type (string-based)
-
-### Sales & Inventory Integration
-- **Product Selector**: Sales dialog now uses dropdown to select from inventory
-- **Auto-fill**: Unit price automatically populated when product selected
-- **Stock Visibility**: Dropdown shows available stock for each product
-- **Inventory Sync**: Sales automatically decrement product quantities
-- **Validation**: Backend prevents overselling with stock checks
-- **Error Handling**: Clear "Insufficient stock" messages to users
-
-### Authentication Security & UX Improvements (November 2025)
-- **Strong Password Validation**: Registration enforces 8+ characters, uppercase, lowercase, number, and special character requirements with real-time visual feedback
-- **Confirm Password Field**: Added password confirmation with match validation and green/red visual indicators
-- **Forgot Password Feature**: Login page now includes "Forgot Password?" link with email validation and toast notifications (placeholder implementation - backend email integration pending)
-- **Personalized Welcome Messages**: 
-  - Registration shows "Welcome to KudiManager!" toast message
-  - Login shows "Welcome back, [User Name]!" using actual user name from login response
-  - Fixed AuthContext login function to return User object for proper name display
-- **Password Security**: Client-side validation complements backend security (server-side validation recommended for defense in depth)
-
-### UI/Design Modernization (November 2025)
-- **Modern Fintech Aesthetic**: Updated border radius from 9px to 10px across all cards and components
-- **Subtle Shadows**: Replaced zero-opacity shadows with properly configured subtle shadows (sm, md, lg variants) for depth and hierarchy
-- **Typography**: Verified Inter font properly configured and applied globally for clean, professional text rendering
-- **Design Consistency**: All UI elements use 10px rounded edges with balanced spacing for cohesive modern look
-
-### Mobile Responsiveness Enhancements (November 2025)
-- **Sidebar Auto-Collapse**: Sidebar automatically closes after menu selection on mobile/tablet devices using useSidebar hook
-- **Touch-Friendly Interactions**: Enforced 44px minimum tap targets for all buttons, inputs, and interactive elements
-- **Responsive Typography**: 14px minimum font size on mobile devices for better readability
-- **Adaptive Header**: Header now uses responsive gaps and flex-wrap to accommodate small screens
-- **Mobile-First CSS**: Added media queries for optimal mobile experience without desktop regressions
-
-### Progressive Web App (PWA) Conversion (November 2025)
-- **App Icon Integration**: Added 512×512 KudiManager branded icon for mobile home screens and browser tabs
-- **PWA Manifest**: Created complete manifest.json with standalone display mode, emerald green theme (#007F5F), and portrait orientation for native app-like installation
-- **Branded Splash Screen**: Implemented 2-second splash screen showing KudiManager logo on emerald green background with gold tagline, displays once per session using sessionStorage
-- **Service Worker**: Implemented offline-first caching strategy for essential assets (HTML, icons, manifest) with automatic cache versioning and cleanup
-- **Installation Support**: Added PWA meta tags for iOS/Android home screen installation with proper theme colors and app-capable settings
-- **Offline Functionality**: Users can install app on mobile devices and access cached content offline after initial visit
-- **Native App Experience**: Installed app launches full-screen without browser chrome, providing seamless native-like experience
-
-### Currency Formatting System (November 2025)
-- **CurrencyDisplay Component**: Created reusable component (`client/src/components/currency-display.tsx`) for consistent ₦ (Naira) display
-  - **Typography**: Inter font for ₦ symbol, JetBrains Mono with tabular-nums for amounts
-  - **Color Inheritance**: Component inherits parent text colors via `currentColor`, supporting emerald/red visual cues in StatCards and proper display on colored backgrounds
-  - **Alignment**: Tabular numerals ensure aligned number columns in tables
-- **Currency Utilities** (`client/src/lib/currency.ts`):
-  - `formatCurrency(amount, showSymbol?)`: String formatter using en-NG locale, returns ₦-prefixed amounts
-  - `parseCurrency(value)`: Parses user input removing ₦ and commas, returns numeric value
-  - `CurrencyDisplay` component: JSX renderer for styled currency display with proper typography
-- **CSS Classes** (`client/src/index.css`):
-  - `.currency-symbol`: Inter font, 600 weight, proper vertical alignment
-  - `.currency-amount`: JetBrains Mono, tabular-nums for alignment, inherits parent colors
-  - `.currency-display`: Wrapper with inline-flex for proper spacing
-- **Application-Wide Rollout**: All pages updated to use CurrencyDisplay component:
-  - Dashboard: Total Sales, Total Expenses, Net Profit in StatCards
-  - Sales: Unit price and total amounts in sales table
-  - Expenses: Expense amounts in expenses table
-  - Inventory: Product prices in inventory table
-  - Reports: Financial summaries, top products revenue, expense category totals
-  - Tax Calculator: Corporate tax, VAT, total monthly obligations
-- **Special Cases**: Chart Y-axis uses abbreviated format (₦12k), read-only input previews use simple string formatting
-- **Production Ready**: Architect-approved system with proper color inheritance, typography, and consistent formatting across light/dark themes
-
-### Bug Fixes
-- Fixed Gemini AI model name (gemini-1.5-pro)
-- Fixed setup wizard price validation (numeric → string compatibility)
-- Reordered backend sale creation logic to check stock BEFORE creating sale
-- Added read-only unit price field to prevent NaN calculations
-- Enhanced form validations with required product selection
-- Fixed subscription field naming mismatch (isSubscriptionActive → subscriptionActive)
-- Fixed login welcome message to use returned User data instead of stale context state
-
-### Known Limitations
-- **Concurrent Sales**: Race condition possible with simultaneous sales (requires database transactions for full prevention, acceptable for MVP/demo scenarios)
-- **Forgot Password Backend**: Email sending functionality requires backend email service integration (placeholder UI complete)
+KudiManager is a comprehensive business management system designed for Nigerian small businesses. Its primary purpose is to enable efficient tracking of sales, expenses, and inventory, offering a centralized dashboard for performance monitoring. Key capabilities include product and transaction management, report generation, Nigerian tax calculations, AI-powered business advisory, vendor recommendations, learning resources, and subscription management via Paystack. The platform aims to provide clear data and streamlined workflows to facilitate informed decision-making and support business growth.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -114,50 +9,42 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
-The frontend uses React with TypeScript, Vite for bundling, Wouter for routing, and TanStack Query for server state management. UI components are built with shadcn/ui on Radix UI primitives and styled with Tailwind CSS, adhering to a Material Design-inspired system with Inter and JetBrains Mono fonts. State is managed using React hooks, react-hook-form with Zod for forms, and localStorage for theme persistence.
+The frontend is built with React and TypeScript, using Vite for bundling, Wouter for routing, and TanStack Query for server state management. UI components are developed with shadcn/ui based on Radix UI primitives, styled using Tailwind CSS. The design follows a Material Design-inspired aesthetic with Inter and JetBrains Mono fonts. State management is handled by React hooks, form handling uses react-hook-form with Zod for validation, and localStorage persists user preferences like theme. The application also includes a comprehensive multi-language translation system supporting English, Hausa, Yoruba, and Igbo, with a user-friendly LanguageSwitcher component. A PWA conversion provides an app-like experience with offline capabilities, custom splash screen, and responsive design for mobile devices, ensuring touch-friendly interactions and adaptive layouts. A consistent currency formatting system is implemented using a custom `CurrencyDisplay` component and utility functions for displaying Nigerian Naira (₦) uniformly across the application.
 
 ### Backend Architecture
-The backend is an Express.js application built with TypeScript, following a RESTful API pattern with JSON responses. Key API features include subscription management via Paystack, comprehensive financial learning resources, Nigerian tax calculation, AI business advisory using Google Gemini, and vendor suggestions. Authentication is handled by a JWT-based system with bcrypt for password hashing, supporting user registration, login, and protected routes. Data is scoped to individual users, ensuring isolation.
+The backend is an Express.js application written in TypeScript, providing a RESTful API with JSON responses. It integrates Paystack for subscription management, offers financial learning resources, performs Nigerian tax calculations, and utilizes Google Gemini for AI business advisory. Vendor suggestions are also a core feature. Authentication is managed via a JWT-based system, with bcrypt for password hashing, securing user registration, login, and protected API routes. Data is user-scoped to ensure privacy and isolation.
 
 ### Data Storage Solutions
-The project uses an interface-based storage design, currently implemented with in-memory storage (MemStorage). The architecture is future-ready for migration to a database, with Drizzle ORM configured for PostgreSQL and schema definitions in `shared/schema.ts`. Planned tables include `products`, `sales`, and `expenses`.
+The system uses an interface-based storage design, currently implemented with in-memory storage (MemStorage). It is designed for future migration to a persistent database, with Drizzle ORM configured for PostgreSQL and schema definitions prepared in `shared/schema.ts` for tables like `products`, `sales`, and `expenses`.
 
 ### Authentication & Authorization
-A JWT-based system handles user authentication, including registration, login, and protected API endpoints. Passwords are hashed with bcrypt. Frontend authentication uses a React Context (`AuthContext`) for global state management, localStorage for token persistence, and `ProtectedRoute` components for route protection.
+A JWT-based system manages user authentication, including registration, login, and securing API endpoints. Passwords are hashed using bcrypt. The frontend utilizes a React Context (`AuthContext`) for global authentication state, localStorage for token persistence, and `ProtectedRoute` components to guard routes. Strong password validation, password confirmation, and a "Forgot Password" feature enhance security and user experience.
 
 ### Subscription Management System
-The platform implements a comprehensive trial and subscription system:
-- **Trial Management**: 90-day free trial for all new users, tracked via `trialEndsAt` timestamp
-- **Subscription Utilities** (`server/subscription-utils.ts`): Helper functions for trial/subscription validation
-  - `calculateTrialDaysRemaining()`: Calculates days left in trial
-  - `isTrialActive()`: Checks if trial is still valid
-  - `isSubscriptionActive()`: Validates paid subscription status
-  - `canAccessDashboard()`: Determines user access rights
-  - `getSubscriptionInfo()`: Returns comprehensive subscription data
-- **Access Enforcement**: `subscriptionMiddleware` protects all data routes, returns 403 for expired users
-- **Frontend Components**:
-  - `TrialBanner`: Displays color-coded subscription status on dashboard
-  - `ProtectedRoute`: Redirects expired users to subscription page
-  - `AuthContext`: Manages subscription state with `refreshSubscription()` method
-- **Payment Integration**: Paystack webhook activates subscriptions and extends access for 30 days
+The platform incorporates a robust trial and subscription system:
+- **Trial Management**: New users receive a 90-day free trial, tracked by a `trialEndsAt` timestamp.
+- **Subscription Utilities**: Server-side functions (e.g., `calculateTrialDaysRemaining`, `isTrialActive`, `isSubscriptionActive`, `canAccessDashboard`, `getSubscriptionInfo`) manage trial and subscription validation.
+- **Access Enforcement**: A `subscriptionMiddleware` protects all data-related API routes, restricting access for expired users.
+- **Frontend Integration**: A `TrialBanner` displays subscription status, `ProtectedRoute` redirects expired users, and `AuthContext` manages subscription state with a `refreshSubscription()` method.
+- **Payment Integration**: Paystack webhooks are integrated to activate and extend subscriptions upon successful payment.
 
 ### Key Architectural Decisions
-The project adopts a monorepo structure for shared client/server code, emphasizing end-to-end type safety with TypeScript, Drizzle, and Zod. Performance is optimized through React Query caching and Vite's bundling. Development experience is enhanced with HMR, integrated error overlays, and API logging.
+The project employs a monorepo structure for shared client/server code, emphasizing end-to-end type safety with TypeScript, Drizzle, and Zod. Performance is optimized through React Query caching and Vite's fast bundling. The development experience is enhanced with Hot Module Replacement (HMR), integrated error overlays, and API logging.
 
 ## External Dependencies
 
 ### Third-Party Services
-- **Google Fonts**: Inter and JetBrains Mono font families.
-- **Neon Database**: Serverless PostgreSQL (configured for future use).
-- **Paystack**: Nigerian payment gateway for subscriptions.
-- **Google Gemini AI**: Provides business advisory through Replit AI Integrations.
+- **Google Fonts**: Inter and JetBrains Mono.
+- **Neon Database**: Serverless PostgreSQL (future integration).
+- **Paystack**: Payment gateway for subscriptions.
+- **Google Gemini AI**: Provides business advisory.
 
 ### UI Libraries
-- **Radix UI**: Unstyled, accessible components.
+- **Radix UI**: Accessible, unstyled components.
 - **Lucide React**: Icon library.
-- **date-fns**: Date manipulation.
+- **date-fns**: Date manipulation utility.
 - **class-variance-authority**: Type-safe variant styling.
-- **cmdk**: Command palette component.
+- **cmdk**: Command palette.
 - **embla-carousel-react**: Carousel functionality.
 
 ### Developer Tools

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import "./lib/i18n";
+import { useTranslation } from "react-i18next";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -75,6 +76,7 @@ function ProtectedRouter() {
 function UserProfile() {
   const { user, logout } = useAuth();
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
 
   if (!user) return null;
 
@@ -96,7 +98,7 @@ function UserProfile() {
         data-testid="button-logout"
       >
         <LogOut className="w-4 h-4 mr-2" />
-        Logout
+        {t('common.logout')}
       </Button>
     </div>
   );

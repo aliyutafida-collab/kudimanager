@@ -1,0 +1,105 @@
+Please update the KudiManager app to improve authentication security, user experience, and modernize the dashboard UI.
+
+🔐 1️⃣ Authentication Updates
+
+Add a “Forgot Password” feature on the login page.
+
+Button label: “Forgot Password?” below the password field.
+
+When clicked → show input for email and a “Reset Password” button.
+
+On submit → trigger Firebase’s sendPasswordResetEmail() (or placeholder if Firebase not active yet).
+
+Display success message:
+
+“Password reset link sent to your email. Please check your inbox.”
+
+Handle errors gracefully (invalid email, user not found, etc.).
+
+During registration, add a confirm password field and validate:
+
+Passwords must match.
+
+Show real-time feedback if they don’t.
+
+Enforce strong password policy:
+
+At least 8 characters
+
+Must include uppercase, lowercase, number, and symbol
+
+Show a message like:
+
+“Password must be at least 8 characters, with uppercase, lowercase, number, and special character.”
+
+🎨 2️⃣ UI / Design Enhancements
+
+Update dashboard font and styling for a more sleek, minimalist look.
+
+Use Inter, Poppins, or Urbanist font for all text (clean, modern typography).
+
+Replace all old/retro fonts with this new system font globally.
+
+Add consistent line spacing and padding for cards and dashboard items.
+
+Use subtle shadows and rounded edges for cards (10px radius).
+
+Keep color palette consistent with KudiManager branding:
+
+Primary: Emerald Green #007F5F
+
+Accent: Gold #F4C542
+
+Text: Charcoal #333333
+
+Background: #F6F7F9
+
+Ensure white space and clean alignment like modern fintech dashboards (e.g., Paystack or WaveApps).
+
+🧭 3️⃣ Sidebar & Navigation Improvements
+
+Make the sidebar auto-retract (collapse) after a user selects a menu option — especially on mobile and tablet.
+
+Add a toggle menu button (hamburger icon) on mobile that opens and closes the sidebar.
+
+When collapsed → show only icons; when expanded → show icons + text labels.
+
+Ensure the transition animation is smooth (slide in/out).
+
+📱 4️⃣ Responsiveness and Readability
+
+Improve mobile layout for dashboard cards:
+
+Use larger tap areas and clean stacked layout.
+
+Ensure font sizes adjust properly (minimum 14px on mobile).
+
+Make sure banners, alerts, and AI tips look balanced and not cramped.
+
+Reduce overall text density and keep card text concise.
+
+🧠 5️⃣ Minor UX Improvements
+
+After successful registration, display a friendly toast message:
+
+“Welcome to KudiManager! Let’s set up your business.”
+
+After login, show:
+
+“Welcome back, [Name]! Here’s your latest performance summary.”
+
+Replace browser alert() popups with in-app styled notification bars (top-right or top-center fade in/out).
+
+✅ Final Review
+
+Verify that all pages now use the new font and spacing.
+
+Test “Forgot Password” flow end-to-end.
+
+Ensure sidebar retracts smoothly after selection.
+
+Confirm mobile responsiveness looks professional and clean.
+
+Ensure password strength feedback works correctly before registration submission.
+
+Once done, please summarize what was improved and show the visual style applied to the new dashboard.

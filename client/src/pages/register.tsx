@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const BUSINESS_TYPES = [
   'Retail & Products',
@@ -16,6 +17,25 @@ const BUSINESS_TYPES = [
   'Agriculture & Farming',
 ];
 
+function validatePasswordStrength(password: string): { isValid: boolean; message: string } {
+  if (password.length < 8) {
+    return { isValid: false, message: 'Password must be at least 8 characters' };
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { isValid: false, message: 'Password must include at least one uppercase letter' };
+  }
+  if (!/[a-z]/.test(password)) {
+    return { isValid: false, message: 'Password must include at least one lowercase letter' };
+  }
+  if (!/[0-9]/.test(password)) {
+    return { isValid: false, message: 'Password must include at least one number' };
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    return { isValid: false, message: 'Password must include at least one special character' };
+  }
+  return { isValid: true, message: 'Password meets all requirements' };
+}
+
 export default function Register() {
   const [, setLocation] = useLocation();
   const { register, user } = useAuth();
@@ -23,9 +43,15 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [businessType, setBusinessType] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [justRegistered, setJustRegistered] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+
+  const passwordValidation = validatePasswordStrength(password);
+  const passwordsMatch = password === confirmPassword;
 
   useEffect(() => {
     if (justRegistered && user) {
@@ -35,6 +61,24 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!passwordValidation.isValid) {
+      toast({
+        title: 'Invalid password',
+        description: passwordValidation.message,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!passwordsMatch) {
+      toast({
+        title: 'Passwords do not match',
+        description: 'Please make sure both passwords are the same',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     if (!businessType) {
       toast({
@@ -51,7 +95,7 @@ export default function Register() {
       await register(name, email, password, businessType);
       toast({
         title: 'Registration successful',
-        description: 'Welcome to KudiManager!',
+        description: 'Welcome to KudiManager! Let\'s set up your business.',
       });
       setJustRegistered(true);
     } catch (error) {
@@ -105,10 +149,53 @@ export default function Register() {
                 placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onBlur={() => setPasswordTouched(true)}
                 required
-                minLength={6}
                 data-testid="input-password"
               />
+              {passwordTouched && password && (
+                <div className={`flex items-start gap-2 text-xs mt-1 ${passwordValidation.isValid ? 'text-emerald-600' : 'text-destructive'}`}>
+                  {passwordValidation.isValid ? (
+                    <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                  ) : (
+                    <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                  )}
+                  <span>{passwordValidation.message}</span>
+                </div>
+              )}
+              {!passwordTouched && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Must be at least 8 characters with uppercase, lowercase, number, and special character
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={() => setConfirmPasswordTouched(true)}
+                required
+                data-testid="input-confirm-password"
+              />
+              {confirmPasswordTouched && confirmPassword && (
+                <div className={`flex items-start gap-2 text-xs mt-1 ${passwordsMatch ? 'text-emerald-600' : 'text-destructive'}`}>
+                  {passwordsMatch ? (
+                    <>
+                      <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                      <span>Passwords match</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                      <span>Passwords do not match</span>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="businessType">Business Type</Label>

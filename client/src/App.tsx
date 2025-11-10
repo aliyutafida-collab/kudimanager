@@ -102,7 +102,7 @@ function UserProfile() {
 
 function AppContent() {
   const { user } = useAuth();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [showSplash, setShowSplash] = useState(() => {
     const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
     return !hasSeenSplash;
@@ -112,6 +112,12 @@ function AppContent() {
     sessionStorage.setItem('hasSeenSplash', 'true');
     setShowSplash(false);
   };
+
+  useEffect(() => {
+    if (!showSplash && location === '/' && !user) {
+      setLocation('/login');
+    }
+  }, [showSplash, location, user, setLocation]);
 
   const isAuthPage = location === '/login' || location === '/register';
   const style = {

@@ -72,6 +72,29 @@ KudiManager is a comprehensive business management system for Nigerian small bus
 - **Offline Functionality**: Users can install app on mobile devices and access cached content offline after initial visit
 - **Native App Experience**: Installed app launches full-screen without browser chrome, providing seamless native-like experience
 
+### Currency Formatting System (November 2025)
+- **CurrencyDisplay Component**: Created reusable component (`client/src/components/currency-display.tsx`) for consistent ₦ (Naira) display
+  - **Typography**: Inter font for ₦ symbol, JetBrains Mono with tabular-nums for amounts
+  - **Color Inheritance**: Component inherits parent text colors via `currentColor`, supporting emerald/red visual cues in StatCards and proper display on colored backgrounds
+  - **Alignment**: Tabular numerals ensure aligned number columns in tables
+- **Currency Utilities** (`client/src/lib/currency.ts`):
+  - `formatCurrency(amount, showSymbol?)`: String formatter using en-NG locale, returns ₦-prefixed amounts
+  - `parseCurrency(value)`: Parses user input removing ₦ and commas, returns numeric value
+  - `CurrencyDisplay` component: JSX renderer for styled currency display with proper typography
+- **CSS Classes** (`client/src/index.css`):
+  - `.currency-symbol`: Inter font, 600 weight, proper vertical alignment
+  - `.currency-amount`: JetBrains Mono, tabular-nums for alignment, inherits parent colors
+  - `.currency-display`: Wrapper with inline-flex for proper spacing
+- **Application-Wide Rollout**: All pages updated to use CurrencyDisplay component:
+  - Dashboard: Total Sales, Total Expenses, Net Profit in StatCards
+  - Sales: Unit price and total amounts in sales table
+  - Expenses: Expense amounts in expenses table
+  - Inventory: Product prices in inventory table
+  - Reports: Financial summaries, top products revenue, expense category totals
+  - Tax Calculator: Corporate tax, VAT, total monthly obligations
+- **Special Cases**: Chart Y-axis uses abbreviated format (₦12k), read-only input previews use simple string formatting
+- **Production Ready**: Architect-approved system with proper color inheritance, typography, and consistent formatting across light/dark themes
+
 ### Bug Fixes
 - Fixed Gemini AI model name (gemini-1.5-pro)
 - Fixed setup wizard price validation (numeric → string compatibility)

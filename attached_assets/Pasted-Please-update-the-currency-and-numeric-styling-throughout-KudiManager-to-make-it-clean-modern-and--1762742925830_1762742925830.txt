@@ -1,0 +1,105 @@
+Please update the currency and numeric styling throughout KudiManager to make it clean, modern, and Nigerian-market appropriate.
+
+💰 1️⃣ Currency Display
+
+Replace all hard-coded dollar signs ($) in dashboard metrics, reports, and summaries with:
+
+A generic money symbol (₦) or no symbol — just the formatted number (₦ optional).
+
+For now, show the Naira symbol ₦ where appropriate:
+
+Example: ₦25,000 instead of $25,000.
+
+If currency formatting is dynamic, use a function like:
+
+const formatCurrency = (amount) => {
+  return `₦${Number(amount).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+};
+
+
+Apply this function in dashboard cards, sales tables, and reports.
+
+🔢 2️⃣ Font and Number Input Styling
+
+Update all number input fields (e.g., product prices, sales, expenses) to use a clean, human-readable numeric font:
+
+Use "Poppins", "Inter", or "Urbanist" — not the default monospace/robotic font.
+
+Ensure number inputs:
+
+Have slightly rounded borders (radius: 6px)
+
+Font-size: 16px
+
+Padding: 10px 12px
+
+Background: #F9FAFB
+
+Border: 1px solid #E0E0E0
+
+On focus → border color changes to Emerald Green #007F5F
+
+Example CSS:
+
+input[type="number"], input[type="text"] {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #E0E0E0;
+  background-color: #F9FAFB;
+  padding: 10px 12px;
+  transition: all 0.2s ease-in-out;
+}
+input[type="number"]:focus {
+  border-color: #007F5F;
+  outline: none;
+}
+
+🎨 3️⃣ Dashboard Font Consistency
+
+Apply the same modern font globally to all figures, headings, and buttons:
+
+body, button, h1, h2, h3, p, input {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 400;
+}
+.dashboard-value {
+  font-weight: 600;
+  color: #333333;
+}
+
+
+Ensure the dashboard cards use clean number formatting:
+
+e.g., ₦12,345.00 or 12,345.00 — no decimals if not needed.
+
+💡 4️⃣ UX Enhancements
+
+In reports and analytics:
+
+Align all numeric values to the right (for readability).
+
+Add subtle hover effect on input fields (light shadow).
+
+Replace all placeholder texts like “Enter amount” with localized, simple text:
+
+“Input value in Naira”
+
+✅ 5️⃣ Final Verification
+
+Verify that:
+
+The ₦ symbol shows correctly on all major browsers (Chrome, Safari, Edge, Android).
+
+No dollar signs remain.
+
+Numeric fonts look clean and consistent (no robotic digits).
+
+Input fields feel smoother and more modern.
+
+Summarize where updates were applied (dashboard, reports, forms, etc.).
+
+Optionally, prepare a future-ready currency switch function so that users in other African countries (e.g., Ghana, Kenya) can select their local currency — but default to ₦ Naira for now.

@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 interface Expense {
   id: string;
@@ -51,7 +52,9 @@ export function ExpensesTable({ expenses }: ExpensesTableProps) {
                 <TableCell>
                   <Badge variant="outline" data-testid={`badge-category-${expense.id}`}>{expense.category}</Badge>
                 </TableCell>
-                <TableCell className="text-right font-mono font-semibold" data-testid={`text-amount-${expense.id}`}>₦{expense.amount.toFixed(2)}</TableCell>
+                <TableCell className="text-right font-semibold" data-testid={`text-amount-${expense.id}`}>
+                  <CurrencyDisplay amount={expense.amount} showDecimals />
+                </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(expense.id)} data-testid={`button-edit-${expense.id}`}>

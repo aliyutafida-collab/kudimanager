@@ -57,10 +57,6 @@
   --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.10);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
-  
-  /* Currency display colors */
-  --currency-symbol-color: 162 100% 25%;
-  --currency-amount-color: 0 0% 20%;
 
 /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -131,10 +127,6 @@
   --chart-3: 221 83% 70%;
   --chart-4: 280 87% 72%;
   --chart-5: 340 82% 68%;
-  
-  /* Currency display colors in dark mode */
-  --currency-symbol-color: 162 100% 45%;
-  --currency-amount-color: 0 0% 98%;
   
   --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
   --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.05);

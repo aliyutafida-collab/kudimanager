@@ -5,6 +5,7 @@ import { Download, Calendar } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
 import { DollarSign, TrendingDown, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 interface MonthlyReport {
   summary: {
@@ -65,19 +66,19 @@ export default function Reports() {
       <div className="grid gap-4 md:grid-cols-3">
         <StatCard
           title="Total Sales"
-          value={`₦${report.summary.totalSales.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          value={<CurrencyDisplay amount={report.summary.totalSales} showDecimals />}
           icon={DollarSign}
           testId="card-report-sales"
         />
         <StatCard
           title="Total Expenses"
-          value={`₦${report.summary.totalExpenses.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          value={<CurrencyDisplay amount={report.summary.totalExpenses} showDecimals />}
           icon={TrendingDown}
           testId="card-report-expenses"
         />
         <StatCard
           title="Net Profit"
-          value={`₦${report.summary.netProfit.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          value={<CurrencyDisplay amount={report.summary.netProfit} showDecimals />}
           icon={TrendingUp}
           testId="card-report-profit"
         />
@@ -105,7 +106,9 @@ export default function Reports() {
                         <p className="text-sm text-muted-foreground">{product.quantity} units sold</p>
                       </div>
                     </div>
-                    <p className="font-mono font-semibold" data-testid={`product-revenue-${index}`}>₦{product.revenue.toLocaleString()}</p>
+                    <div className="font-semibold" data-testid={`product-revenue-${index}`}>
+                      <CurrencyDisplay amount={product.revenue} />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -130,7 +133,9 @@ export default function Reports() {
                         <Badge variant="outline" data-testid={`category-name-${index}`}>{item.category}</Badge>
                         <span className="text-sm text-muted-foreground">{item.percentage}%</span>
                       </div>
-                      <p className="font-mono font-semibold" data-testid={`category-amount-${index}`}>₦{item.amount.toLocaleString()}</p>
+                      <div className="font-semibold" data-testid={`category-amount-${index}`}>
+                        <CurrencyDisplay amount={item.amount} />
+                      </div>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
                       <div

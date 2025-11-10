@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 interface TaxCalculation {
   success: boolean;
@@ -164,22 +165,22 @@ export default function TaxCalculator() {
               <div className="grid gap-3">
                 <div className="flex justify-between items-center p-3 rounded-md bg-muted">
                   <span className="text-sm font-medium">Monthly Corporate Tax</span>
-                  <span className="font-mono text-lg font-semibold" data-testid="text-corporate-tax">
-                    ₦{result.tax.estimatedMonthlyTax.toLocaleString()}
+                  <span className="text-lg font-semibold" data-testid="text-corporate-tax">
+                    <CurrencyDisplay amount={result.tax.estimatedMonthlyTax} />
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center p-3 rounded-md bg-muted">
                   <span className="text-sm font-medium">Monthly VAT (7.5%)</span>
-                  <span className="font-mono text-lg font-semibold" data-testid="text-vat">
-                    ₦{result.tax.estimatedMonthlyVAT.toLocaleString()}
+                  <span className="text-lg font-semibold" data-testid="text-vat">
+                    <CurrencyDisplay amount={result.tax.estimatedMonthlyVAT} />
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center p-3 rounded-md bg-primary text-primary-foreground">
                   <span className="text-sm font-semibold">Total Monthly Tax</span>
-                  <span className="font-mono text-xl font-bold" data-testid="text-total-tax">
-                    ₦{result.tax.totalMonthlyObligation.toLocaleString()}
+                  <span className="text-xl font-bold" data-testid="text-total-tax">
+                    <CurrencyDisplay amount={result.tax.totalMonthlyObligation} />
                   </span>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 interface Product {
   id: string;
@@ -61,7 +62,9 @@ export function InventoryTable({ products }: InventoryTableProps) {
                   <TableCell className="font-medium" data-testid={`text-name-${product.id}`}>{product.name}</TableCell>
                   <TableCell data-testid={`text-sku-${product.id}`}>{product.sku || "-"}</TableCell>
                   <TableCell data-testid={`text-category-${product.id}`}>{product.category || "-"}</TableCell>
-                  <TableCell className="text-right font-mono" data-testid={`text-price-${product.id}`}>₦{product.price.toFixed(2)}</TableCell>
+                  <TableCell className="text-right" data-testid={`text-price-${product.id}`}>
+                    <CurrencyDisplay amount={product.price} showDecimals />
+                  </TableCell>
                   <TableCell className="text-right font-mono" data-testid={`text-quantity-${product.id}`}>{product.quantity}</TableCell>
                   <TableCell>
                     {stockStatus && (

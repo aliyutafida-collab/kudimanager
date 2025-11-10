@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 interface Sale {
   id: string;
@@ -54,8 +55,12 @@ export function SalesTable({ sales }: SalesTableProps) {
                 <TableCell data-testid={`text-customer-${sale.id}`}>{sale.customer || "-"}</TableCell>
                 <TableCell data-testid={`text-product-${sale.id}`}>{sale.productName}</TableCell>
                 <TableCell className="text-right font-mono" data-testid={`text-quantity-${sale.id}`}>{sale.quantity}</TableCell>
-                <TableCell className="text-right font-mono" data-testid={`text-unit-price-${sale.id}`}>₦{sale.unitPrice.toFixed(2)}</TableCell>
-                <TableCell className="text-right font-mono font-semibold" data-testid={`text-total-${sale.id}`}>₦{sale.total.toFixed(2)}</TableCell>
+                <TableCell className="text-right" data-testid={`text-unit-price-${sale.id}`}>
+                  <CurrencyDisplay amount={sale.unitPrice} showDecimals />
+                </TableCell>
+                <TableCell className="text-right font-semibold" data-testid={`text-total-${sale.id}`}>
+                  <CurrencyDisplay amount={sale.total} showDecimals />
+                </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(sale.id)} data-testid={`button-edit-${sale.id}`}>

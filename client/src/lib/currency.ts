@@ -22,9 +22,9 @@ export function formatCurrency(
 ): string {
   const { showDecimals = false, showSymbol = true } = options || {};
   
-  // Handle null/undefined/empty values
+  // Use parseCurrency for consistent string handling
   const numericAmount = typeof amount === 'string' 
-    ? parseFloat(amount) 
+    ? parseCurrency(amount) 
     : amount;
   
   if (numericAmount === null || numericAmount === undefined || isNaN(numericAmount)) {
@@ -63,3 +63,4 @@ export function parseCurrency(currencyString: string): number {
   
   return isNaN(parsed) ? 0 : parsed;
 }
+

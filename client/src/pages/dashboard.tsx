@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { SalesTable } from "@/components/sales-table";
 import { ExpensesTable } from "@/components/expenses-table";
 import { TrialBanner } from "@/components/trial-banner";
+import { CurrencyDisplay } from "@/components/currency-display";
 import type { Sale, Expense, Product } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { formatCurrency } from "@/lib/currency";
@@ -254,21 +255,21 @@ export default function Dashboard() {
           <>
             <StatCard
               title="Total Sales"
-              value={formatCurrency(totalSales)}
+              value={<CurrencyDisplay amount={totalSales} showDecimals />}
               icon={DollarSign}
               testId="text-total-sales"
               valueClassName="text-emerald-600 dark:text-emerald-400"
             />
             <StatCard
               title="Total Expenses"
-              value={formatCurrency(totalExpenses)}
+              value={<CurrencyDisplay amount={totalExpenses} showDecimals />}
               icon={TrendingDown}
               testId="text-total-expenses"
               valueClassName="text-destructive"
             />
             <StatCard
               title="Net Profit"
-              value={formatCurrency(netProfit)}
+              value={<CurrencyDisplay amount={netProfit} showDecimals />}
               icon={netProfit >= 0 ? TrendingUp : TrendingDown}
               testId="text-net-profit"
               valueClassName={netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}

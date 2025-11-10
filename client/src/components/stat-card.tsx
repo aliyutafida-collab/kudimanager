@@ -1,10 +1,11 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { LucideIcon, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 
 interface StatCardProps {
   title: string;
-  value: string;
+  value: string | ReactNode;
   icon: LucideIcon;
   trend?: {
     value: number;
@@ -22,7 +23,7 @@ export function StatCard({ title, value, icon: Icon, trend, testId, valueClassNa
         <Icon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className={cn("text-2xl font-mono font-semibold", valueClassName)} data-testid={`${testId}-value`}>{value}</div>
+        <div className={cn("text-2xl font-semibold", valueClassName)} data-testid={`${testId}-value`}>{value}</div>
         {trend && (
           <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
             {trend.isPositive ? (

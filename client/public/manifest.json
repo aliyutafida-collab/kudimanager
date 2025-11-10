@@ -1,0 +1,24 @@
+{
+  "short_name": "KudiManager",
+  "name": "KudiManager - Smart Money Management for Nigerian Businesses",
+  "description": "A modern financial management app for Nigerian SMEs that tracks sales, expenses, profit, and tax with AI insights.",
+  "icons": [
+    {
+      "src": "/app-icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#007F5F",
+  "theme_color": "#007F5F",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/"
+}

@@ -32,7 +32,8 @@
     "success": "Nasara",
     "welcome": "Barka da zuwa",
     "welcomeBack": "Barka da dawowa, {{name}}!",
-    "businessDashboard": "Allon Kasuwanci"
+    "businessDashboard": "Allon Kasuwanci",
+    "management": "Gudanarwa"
   },
   "auth": {
     "login": "Shiga",

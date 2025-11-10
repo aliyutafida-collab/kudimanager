@@ -32,7 +32,8 @@
     "success": "Àṣeyọrí",
     "welcome": "Káàbọ̀",
     "welcomeBack": "Káàbọ̀ padà, {{name}}!",
-    "businessDashboard": "Pátákó Iṣowo"
+    "businessDashboard": "Pátákó Iṣowo",
+    "management": "Ìṣàkóso"
   },
   "auth": {
     "login": "Wọlé",

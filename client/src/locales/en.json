@@ -32,7 +32,8 @@
     "success": "Success",
     "welcome": "Welcome",
     "welcomeBack": "Welcome back, {{name}}!",
-    "businessDashboard": "Business Dashboard"
+    "businessDashboard": "Business Dashboard",
+    "management": "Management"
   },
   "auth": {
     "login": "Sign In",

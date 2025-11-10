@@ -32,7 +32,8 @@
     "success": "Ihe ịga nke ọma",
     "welcome": "Nnọọ",
     "welcomeBack": "Nnọọ na nlọghachi, {{name}}!",
-    "businessDashboard": "Ebe Nlekọta Azụmahịa"
+    "businessDashboard": "Ebe Nlekọta Azụmahịa",
+    "management": "Njikwa"
   },
   "auth": {
     "login": "Banye",

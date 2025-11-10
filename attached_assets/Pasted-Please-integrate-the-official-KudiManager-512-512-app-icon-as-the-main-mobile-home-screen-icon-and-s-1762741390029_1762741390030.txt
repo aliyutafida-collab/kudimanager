@@ -1,0 +1,97 @@
+Please integrate the official KudiManager 512×512 app icon as the main mobile home screen icon and splash screen image for the app.
+
+🧩 1️⃣ Icon Integration
+
+The file name is app-icon.png (or whatever I uploaded it as).
+
+Add it to /public/ or /assets/ directory.
+
+In index.html, inside <head>, include:
+
+<link rel="apple-touch-icon" sizes="512x512" href="/app-icon.png" />
+<link rel="icon" href="/app-icon.png" type="image/png" />
+<meta name="theme-color" content="#007F5F" />
+<meta name="application-name" content="KudiManager" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="KudiManager" />
+
+
+This ensures browsers and phones use the branded KudiManager icon.
+
+📱 2️⃣ Splash Screen Setup
+
+Create a splash screen view that appears for 2–3 seconds on app load.
+
+Use a centered version of the logo on a clean Emerald Green (#007F5F) background.
+
+Include fade-in/out animation (0.8s ease).
+
+Add this component to show before routing to /login or /dashboard.
+
+Example React Component:
+
+import React, { useEffect } from "react";
+import logo from "./assets/app-icon.png";
+import "./styles.css";
+
+export default function SplashScreen() {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.href = "/login";
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="splash-screen">
+      <img src={logo} alt="KudiManager" className="splash-logo" />
+      <p className="splash-text">Smart Money Management for Nigerian Businesses</p>
+    </div>
+  );
+}
+
+
+Add this CSS:
+
+.splash-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #007F5F;
+  color: white;
+  animation: fadeIn 1s ease-in;
+}
+.splash-logo {
+  width: 160px;
+  height: 160px;
+  margin-bottom: 20px;
+}
+.splash-text {
+  font-size: 1em;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #F4C542;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+⚙️ 3️⃣ Flow
+
+On first load, display splash screen → then redirect to /login.
+
+When users open from mobile (saved to home screen), it should appear as a full-screen branded splash with the logo and tagline.
+
+✅ Final Checks
+
+Verify that browsers display the app icon in the tab.
+
+Mobile browsers and saved web apps display the correct splash screen and icon.
+
+Splash animation fades smoothly and transitions into login/dashboard without flicker.
+
+Once done, summarize where the icon and splash screen were applied and confirm that the favicon and mobile icon match in style.

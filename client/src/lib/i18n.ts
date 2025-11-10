@@ -13,7 +13,9 @@ const resources = {
   ig: { translation: igTranslations },
 };
 
-const savedLanguage = localStorage.getItem('language') || 'en';
+const savedLanguage = typeof window !== 'undefined' 
+  ? localStorage.getItem('language') || 'en'
+  : 'en';
 
 i18n
   .use(initReactI18next)
@@ -27,7 +29,9 @@ i18n
   });
 
 i18n.on('languageChanged', (lng) => {
-  localStorage.setItem('language', lng);
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('language', lng);
+  }
 });
 
 export default i18n;

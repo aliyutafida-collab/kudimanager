@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import logo from '@assets/logo.png';
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -86,33 +85,17 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-6 sm:mb-8">
-          <img 
-            src={logo} 
-            alt="KudiManager" 
-            className="w-28 sm:w-32 md:w-36 h-auto mx-auto mb-3 animate-fadeIn"
-            data-testid="img-logo"
-          />
-          <h1 className="text-xl sm:text-2xl font-semibold text-primary mb-1" data-testid="text-logo-title">
-            KudiManager
-          </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground font-normal" data-testid="text-logo-tagline">
-            Smart Money Management for Nigerian Businesses
-          </p>
-        </div>
-
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="text-2xl">
-              {showForgotPassword ? 'Reset Password' : 'Welcome Back'}
-            </CardTitle>
-            <CardDescription>
-              {showForgotPassword 
-                ? 'Enter your email to receive a password reset link' 
-                : 'Sign in to manage your business'}
-            </CardDescription>
-          </CardHeader>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl">
+            {showForgotPassword ? 'Reset Password' : 'Welcome to KudiManager'}
+          </CardTitle>
+          <CardDescription>
+            {showForgotPassword 
+              ? 'Enter your email to receive a password reset link' 
+              : 'Sign in to manage your business'}
+          </CardDescription>
+        </CardHeader>
         
         {showForgotPassword ? (
           <form onSubmit={handlePasswordReset}>
@@ -213,8 +196,7 @@ export default function Login() {
             </CardFooter>
           </form>
         )}
-        </Card>
-      </div>
+      </Card>
     </div>
   );
 }

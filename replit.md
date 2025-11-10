@@ -72,22 +72,6 @@ KudiManager is a comprehensive business management system for Nigerian small bus
 - **Offline Functionality**: Users can install app on mobile devices and access cached content offline after initial visit
 - **Native App Experience**: Installed app launches full-screen without browser chrome, providing seamless native-like experience
 
-### Login Page Branding Enhancement (November 2025)
-- **Logo Integration**: Added KudiManager logo prominently above login form
-  - Displays official logo with gold "K" and Naira symbol in emerald circle
-  - Imported via @assets alias from attached_assets/logo.png
-  - Includes fadeIn animation (0.8s ease-in with subtle upward slide)
-- **Branding Elements**: 
-  - Title: "KudiManager" in emerald green (text-primary)
-  - Tagline: "Smart Money Management for Nigerian Businesses" in muted color
-  - Centered layout with proper spacing
-- **Responsive Design**:
-  - Mobile (<640px): 112px logo width
-  - Tablet (640-768px): 128px logo width
-  - Desktop (768px+): 144px logo width
-  - Maintains aspect ratio across all breakpoints
-- **Visual Consistency**: Matches PWA splash screen and dashboard branding with emerald green (#007F5F) and gold (#F4C542) color palette
-
 ### Currency Formatting System (November 2025)
 - **CurrencyDisplay Component**: Created reusable component (`client/src/components/currency-display.tsx`) for consistent ₦ (Naira) display
   - **Typography**: Inter font for ₦ symbol, JetBrains Mono with tabular-nums for amounts

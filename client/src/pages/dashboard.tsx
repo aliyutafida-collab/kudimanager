@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { DollarSign, TrendingDown, TrendingUp, Lightbulb, AlertTriangle, Package, BarChart3, Bell, Sparkles, X } from "lucide-react";
+import { TrendingDown, TrendingUp, Lightbulb, AlertTriangle, Package, BarChart3, Bell, Sparkles, X } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -256,7 +256,7 @@ export default function Dashboard() {
             <StatCard
               title="Total Sales"
               value={<CurrencyDisplay amount={totalSales} showDecimals />}
-              icon={DollarSign}
+              icon={TrendingUp}
               testId="text-total-sales"
               valueClassName="text-emerald-600 dark:text-emerald-400"
             />

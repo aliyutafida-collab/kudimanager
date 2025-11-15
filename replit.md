@@ -35,7 +35,11 @@ A JWT-based system manages user authentication, including registration, login, a
 - Logout clears both `kudiUser` and `auth_token` from localStorage
 - Defensive error handling ensures malformed localStorage data doesn't crash the app
 
-Additional security features include `ProtectedRoute` components to guard routes, strong password validation, password confirmation, and a "Forgot Password" feature.
+Additional security features include:
+- **Strong Password Validation**: Real-time validation using regex `/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/` requiring minimum 8 characters with uppercase, lowercase, number, and special character. Visual feedback with color-coded messages (red #d93a3a for errors, green #007F5F for success) and icons (AlertCircle/CheckCircle2).
+- **Password Confirmation**: Confirm password field with real-time matching validation and visual feedback.
+- **Forgot Password**: Inline form toggle on login page (no new page/modal) with email validation, mock reset implementation that logs to console, and user-friendly confirmation message: "If this email exists, a password reset link has been sent."
+- **Route Protection**: `ProtectedRoute` components guard authenticated routes, with automatic redirection of authenticated users away from login/register pages.
 
 ### Subscription Management System
 The platform incorporates a robust trial and subscription system:

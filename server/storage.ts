@@ -29,6 +29,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(name: string, email: string, hashedPassword: string, businessType: string): Promise<User>;
   updateUserSubscription(email: string, planType: string, subscriptionEndsAt: Date, reference: string): Promise<User | undefined>;
+  updateUserPlan(userId: string, planType: string): Promise<User | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -264,6 +265,26 @@ export class MemStorage implements IStorage {
       isActive: true,
     };
     this.users.set(email.toLowerCase(), updated);
+    return updated;
+  }
+
+  async updateUserPlan(userId: string, planType: string): Promise<User | undefined> {
+    const user = await this.getUserById(userId);
+    if (!user) return undefined;
+
+    const subscriptionStartedAt = new Date();
+    const subscriptionEndsAt = new Date(subscriptionStartedAt);
+    subscriptionEndsAt.setDate(subscriptionEndsAt.getDate() + 30); // 30 days from now
+
+    const updated: User = {
+      ...user,
+      planType,
+      subscriptionStartedAt,
+      subscriptionEndsAt,
+      paystackReference: `mock-${planType}-${Date.now()}`,
+      isActive: true,
+    };
+    this.users.set(user.email.toLowerCase(), updated);
     return updated;
   }
 }

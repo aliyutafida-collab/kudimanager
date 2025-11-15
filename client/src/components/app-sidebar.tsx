@@ -24,7 +24,7 @@ const menuItems = [
   { titleKey: "nav.aiAdvisor", url: "/ai-advisor", icon: Sparkles, testId: "link-ai-advisor" },
   { titleKey: "nav.vendors", url: "/vendors", icon: Users, testId: "link-vendors" },
   { titleKey: "nav.learn", url: "/learn", icon: BookOpen, testId: "link-learn" },
-  { titleKey: "nav.subscription", url: "/subscription", icon: CreditCard, testId: "link-subscription" },
+  { titleKey: "nav.subscription", url: "/subscribe", icon: CreditCard, testId: "link-subscription" },
 ];
 
 export function AppSidebar() {

@@ -163,6 +163,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current user (protected) - for refreshing user data
+  app.get("/api/me", authMiddleware, async (req: AuthRequest, res) => {
+    try {
+      const user = await storage.getUserById(req.userId!);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      const subscriptionInfo = getSubscriptionInfo(user);
+      
+      res.json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        businessType: user.businessType,
+        planType: user.planType,
+        trialEndsAt: user.trialEndsAt,
+        subscriptionStartedAt: user.subscriptionStartedAt,
+        subscriptionEndsAt: user.subscriptionEndsAt,
+        subscriptionInfo
+      });
+    } catch (error) {
+      console.error("[API /me] Error:", error);
+      res.status(500).json({ error: "Failed to fetch user data" });
+    }
+  });
+
   // Get subscription status (protected)
   app.get("/api/user/subscription", authMiddleware, async (req: AuthRequest, res) => {
     try {
@@ -175,6 +202,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(subscriptionInfo);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch subscription info" });
+    }
+  });
+
+  // Mock subscription endpoint (for demo/development - replace with Paystack webhook in production)
+  app.post("/api/mock-subscribe", authMiddleware, async (req: AuthRequest, res) => {
+    try {
+      const { plan } = req.body;
+      
+      if (!plan || !["basic", "premium"].includes(plan)) {
+        return res.status(400).json({ error: "Invalid plan type. Must be 'basic' or 'premium'" });
+      }
+
+      const updatedUser = await storage.updateUserPlan(req.userId!, plan);
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const subscriptionInfo = getSubscriptionInfo(updatedUser);
+      
+      console.log("[MOCK SUBSCRIBE] User subscribed to plan:", { userId: req.userId, plan });
+
+      res.json({
+        success: true,
+        message: `Successfully subscribed to ${plan} plan`,
+        user: {
+          id: updatedUser.id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          businessType: updatedUser.businessType,
+          planType: updatedUser.planType,
+          trialEndsAt: updatedUser.trialEndsAt,
+          subscriptionStartedAt: updatedUser.subscriptionStartedAt,
+          subscriptionEndsAt: updatedUser.subscriptionEndsAt,
+          subscriptionInfo
+        }
+      });
+    } catch (error) {
+      console.error("[MOCK SUBSCRIBE] Error:", error);
+      res.status(500).json({ error: "Failed to process subscription" });
     }
   });
 

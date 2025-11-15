@@ -29,6 +29,7 @@ interface AuthContextType {
   register: (name: string, email: string, password: string, businessType: string) => Promise<void>;
   logout: () => void;
   refreshSubscription: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -118,6 +119,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('kudiUser');
   };
 
+  const refreshUser = async () => {
+    if (!token) {
+      throw new Error('No authentication token available');
+    }
+
+    const response = await fetch('/api/me', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Token invalid/expired, logout
+        logout();
+        throw new Error('Session expired. Please login again.');
+      }
+      throw new Error('Failed to refresh user data');
+    }
+
+    const userData = await response.json();
+    
+    setUser(userData);
+    localStorage.setItem('kudiUser', JSON.stringify({
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      business_type: userData.businessType,
+      plan: userData.planType,
+      trialEndsAt: userData.trialEndsAt,
+      subscriptionStartedAt: userData.subscriptionStartedAt,
+      subscriptionEndsAt: userData.subscriptionEndsAt,
+      subscriptionInfo: userData.subscriptionInfo
+    }));
+  };
+
   const refreshSubscription = async () => {
     if (!token) return;
     
@@ -147,7 +184,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, refreshSubscription }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, refreshSubscription, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

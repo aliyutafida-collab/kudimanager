@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function Subscribe() {
-  const { user, refreshSubscription } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [activatingPlan, setActivatingPlan] = useState<string | null>(null);
@@ -22,42 +22,27 @@ export default function Subscribe() {
     setActivatingPlan(plan);
 
     try {
-      // Mock payment - simulate successful subscription
-      // In production, this would integrate with Paystack
-      
-      // Simulate network delay
+      // Mock payment - simulate payment processing delay
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // For now, just update localStorage to simulate subscription
-      const updatedUser = {
-        ...user,
-        planType: plan,
-        subscriptionStartedAt: new Date().toISOString(),
-        subscriptionEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
-        subscriptionInfo: {
-          planType: plan,
-          trialStatus: "active",
-          trialDaysRemaining: 0,
-          canAccess: true,
-          subscriptionActive: true,
-          subscriptionEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-        }
-      };
+      // Call secure backend endpoint to update subscription
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch('/api/mock-subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ plan })
+      });
 
-      localStorage.setItem('kudiUser', JSON.stringify({
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        business_type: user.businessType,
-        plan: plan,
-        trialEndsAt: user.trialEndsAt,
-        subscriptionStartedAt: updatedUser.subscriptionStartedAt,
-        subscriptionEndsAt: updatedUser.subscriptionEndsAt,
-        subscriptionInfo: updatedUser.subscriptionInfo
-      }));
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Subscription failed');
+      }
 
-      // Refresh subscription info
-      await refreshSubscription();
+      // Refresh user data from server (server-trusted refresh)
+      await refreshUser();
 
       toast({
         title: "Subscription Activated!",

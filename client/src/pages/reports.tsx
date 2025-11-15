@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Download, Calendar } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
-import { DollarSign, TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CurrencyDisplay } from "@/components/currency-display";
 
@@ -66,19 +66,19 @@ export default function Reports() {
       <div className="grid gap-4 md:grid-cols-3">
         <StatCard
           title="Total Sales"
-          value={<CurrencyDisplay amount={report.summary.totalSales} showDecimals />}
-          icon={DollarSign}
+          value={<CurrencyDisplay amount={report.summary.totalSales} />}
+          icon={TrendingUp}
           testId="card-report-sales"
         />
         <StatCard
           title="Total Expenses"
-          value={<CurrencyDisplay amount={report.summary.totalExpenses} showDecimals />}
+          value={<CurrencyDisplay amount={report.summary.totalExpenses} />}
           icon={TrendingDown}
           testId="card-report-expenses"
         />
         <StatCard
           title="Net Profit"
-          value={<CurrencyDisplay amount={report.summary.netProfit} showDecimals />}
+          value={<CurrencyDisplay amount={report.summary.netProfit} />}
           icon={TrendingUp}
           testId="card-report-profit"
         />

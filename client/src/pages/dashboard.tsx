@@ -255,21 +255,21 @@ export default function Dashboard() {
           <>
             <StatCard
               title="Total Sales"
-              value={<CurrencyDisplay amount={totalSales} showDecimals />}
+              value={<CurrencyDisplay amount={totalSales} />}
               icon={TrendingUp}
               testId="text-total-sales"
               valueClassName="text-emerald-600 dark:text-emerald-400"
             />
             <StatCard
               title="Total Expenses"
-              value={<CurrencyDisplay amount={totalExpenses} showDecimals />}
+              value={<CurrencyDisplay amount={totalExpenses} />}
               icon={TrendingDown}
               testId="text-total-expenses"
               valueClassName="text-destructive"
             />
             <StatCard
               title="Net Profit"
-              value={<CurrencyDisplay amount={netProfit} showDecimals />}
+              value={<CurrencyDisplay amount={netProfit} />}
               icon={netProfit >= 0 ? TrendingUp : TrendingDown}
               testId="text-net-profit"
               valueClassName={netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}

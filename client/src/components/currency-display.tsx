@@ -8,16 +8,16 @@ interface CurrencyDisplayProps {
 
 /**
  * CurrencyDisplay component - Renders currency with proper styling
- * Uses CSS classes for emerald green symbol (Inter font) and monospace amount
+ * Uses CSS classes for emerald green ₦ symbol and clean Inter font
  * 
  * Example usage:
  * <CurrencyDisplay amount={12500} />
- * <CurrencyDisplay amount={totalSales} className="text-lg" />
+ * <CurrencyDisplay amount={totalSales} showDecimals />
  */
 export function CurrencyDisplay({ 
   amount, 
   className = '',
-  showDecimals = true
+  showDecimals = false
 }: CurrencyDisplayProps) {
   let numericAmount: number;
   if (amount == null) {
@@ -30,7 +30,7 @@ export function CurrencyDisplay({
   
   const formattedAmount = numericAmount.toLocaleString('en-NG', {
     minimumFractionDigits: showDecimals ? 2 : 0,
-    maximumFractionDigits: showDecimals ? 2 : 2,
+    maximumFractionDigits: showDecimals ? 2 : 0,
   });
   
   return (

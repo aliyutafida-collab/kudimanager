@@ -34,7 +34,7 @@ export function formatCurrency(
   // Format using Nigerian locale
   const formatted = numericAmount.toLocaleString('en-NG', {
     minimumFractionDigits: showDecimals ? 2 : 0,
-    maximumFractionDigits: showDecimals ? 2 : 2,
+    maximumFractionDigits: showDecimals ? 2 : 0,
   });
 
   return showSymbol ? `₦${formatted}` : formatted;

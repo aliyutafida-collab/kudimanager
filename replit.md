@@ -13,7 +13,19 @@ The frontend is built with React and TypeScript, using Vite for bundling, Wouter
 
 The application includes a comprehensive multi-language translation system powered by react-i18next, supporting English, Hausa, Yoruba, and Igbo. A simple select dropdown serves as the LanguageSwitcher component in the header, with clean styling that adapts to light/dark themes. Language preferences persist to localStorage and apply immediately across all UI elements, including sidebar navigation and form labels.
 
-A consistent currency formatting system uses a custom `CurrencyDisplay` component that displays Nigerian Naira (₦) in emerald green (#007F5F) with Inter font (weight 600) and tabular numerals for proper alignment. Currency amounts default to no decimals (e.g., ₦12,500) with proper rounding, providing a clean, professional look across all financial displays. 
+A consistent currency formatting system uses a custom `CurrencyDisplay` component that displays Nigerian Naira (₦) in emerald green (#007F5F) with Inter font (weight 600) and tabular numerals for proper alignment. Currency amounts default to no decimals (e.g., ₦12,500) with proper rounding, providing a clean, professional look across all financial displays. **Important**: Currency colors inside dashboard stat cards inherit from their parent containers, enabling conditional coloring (e.g., negative profits display in red while positive values show in emerald green).
+
+**Dashboard UI Features:**
+- **Modern Card Design**: Stat cards feature 14px rounded corners, soft shadows (0 2px 8px rgba(0,0,0,0.06)), white backgrounds, and 20px padding
+- **Responsive Grid Layout**: CSS Grid with `auto-fit` creates 1 column on mobile, 2 on tablet, 4 on desktop (220px minimum width, 20px gap)
+- **Conditional Color Coding**: 
+  - Total Sales: Always emerald green
+  - Total Expenses: Always red (destructive color)
+  - Net Profit: Emerald green when positive/zero, red when negative
+  - Inventory Items: Emerald green (displays count, not currency)
+- **Smooth Hover Effects**: Cards lift with `translateY(-3px)` and enhanced shadow on hover (0.2s transition)
+- **Chart Integration**: Business Analytics chart uses emerald green (#007F5F) with currency-formatted tooltips (₦)
+- **Styled Header**: Dashboard title at 24px, font-weight 600, appropriate colors for light/dark modes
 
 A PWA conversion provides an app-like experience with offline capabilities, custom splash screen, and responsive design for mobile devices, ensuring touch-friendly interactions and adaptive layouts.
 

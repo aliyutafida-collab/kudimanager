@@ -24,7 +24,18 @@ The backend is an Express.js application written in TypeScript, providing a REST
 The system uses an interface-based storage design, currently implemented with in-memory storage (MemStorage). It is designed for future migration to a persistent database, with Drizzle ORM configured for PostgreSQL and schema definitions prepared in `shared/schema.ts` for tables like `products`, `sales`, and `expenses`.
 
 ### Authentication & Authorization
-A JWT-based system manages user authentication, including registration, login, and securing API endpoints. Passwords are hashed using bcrypt. The frontend utilizes a React Context (`AuthContext`) for global authentication state, localStorage for token persistence, and `ProtectedRoute` components to guard routes. Strong password validation, password confirmation, and a "Forgot Password" feature enhance security and user experience.
+A JWT-based system manages user authentication, including registration, login, and securing API endpoints. Passwords are hashed using bcrypt. The frontend utilizes a React Context (`AuthContext`) for global authentication state, with full login persistence via localStorage. 
+
+**Login Persistence Implementation:**
+- User data is stored in localStorage under the key `kudiUser` with the structure: `{id, email, name, business_type, plan}`
+- JWT token stored separately under `auth_token`
+- On app load, AuthContext automatically restores user session from localStorage, enabling seamless login persistence across page refreshes and backend restarts
+- Loading state prevents premature redirects while auth initializes from localStorage
+- Login and Register pages redirect authenticated users to prevent duplicate sessions
+- Logout clears both `kudiUser` and `auth_token` from localStorage
+- Defensive error handling ensures malformed localStorage data doesn't crash the app
+
+Additional security features include `ProtectedRoute` components to guard routes, strong password validation, password confirmation, and a "Forgot Password" feature.
 
 ### Subscription Management System
 The platform incorporates a robust trial and subscription system:

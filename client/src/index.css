@@ -345,6 +345,15 @@
     transition: border-color 0.2s ease;
   }
   
+  /* Responsive: smaller on mobile */
+  @media (max-width: 640px) {
+    .language-selector {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      min-width: 75px;
+    }
+  }
+  
   .language-selector:hover {
     border-color: hsl(var(--primary));
   }

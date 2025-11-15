@@ -60,12 +60,15 @@
     "resetLinkSent": "Ọ bụrụ na akaụntụ dị na ozi eletrọnikị ahụ, anyị ezigala ntuziaka ntọgharị okwuntughe."
   },
   "dashboard": {
+    "pageTitle": "Ebe Nlekọta",
+    "pageSubtitle": "Nlele nke ọrụ azụmahịa gị",
     "title": "Nyocha Azụmahịa",
     "subtitle": "Ire Ahịa Kwa Ọnwa, Mmefu, na Uru",
     "totalSales": "Ngụkọta Ire Ahịa",
     "totalExpenses": "Ngụkọta Mmefu",
     "netProfit": "Uru Fọdụrụ",
     "profitMargin": "Oke Uru",
+    "inventoryItems": "Ngwa Ahịa",
     "thisMonth": "Ọnwa A",
     "chart": {
       "sales": "Ire Ahịa",
@@ -74,9 +77,28 @@
       "noData": "Enweghị data. Malite idekọta ire ahịa na mmefu iji hụ ọnọdụ."
     },
     "smartTips": "Ndụmọdụ Azụmahịa",
+    "smartTipsNote": "Ndụmọdụ AI (Bekee naanị)",
     "inventoryAlerts": "Ọkwa Ngwa Ahịa",
     "lowStockWarning": "Ọkwa maka obere {{product}}",
-    "motivationalQuote": "Mkpali Taa"
+    "motivationalQuote": "Mkpali Taa",
+    "reminders": {
+      "recordSales": "Cheta idekọta ire ahịa taa! Debe ndekọ gị na-adị ọhụrụ.",
+      "highExpenses": "Mmefu gị dị elu karịa ka o kwesịrị n'izu a. Lelee mmefu gị.",
+      "lowStock": "Ngwaahịa {{count}} na-agwụ. Tụlee ịzụta ọzọ.",
+      "lowStock_other": "Ngwaahịa {{count}} na-agwụ. Tụlee ịzụta ọzọ.",
+      "allHealthy": "Ngwa ahịa niile dị mma"
+    },
+    "recentSalesSubtitle": "Azụmahịa ọhụrụ sitere n'ire ahịa gị",
+    "recentExpensesSubtitle": "Mmefu azụmahịa na nso nso a",
+    "quotes": {
+      "quote1": "Ihe ịga nke ọma abụghị njedebe, ọdịda abụghị ọnwụ: ọ bụ obi ike ịga n'ihu ka ọ dị mkpa. - Winston Churchill",
+      "quote2": "Ụzọ isi malite bụ ịkwụsị ikwu okwu malite ime. - Walt Disney",
+      "quote3": "Elee anya na elekere; mee ihe ọ na-eme. Gaa n'ihu. - Sam Levenson",
+      "quote4": "Ọdịnihu dabere n'ihe ị na-eme taa. - Mahatma Gandhi",
+      "quote5": "Ihe ịga nke ọma na-abịakarị ndị na-arụsi ọrụ ike. - Henry David Thoreau",
+      "quote6": "Ohere anaghị eme naanị. Ị mepụta ha. - Chris Grosser",
+      "quote7": "Naanị ihe mgbochi anyị nwere bụ obi abụọ anyị nwere taa. - Franklin D. Roosevelt"
+    }
   },
   "sales": {
     "title": "Njikwa Ire Ahịa",
@@ -121,6 +143,7 @@
     "productName": "Aha Ngwaahịa",
     "price": "Ọnụ Ahịa",
     "quantity": "Ọnụọgụgụ",
+    "lowStockThreshold": "Ọnụ Ọgụgụ Kacha Nta",
     "category": "Ụdị",
     "noProducts": "Enweghị ngwaahịa n'ime ngwa ahịa",
     "productAdded": "Etinyela ngwaahịa nke ọma!",

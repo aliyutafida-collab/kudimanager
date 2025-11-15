@@ -60,12 +60,15 @@
     "resetLinkSent": "Idan akwai asusu da wannan imel, mun aiko da umarnin sake saita kalmar sirri."
   },
   "dashboard": {
+    "pageTitle": "Allon Bayani",
+    "pageSubtitle": "Duba ayyukan kasuwancin ku",
     "title": "Nazarin Kasuwanci",
     "subtitle": "Tallace-tallace na Wata-wata, Kashe Kuɗi, da Trends na Riba",
     "totalSales": "Jimlar Tallace-tallace",
     "totalExpenses": "Jimlar Kashe Kuɗi",
     "netProfit": "Riba",
     "profitMargin": "Adadin Riba",
+    "inventoryItems": "Kayan Kasuwanci",
     "thisMonth": "Wannan Wata",
     "chart": {
       "sales": "Tallace-tallace",
@@ -74,9 +77,28 @@
       "noData": "Babu bayani. Fara yin rikodin tallace-tallace da kashe kuɗi don ganin trends."
     },
     "smartTips": "Shawarwarin Kasuwanci",
+    "smartTipsNote": "Shawarwarin AI (Turanci kawai)",
     "inventoryAlerts": "Faɗakarwar Kayan Kasuwanci",
     "lowStockWarning": "Faɗakarwa game da ƙarancin {{product}}",
-    "motivationalQuote": "Ƙarfafawa na Yau"
+    "motivationalQuote": "Ƙarfafawa na Yau",
+    "reminders": {
+      "recordSales": "Ku tuna ku rubuta tallace-tallace na yau! Ku kiyaye bayanan ku.",
+      "highExpenses": "Kashe kuɗi ya fi yawa a wannan makon. Duba yadda kuke kashe kuɗi.",
+      "lowStock": "Samfur {{count}} yana ƙarewa. Yi la'akari da sake cika.",
+      "lowStock_other": "Samfura {{count}} suna ƙarewa. Yi la'akari da sake cika.",
+      "allHealthy": "Dukkan matakan kayan kasuwanci suna da lafiya"
+    },
+    "recentSalesSubtitle": "Sabon tallace-tallace daga kasuwancin ku",
+    "recentExpensesSubtitle": "Sabbin kashe kuɗi na kasuwanci",
+    "quotes": {
+      "quote1": "Nasara ba ƙarshe ba ce, gazawa ba mutuwa ba ce: ƙarfin hali ne ya kamata ku ci gaba. - Winston Churchill",
+      "quote2": "Hanyar farawa ita ce ku daina magana ku fara aiki. - Walt Disney",
+      "quote3": "Kada ku kalli agogo; yi abin da yake yi. Ku ci gaba. - Sam Levenson",
+      "quote4": "Makomar gobe ta dogara da abin da kuke yi yau. - Mahatma Gandhi",
+      "quote5": "Nasara yawanci takan zo ga waɗanda suke shagaltuwa da aiki. - Henry David Thoreau",
+      "quote6": "Damammaki ba su faru ne kawai. Ku ƙirƙira su. - Chris Grosser",
+      "quote7": "Iyaka ga abin da zamu samu gobe shine shakkokinmu na yau. - Franklin D. Roosevelt"
+    }
   },
   "sales": {
     "title": "Sarrafa Tallace-tallace",
@@ -121,6 +143,7 @@
     "productName": "Sunan Samfur",
     "price": "Farashi",
     "quantity": "Adadi",
+    "lowStockThreshold": "Iyaka",
     "category": "Nau'i",
     "noProducts": "Babu samfura a cikin kayan kasuwanci",
     "productAdded": "An ƙara samfur cikin nasara!",

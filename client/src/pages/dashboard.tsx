@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { TrendingDown, TrendingUp, Lightbulb, AlertTriangle, Package, BarChart3, Bell, Sparkles, X } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,24 +37,25 @@ interface SubscriptionInfo {
   subscriptionEndsAt: string | null;
 }
 
-const MOTIVATIONAL_QUOTES = [
-  "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
-  "The way to get started is to quit talking and begin doing. - Walt Disney",
-  "Don't watch the clock; do what it does. Keep going. - Sam Levenson",
-  "The future depends on what you do today. - Mahatma Gandhi",
-  "Success usually comes to those who are too busy to be looking for it. - Henry David Thoreau",
-  "Opportunities don't happen. You create them. - Chris Grosser",
-  "The only limit to our realization of tomorrow is our doubts of today. - Franklin D. Roosevelt"
+const QUOTE_KEYS = [
+  'dashboard.quotes.quote1',
+  'dashboard.quotes.quote2',
+  'dashboard.quotes.quote3',
+  'dashboard.quotes.quote4',
+  'dashboard.quotes.quote5',
+  'dashboard.quotes.quote6',
+  'dashboard.quotes.quote7',
 ];
 
 export default function Dashboard() {
+  const { t, i18n } = useTranslation();
   const [showReminder, setShowReminder] = useState(true);
-  const [dailyQuote, setDailyQuote] = useState("");
+  const [dailyQuoteKey, setDailyQuoteKey] = useState("");
 
   useEffect(() => {
     // Get daily quote based on day of year
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-    setDailyQuote(MOTIVATIONAL_QUOTES[dayOfYear % MOTIVATIONAL_QUOTES.length]);
+    setDailyQuoteKey(QUOTE_KEYS[dayOfYear % QUOTE_KEYS.length]);
   }, []);
 
   const { data: sales = [], isLoading: salesLoading } = useQuery<Sale[]>({
@@ -99,39 +101,50 @@ export default function Dashboard() {
     const monthlyMap = new Map<string, { sales: number; expenses: number }>();
     
     sales.forEach(sale => {
-      const month = new Date(sale.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short' });
-      const current = monthlyMap.get(month) || { sales: 0, expenses: 0 };
-      monthlyMap.set(month, { ...current, sales: current.sales + parseFloat(sale.total.toString()) });
+      const date = new Date(sale.date);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const current = monthlyMap.get(monthKey) || { sales: 0, expenses: 0 };
+      monthlyMap.set(monthKey, { ...current, sales: current.sales + parseFloat(sale.total.toString()) });
     });
     
     expenses.forEach(expense => {
-      const month = new Date(expense.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short' });
-      const current = monthlyMap.get(month) || { sales: 0, expenses: 0 };
-      monthlyMap.set(month, { ...current, expenses: current.expenses + parseFloat(expense.amount.toString()) });
+      const date = new Date(expense.date);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const current = monthlyMap.get(monthKey) || { sales: 0, expenses: 0 };
+      monthlyMap.set(monthKey, { ...current, expenses: current.expenses + parseFloat(expense.amount.toString()) });
     });
     
+    // Use current language for month display
+    const locale = i18n.language === 'ha' ? 'ha-NG' : 
+                   i18n.language === 'yo' ? 'yo-NG' : 
+                   i18n.language === 'ig' ? 'ig-NG' : 'en-NG';
+    
     return Array.from(monthlyMap.entries())
-      .map(([month, data]) => ({
-        month,
-        Sales: Math.round(data.sales),
-        Expenses: Math.round(data.expenses),
-        Profit: Math.round(data.sales - data.expenses)
-      }))
-      .sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime())
-      .slice(-6); // Last 6 months
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-6) // Last 6 months
+      .map(([monthKey, data]) => {
+        const [year, month] = monthKey.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1, 1);
+        return {
+          month: date.toLocaleDateString(locale, { year: 'numeric', month: 'short' }),
+          sales: Math.round(data.sales),
+          expenses: Math.round(data.expenses),
+          profit: Math.round(data.sales - data.expenses)
+        };
+      });
   };
 
   const monthlyData = getMonthlyData();
 
   // Smart reminders based on business data
-  const getReminderMessage = (): string | null => {
+  const getReminderMessage = (): { key: string; options?: any } | null => {
     const today = new Date();
     const todaySales = sales.filter(s => 
       new Date(s.date).toDateString() === today.toDateString()
     );
     
     if (todaySales.length === 0 && today.getHours() >= 12) {
-      return "Remember to record today's sales! Keep your records up to date.";
+      return { key: 'dashboard.reminders.recordSales' };
     }
     
     const thisWeekExpenses = expenses.filter(e => {
@@ -144,24 +157,29 @@ export default function Dashboard() {
     const avgWeeklyExpenses = totalExpenses / Math.max(1, expenses.length / 4);
     
     if (thisWeekExpensesTotal > avgWeeklyExpenses * 1.2) {
-      return "Expenses look higher than usual this week. Review your spending to stay on track.";
+      return { key: 'dashboard.reminders.highExpenses' };
     }
     
     if (lowStockProducts.length > 0) {
-      return `${lowStockProducts.length} product${lowStockProducts.length > 1 ? 's are' : ' is'} running low. Consider restocking soon.`;
+      return { key: 'dashboard.reminders.lowStock', options: { count: lowStockProducts.length } };
     }
     
     return null;
   };
 
-  const reminderMessage = getReminderMessage();
+  const reminder = getReminderMessage();
+
+  // Use current language for date formatting
+  const locale = i18n.language === 'ha' ? 'ha-NG' : 
+                 i18n.language === 'yo' ? 'yo-NG' : 
+                 i18n.language === 'ig' ? 'ig-NG' : 'en-NG';
 
   const recentSales = sales
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5)
     .map(sale => ({
       ...sale,
-      date: new Date(sale.date).toLocaleDateString(),
+      date: new Date(sale.date).toLocaleDateString(locale),
       customer: sale.customer || "-",
       unitPrice: parseFloat(sale.unitPrice.toString()),
       total: parseFloat(sale.total.toString()),
@@ -172,7 +190,7 @@ export default function Dashboard() {
     .slice(0, 5)
     .map(expense => ({
       ...expense,
-      date: new Date(expense.date).toLocaleDateString(),
+      date: new Date(expense.date).toLocaleDateString(locale),
       amount: parseFloat(expense.amount.toString()),
     }));
 
@@ -181,31 +199,40 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="dashboard-header">Dashboard</h1>
-        <p className="text-muted-foreground">Overview of your business performance</p>
+        <h1 className="dashboard-header">{t('dashboard.pageTitle')}</h1>
+        <p className="text-muted-foreground">{t('dashboard.pageSubtitle')}</p>
       </div>
 
       {subscriptionInfo && (
         <TrialBanner subscriptionInfo={subscriptionInfo} />
       )}
 
-      {dailyQuote && (
+      {dailyQuoteKey && (
         <Card className="border-accent/50 bg-gradient-to-r from-accent/5 to-transparent" data-testid="card-daily-quote">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
               <Sparkles className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-              <p className="text-sm italic text-foreground/90">{dailyQuote}</p>
+              <p className="text-sm italic text-foreground/90">{t(dailyQuoteKey)}</p>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {reminderMessage && showReminder && (
-        <Card className="border-yellow-500/50 bg-yellow-500/5" data-testid="card-reminder">
+      {showReminder && (
+        <Card 
+          className={reminder ? "border-yellow-500/50 bg-yellow-500/5" : "border-emerald-500/50 bg-emerald-500/5"} 
+          data-testid="card-reminder"
+        >
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
-              <Bell className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
-              <p className="text-sm flex-1">{reminderMessage}</p>
+              {reminder ? (
+                <Bell className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+              ) : (
+                <Package className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+              )}
+              <p className="text-sm flex-1">
+                {reminder ? t(reminder.key, reminder.options) : t('dashboard.reminders.allHealthy')}
+              </p>
               <Button
                 variant="ghost"
                 size="icon"
@@ -243,27 +270,27 @@ export default function Dashboard() {
         ) : (
           <>
             <StatCard
-              title="Total Sales"
+              title={t('dashboard.totalSales')}
               value={<CurrencyDisplay amount={totalSales} />}
               icon={TrendingUp}
               testId="text-total-sales"
             />
             <StatCard
-              title="Total Expenses"
+              title={t('dashboard.totalExpenses')}
               value={<CurrencyDisplay amount={totalExpenses} />}
               icon={TrendingDown}
               testId="text-total-expenses"
               valueClassName="text-destructive"
             />
             <StatCard
-              title="Net Profit"
+              title={t('dashboard.netProfit')}
               value={<CurrencyDisplay amount={netProfit} />}
               icon={netProfit >= 0 ? TrendingUp : TrendingDown}
               testId="text-net-profit"
               valueClassName={netProfit >= 0 ? undefined : "text-destructive"}
             />
             <StatCard
-              title="Inventory Items"
+              title={t('dashboard.inventoryItems')}
               value={products.length.toString()}
               icon={Package}
               testId="text-inventory-count"
@@ -276,16 +303,16 @@ export default function Dashboard() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5 text-primary" />
-            <CardTitle>Business Analytics</CardTitle>
+            <CardTitle>{t('dashboard.title')}</CardTitle>
           </div>
-          <CardDescription>Monthly Sales, Expenses, and Profit Trends</CardDescription>
+          <CardDescription>{t('dashboard.subtitle')}</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <Skeleton className="h-[300px] w-full" />
           ) : monthlyData.length === 0 ? (
             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-              <p>No data available. Start recording sales and expenses to see trends.</p>
+              <p>{t('dashboard.chart.noData')}</p>
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
@@ -313,21 +340,24 @@ export default function Dashboard() {
                 <Legend />
                 <Line 
                   type="monotone" 
-                  dataKey="Sales" 
+                  dataKey="sales"
+                  name={t('dashboard.chart.sales')}
                   stroke="#007F5F" 
                   strokeWidth={2}
                   dot={{ fill: '#007F5F' }}
                 />
                 <Line 
                   type="monotone" 
-                  dataKey="Expenses" 
+                  dataKey="expenses"
+                  name={t('dashboard.chart.expenses')}
                   stroke="#ef4444" 
                   strokeWidth={2}
                   dot={{ fill: '#ef4444' }}
                 />
                 <Line 
                   type="monotone" 
-                  dataKey="Profit" 
+                  dataKey="profit"
+                  name={t('dashboard.chart.profit')}
                   stroke="#F4C542" 
                   strokeWidth={2}
                   dot={{ fill: '#F4C542' }}
@@ -343,9 +373,9 @@ export default function Dashboard() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Lightbulb className="h-5 w-5 text-yellow-500" />
-              <CardTitle className="text-yellow-600 dark:text-yellow-400">Smart Business Tips</CardTitle>
+              <CardTitle className="text-yellow-600 dark:text-yellow-400">{t('dashboard.smartTips')}</CardTitle>
             </div>
-            <CardDescription>AI-powered insights for your business</CardDescription>
+            <CardDescription>{t('dashboard.smartTipsNote')}</CardDescription>
           </CardHeader>
           <CardContent>
             {aiLoading ? (
@@ -375,9 +405,9 @@ export default function Dashboard() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-yellow-500" />
-              <CardTitle>Inventory Alerts</CardTitle>
+              <CardTitle>{t('dashboard.inventoryAlerts')}</CardTitle>
             </div>
-            <CardDescription>Products running low on stock</CardDescription>
+            <CardDescription>{t('inventory.lowStock')}</CardDescription>
           </CardHeader>
           <CardContent>
             {productsLoading ? (
@@ -388,7 +418,7 @@ export default function Dashboard() {
             ) : lowStockProducts.length === 0 ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Package className="h-4 w-4" />
-                <span>All inventory levels are healthy</span>
+                <span>{t('dashboard.reminders.allHealthy')}</span>
               </div>
             ) : (
               <div className="space-y-3">
@@ -401,11 +431,11 @@ export default function Dashboard() {
                     <div className="flex-1">
                       <p className="font-medium">{product.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        Current: {product.quantity} | Threshold: {product.lowStockThreshold || 10}
+                        {t('inventory.quantity')}: {product.quantity} | {t('inventory.lowStockThreshold')}: {product.lowStockThreshold || 10}
                       </p>
                     </div>
                     <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20">
-                      Low Stock
+                      {t('inventory.lowStock')}
                     </Badge>
                   </div>
                 ))}
@@ -418,8 +448,8 @@ export default function Dashboard() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Recent Sales</CardTitle>
-            <CardDescription>Latest transactions</CardDescription>
+            <CardTitle>{t('sales.title')}</CardTitle>
+            <CardDescription>{t('dashboard.recentSalesSubtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             {salesLoading ? (
@@ -436,8 +466,8 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recent Expenses</CardTitle>
-            <CardDescription>Latest expenses recorded</CardDescription>
+            <CardTitle>{t('expenses.title')}</CardTitle>
+            <CardDescription>{t('dashboard.recentExpensesSubtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             {expensesLoading ? (

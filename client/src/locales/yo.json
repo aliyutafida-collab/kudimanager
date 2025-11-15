@@ -60,12 +60,15 @@
     "resetLinkSent": "Tí àkáǹtì bá wà pẹ̀lú ímeèlì yẹn, a ti fi ìtọ́ni àtúnṣe ọ̀rọ̀ ìpamọ́ ránṣẹ́."
   },
   "dashboard": {
+    "pageTitle": "Pátákó",
+    "pageSubtitle": "Àkójọ àwọn iṣẹ́ iṣowo rẹ",
     "title": "Ìtúpalẹ̀ Iṣowo",
     "subtitle": "Àwọn Ìṣàmúlò Oṣù, Ìnáwó, àti Èrè",
     "totalSales": "Àpapọ̀ Títà",
     "totalExpenses": "Àpapọ̀ Ìnáwó",
     "netProfit": "Èrè Tó Kù",
     "profitMargin": "Ìyè Èrè",
+    "inventoryItems": "Àwọn Ọjà Ìkójọ",
     "thisMonth": "Oṣù Yìí",
     "chart": {
       "sales": "Títà",
@@ -74,9 +77,28 @@
       "noData": "Kò sí àlàyé. Bẹ̀rẹ̀ ṣíṣe àkọsílẹ̀ títà àti ìnáwó láti rí àwọn ìṣàmúlò."
     },
     "smartTips": "Àwọn Ìmọ̀ràn Iṣowo",
+    "smartTipsNote": "Àwọn ìmọ̀ràn AI (Gẹ̀ẹ́sì nìkan)",
     "inventoryAlerts": "Àwọn Ìkìlọ̀ Ìkójọ Ọjà",
     "lowStockWarning": "Ìkìlọ̀ pé {{product}} ti dinku",
-    "motivationalQuote": "Ìwúrí Ọjọ́ òní"
+    "motivationalQuote": "Ìwúrí Ọjọ́ òní",
+    "reminders": {
+      "recordSales": "Rántí láti ṣe àkọsílẹ̀ títà òní! Jẹ́ kí àkọsílẹ̀ rẹ wà lójú.",
+      "highExpenses": "Ìnáwó ga ju bí ó ti yẹ lọ lọ́sẹ̀ yìí. Ṣàyẹ̀wò ìnáwó rẹ.",
+      "lowStock": "Ọjà {{count}} ti dinku. Rò láti tún rà.",
+      "lowStock_other": "Àwọn ọjà {{count}} ti dinku. Rò láti tún rà.",
+      "allHealthy": "Gbogbo ìpele ìkójọ ọjà dára"
+    },
+    "recentSalesSubtitle": "Àwọn ìdúnàdúrà títà tuntun láti iṣowo rẹ",
+    "recentExpensesSubtitle": "Àwọn ìnáwó iṣowo ìṣẹ́jú àyá",
+    "quotes": {
+      "quote1": "Àṣeyọrí kìí ṣe ìparí, ìkùnà kìí ṣe ikú: ìgboyà láti tẹ̀síwájú ni ó ṣe pàtàkì. - Winston Churchill",
+      "quote2": "Ọ̀nà láti bẹ̀rẹ̀ ni láti dákẹ́ ọ̀rọ̀ sísọ kí o bẹ̀rẹ̀ ṣíṣe. - Walt Disney",
+      "quote3": "Má ṣe wo aago; ṣe ohun tó ń ṣe. Tẹ̀síwájú. - Sam Levenson",
+      "quote4": "Ọjọ́ ọ̀la dá lórí ohun tí o bá ṣe lónìí. - Mahatma Gandhi",
+      "quote5": "Àṣeyọrí máa ń wá fún àwọn tí wọ́n ṣíṣẹ́ jù. - Henry David Thoreau",
+      "quote6": "Àǹfààní kìí ṣẹlẹ̀ nìkan. Ìwọ ni o ṣẹ̀dá wọn. - Chris Grosser",
+      "quote7": "Òpin sí mímú ọ̀la ṣẹ ni ìyèméjì wa lónìí. - Franklin D. Roosevelt"
+    }
   },
   "sales": {
     "title": "Ìṣàkóso Títà",
@@ -121,6 +143,7 @@
     "productName": "Orúkọ Ọjà",
     "price": "Owó",
     "quantity": "Iye",
+    "lowStockThreshold": "Ààlà",
     "category": "Ẹ̀ka",
     "noProducts": "Kò sí ọjà nínú ìkójọ",
     "productAdded": "A ti fi ọjà kún ní àṣeyọrí!",

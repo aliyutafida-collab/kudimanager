@@ -60,12 +60,15 @@
     "resetLinkSent": "If an account exists with that email, we've sent password reset instructions."
   },
   "dashboard": {
+    "pageTitle": "Dashboard",
+    "pageSubtitle": "Overview of your business performance",
     "title": "Business Analytics",
     "subtitle": "Monthly Sales, Expenses, and Profit Trends",
     "totalSales": "Total Sales",
     "totalExpenses": "Total Expenses",
     "netProfit": "Net Profit",
     "profitMargin": "Profit Margin",
+    "inventoryItems": "Inventory Items",
     "thisMonth": "This Month",
     "chart": {
       "sales": "Sales",
@@ -74,9 +77,28 @@
       "noData": "No data available. Start recording sales and expenses to see trends."
     },
     "smartTips": "Smart Business Tips",
+    "smartTipsNote": "AI-generated insights (English only)",
     "inventoryAlerts": "Inventory Alerts",
     "lowStockWarning": "Low stock warning for {{product}}",
-    "motivationalQuote": "Daily Motivation"
+    "motivationalQuote": "Daily Motivation",
+    "reminders": {
+      "recordSales": "Remember to record today's sales! Keep your records up to date.",
+      "highExpenses": "Expenses look higher than usual this week. Review your spending to stay on track.",
+      "lowStock": "{{count}} product is running low. Consider restocking soon.",
+      "lowStock_other": "{{count}} products are running low. Consider restocking soon.",
+      "allHealthy": "All inventory levels are healthy"
+    },
+    "recentSalesSubtitle": "Latest transactions from your sales",
+    "recentExpensesSubtitle": "Recent business expenditures",
+    "quotes": {
+      "quote1": "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
+      "quote2": "The way to get started is to quit talking and begin doing. - Walt Disney",
+      "quote3": "Don't watch the clock; do what it does. Keep going. - Sam Levenson",
+      "quote4": "The future depends on what you do today. - Mahatma Gandhi",
+      "quote5": "Success usually comes to those who are too busy to be looking for it. - Henry David Thoreau",
+      "quote6": "Opportunities don't happen. You create them. - Chris Grosser",
+      "quote7": "The only limit to our realization of tomorrow is our doubts of today. - Franklin D. Roosevelt"
+    }
   },
   "sales": {
     "title": "Sales Management",
@@ -121,6 +143,7 @@
     "productName": "Product Name",
     "price": "Price",
     "quantity": "Quantity",
+    "lowStockThreshold": "Threshold",
     "category": "Category",
     "noProducts": "No products in inventory",
     "productAdded": "Product added successfully!",

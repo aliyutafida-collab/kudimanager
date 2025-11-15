@@ -14,6 +14,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { Footer } from "@/components/footer";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/protected-route";
+import { PremiumRoute } from "@/components/premium-route";
 import { SplashScreen } from "@/components/splash-screen";
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
@@ -27,6 +28,7 @@ import AIAdvisor from "@/pages/ai-advisor";
 import Vendors from "@/pages/vendors";
 import Learn from "@/pages/learn";
 import Subscription from "@/pages/subscription";
+import Subscribe from "@/pages/subscribe";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 import SetupWizard from "@/pages/setup-wizard";
@@ -62,11 +64,30 @@ function ProtectedRouter() {
         <Route path="/expenses" component={Expenses} />
         <Route path="/inventory" component={Inventory} />
         <Route path="/reports" component={Reports} />
-        <Route path="/tax-calculator" component={TaxCalculator} />
-        <Route path="/ai-advisor" component={AIAdvisor} />
-        <Route path="/vendors" component={Vendors} />
+        <Route path="/tax-calculator">
+          {() => (
+            <PremiumRoute>
+              <TaxCalculator />
+            </PremiumRoute>
+          )}
+        </Route>
+        <Route path="/ai-advisor">
+          {() => (
+            <PremiumRoute>
+              <AIAdvisor />
+            </PremiumRoute>
+          )}
+        </Route>
+        <Route path="/vendors">
+          {() => (
+            <PremiumRoute>
+              <Vendors />
+            </PremiumRoute>
+          )}
+        </Route>
         <Route path="/learn" component={Learn} />
         <Route path="/subscription" component={Subscription} />
+        <Route path="/subscribe" component={Subscribe} />
         <Route component={NotFound} />
       </Switch>
     </ProtectedRoute>

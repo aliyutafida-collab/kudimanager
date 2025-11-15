@@ -95,7 +95,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.businessType
       );
 
-      console.log("[REGISTER] User registered successfully:", { userId: user.id, email: user.email, businessType: user.businessType });
+      console.log("[REGISTER] User registered successfully:", { userId: user.id, email: user.email, businessType: user.businessType, trialEndsAt: user.trialEndsAt });
 
       res.status(201).json({
         success: true,
@@ -103,7 +103,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         user_id: user.id,
         name: user.name,
         email: user.email,
-        businessType: user.businessType
+        businessType: user.businessType,
+        planType: user.planType,
+        trialEndsAt: user.trialEndsAt
       });
     } catch (error) {
       console.error("[REGISTER] Registration error:", error);
@@ -146,6 +148,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: user.email,
           businessType: user.businessType,
           planType: user.planType,
+          trialEndsAt: user.trialEndsAt,
+          subscriptionStartedAt: user.subscriptionStartedAt,
+          subscriptionEndsAt: user.subscriptionEndsAt,
           subscriptionInfo
         }
       });

@@ -15,6 +15,9 @@ interface User {
   email: string;
   businessType: string;
   planType: string;
+  trialEndsAt?: string | null;
+  subscriptionStartedAt?: string | null;
+  subscriptionEndsAt?: string | null;
   subscriptionInfo?: SubscriptionInfo;
 }
 
@@ -48,7 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email: savedUser.email,
           name: savedUser.name,
           businessType: savedUser.business_type || savedUser.businessType,
-          planType: savedUser.plan || savedUser.planType
+          planType: savedUser.plan || savedUser.planType || 'trial',
+          trialEndsAt: savedUser.trialEndsAt || savedUser.trial_ends_at,
+          subscriptionStartedAt: savedUser.subscriptionStartedAt || savedUser.subscription_started_at,
+          subscriptionEndsAt: savedUser.subscriptionEndsAt || savedUser.subscription_ends_at,
+          subscriptionInfo: savedUser.subscriptionInfo
         });
       }
     } catch (error) {
@@ -80,7 +87,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: data.user.email,
       name: data.user.name,
       business_type: data.user.businessType,
-      plan: data.user.planType
+      plan: data.user.planType,
+      trialEndsAt: data.user.trialEndsAt,
+      subscriptionStartedAt: data.user.subscriptionStartedAt,
+      subscriptionEndsAt: data.user.subscriptionEndsAt,
+      subscriptionInfo: data.user.subscriptionInfo
     }));
     return data.user;
   };

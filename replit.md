@@ -36,7 +36,7 @@ A consistent currency formatting system uses a custom `CurrencyDisplay` componen
 - **Chart Integration**: Business Analytics chart uses emerald green (#007F5F) with currency-formatted tooltips (₦)
 - **Styled Header**: Dashboard title at 24px, font-weight 600, appropriate colors for light/dark modes
 
-A PWA conversion provides an app-like experience with offline capabilities, custom splash screen, and responsive design for mobile devices, ensuring touch-friendly interactions and adaptive layouts.
+A PWA conversion provides an app-like experience with offline capabilities, custom splash screen, and responsive design for mobile devices, ensuring touch-friendly interactions and adaptive layouts. Service worker cache version updated to `kudimanager-v2` on November 15, 2025, ensuring fresh static file caching and automatic cleanup of old cache versions.
 
 ### Backend Architecture
 The backend is an Express.js application written in TypeScript, providing a RESTful API with JSON responses. It integrates Paystack for subscription management, offers financial learning resources, performs Nigerian tax calculations, and utilizes Google Gemini for AI business advisory. Vendor suggestions are also a core feature. Authentication is managed via a JWT-based system, with bcrypt for password hashing, securing user registration, login, and protected API routes. Data is user-scoped to ensure privacy and isolation.

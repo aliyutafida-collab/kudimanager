@@ -1,4 +1,4 @@
-const CACHE_NAME = "kudimanager-cache-v1";
+const CACHE_NAME = "kudimanager-v2";
 const urlsToCache = [
   "/",
   "/index.html",

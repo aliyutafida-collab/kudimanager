@@ -20,7 +20,9 @@ export default function Login() {
   const [isResetting, setIsResetting] = useState(false);
 
   useEffect(() => {
-    if (justLoggedIn && user) {
+    if (user && !justLoggedIn) {
+      setLocation('/');
+    } else if (justLoggedIn && user) {
       setLocation('/');
     }
   }, [user, justLoggedIn, setLocation]);

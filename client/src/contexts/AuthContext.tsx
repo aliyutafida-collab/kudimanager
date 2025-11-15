@@ -36,12 +36,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('auth_token');
-    const storedUser = localStorage.getItem('auth_user');
-    
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedToken = localStorage.getItem('auth_token');
+      const storedUser = localStorage.getItem('kudiUser');
+      
+      if (storedToken && storedUser) {
+        const savedUser = JSON.parse(storedUser);
+        setToken(storedToken);
+        setUser({
+          id: savedUser.id || '',
+          email: savedUser.email,
+          name: savedUser.name,
+          businessType: savedUser.business_type || savedUser.businessType,
+          planType: savedUser.plan || savedUser.planType
+        });
+      }
+    } catch (error) {
+      console.error('Failed to load user from localStorage:', error);
+      localStorage.removeItem('kudiUser');
+      localStorage.removeItem('auth_token');
     }
     setIsLoading(false);
   }, []);
@@ -62,7 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(data.token);
     setUser(data.user);
     localStorage.setItem('auth_token', data.token);
-    localStorage.setItem('auth_user', JSON.stringify(data.user));
+    localStorage.setItem('kudiUser', JSON.stringify({
+      id: data.user.id,
+      email: data.user.email,
+      name: data.user.name,
+      business_type: data.user.businessType,
+      plan: data.user.planType
+    }));
     return data.user;
   };
 
@@ -85,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setToken(null);
     localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
+    localStorage.removeItem('kudiUser');
   };
 
   const refreshSubscription = async () => {
@@ -102,7 +121,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const subscriptionInfo = await response.json();
         setUser(prevUser => prevUser ? { ...prevUser, subscriptionInfo } : null);
         if (user) {
-          localStorage.setItem('auth_user', JSON.stringify({ ...user, subscriptionInfo }));
+          localStorage.setItem('kudiUser', JSON.stringify({
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            business_type: user.businessType,
+            plan: user.planType
+          }));
         }
       }
     } catch (error) {

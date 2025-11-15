@@ -105,7 +105,7 @@ function UserProfile() {
 }
 
 function AppContent() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [location, setLocation] = useLocation();
   const [showSplash, setShowSplash] = useState(() => {
     const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
@@ -118,10 +118,10 @@ function AppContent() {
   };
 
   useEffect(() => {
-    if (!showSplash && location === '/' && !user) {
+    if (!showSplash && !isLoading && location === '/' && !user) {
       setLocation('/login');
     }
-  }, [showSplash, location, user, setLocation]);
+  }, [showSplash, isLoading, location, user, setLocation]);
 
   const isAuthPage = location === '/login' || location === '/register';
   const style = {
@@ -131,6 +131,14 @@ function AppContent() {
 
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen" data-testid="loading-auth">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
   }
 
   if (isAuthPage || !user) {

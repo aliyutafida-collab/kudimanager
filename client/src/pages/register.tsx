@@ -54,7 +54,9 @@ export default function Register() {
   const passwordsMatch = password === confirmPassword;
 
   useEffect(() => {
-    if (justRegistered && user) {
+    if (user && !justRegistered) {
+      setLocation('/');
+    } else if (justRegistered && user) {
       setLocation('/setup-wizard');
     }
   }, [user, justRegistered, setLocation]);

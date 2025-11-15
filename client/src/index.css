@@ -317,6 +317,34 @@
     align-items: baseline;
     gap: 0.15em;
   }
+  
+  /* Language Selector Styling */
+  .language-selector {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  
+  .language-selector:hover {
+    border-color: hsl(var(--primary));
+  }
+  
+  .language-selector:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.1);
+  }
+  
+  .dark .language-selector {
+    border-color: hsl(var(--border));
+  }
 }
 
 /* Mobile Responsiveness Enhancements */

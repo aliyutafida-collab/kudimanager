@@ -345,6 +345,21 @@
   .dark .language-selector {
     border-color: hsl(var(--border));
   }
+  
+  /* Password Validation Styling */
+  .password-error {
+    color: #d93a3a;
+    font-size: 13px;
+  }
+  
+  .password-success {
+    color: #007F5F;
+    font-size: 13px;
+  }
+  
+  .dark .password-success {
+    color: #10b981;
+  }
 }
 
 /* Mobile Responsiveness Enhancements */

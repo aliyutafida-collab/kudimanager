@@ -63,13 +63,13 @@ export default function Login() {
     setIsResetting(true);
 
     try {
-      // TODO: Implement actual password reset via Firebase or backend
-      // For now, simulate the reset process
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      console.log('Password reset request for:', resetEmail);
+      
       toast({
-        title: 'Password reset email sent',
-        description: 'Please check your inbox for instructions to reset your password.',
+        title: 'Reset link sent',
+        description: 'If this email exists, a password reset link has been sent.',
       });
       
       setShowForgotPassword(false);

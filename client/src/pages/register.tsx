@@ -18,22 +18,29 @@ const BUSINESS_TYPES = [
 ];
 
 function validatePasswordStrength(password: string): { isValid: boolean; message: string } {
+  const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  
   if (password.length < 8) {
-    return { isValid: false, message: 'Password must be at least 8 characters' };
+    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
   }
   if (!/[A-Z]/.test(password)) {
-    return { isValid: false, message: 'Password must include at least one uppercase letter' };
+    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
   }
   if (!/[a-z]/.test(password)) {
-    return { isValid: false, message: 'Password must include at least one lowercase letter' };
+    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
   }
   if (!/[0-9]/.test(password)) {
-    return { isValid: false, message: 'Password must include at least one number' };
+    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
   }
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    return { isValid: false, message: 'Password must include at least one special character' };
+  if (!/[@$!%*?&]/.test(password)) {
+    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
   }
-  return { isValid: true, message: 'Password meets all requirements' };
+  
+  if (strongRegex.test(password)) {
+    return { isValid: true, message: 'Strong password.' };
+  }
+  
+  return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
 }
 
 export default function Register() {
@@ -156,7 +163,7 @@ export default function Register() {
                 data-testid="input-password"
               />
               {passwordTouched && password && (
-                <div className={`flex items-start gap-2 text-xs mt-1 ${passwordValidation.isValid ? 'text-emerald-600' : 'text-destructive'}`}>
+                <div className={`flex items-start gap-2 mt-1 ${passwordValidation.isValid ? 'password-success' : 'password-error'}`}>
                   {passwordValidation.isValid ? (
                     <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
                   ) : (
@@ -184,7 +191,7 @@ export default function Register() {
                 data-testid="input-confirm-password"
               />
               {confirmPasswordTouched && confirmPassword && (
-                <div className={`flex items-start gap-2 text-xs mt-1 ${passwordsMatch ? 'text-emerald-600' : 'text-destructive'}`}>
+                <div className={`flex items-start gap-2 mt-1 ${passwordsMatch ? 'password-success' : 'password-error'}`}>
                   {passwordsMatch ? (
                     <>
                       <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />

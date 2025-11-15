@@ -181,7 +181,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-semibold mb-2">Dashboard</h1>
+        <h1 className="dashboard-header">Dashboard</h1>
         <p className="text-muted-foreground">Overview of your business performance</p>
       </div>
 
@@ -220,36 +220,25 @@ export default function Dashboard() {
         </Card>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="dashboard-grid">
         {isLoading ? (
           <>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-32" />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-32" />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-32" />
-              </CardContent>
-            </Card>
+            <div className="dashboard-card">
+              <Skeleton className="h-4 w-24 mb-3" />
+              <Skeleton className="h-8 w-32" />
+            </div>
+            <div className="dashboard-card">
+              <Skeleton className="h-4 w-24 mb-3" />
+              <Skeleton className="h-8 w-32" />
+            </div>
+            <div className="dashboard-card">
+              <Skeleton className="h-4 w-24 mb-3" />
+              <Skeleton className="h-8 w-32" />
+            </div>
+            <div className="dashboard-card">
+              <Skeleton className="h-4 w-24 mb-3" />
+              <Skeleton className="h-8 w-32" />
+            </div>
           </>
         ) : (
           <>
@@ -258,7 +247,6 @@ export default function Dashboard() {
               value={<CurrencyDisplay amount={totalSales} />}
               icon={TrendingUp}
               testId="text-total-sales"
-              valueClassName="text-emerald-600 dark:text-emerald-400"
             />
             <StatCard
               title="Total Expenses"
@@ -272,7 +260,13 @@ export default function Dashboard() {
               value={<CurrencyDisplay amount={netProfit} />}
               icon={netProfit >= 0 ? TrendingUp : TrendingDown}
               testId="text-net-profit"
-              valueClassName={netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}
+              valueClassName={netProfit >= 0 ? undefined : "text-destructive"}
+            />
+            <StatCard
+              title="Inventory Items"
+              value={products.length.toString()}
+              icon={Package}
+              testId="text-inventory-count"
             />
           </>
         )}
@@ -314,7 +308,7 @@ export default function Dashboard() {
                     borderRadius: '8px',
                     color: 'hsl(var(--foreground))'
                   }}
-                  formatter={(value: number) => formatCurrency(value)}
+                  formatter={(value: number) => `₦${value.toLocaleString()}`}
                 />
                 <Legend />
                 <Line 

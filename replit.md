@@ -38,6 +38,16 @@ A consistent currency formatting system uses a custom `CurrencyDisplay` componen
 
 A PWA conversion provides an app-like experience with offline capabilities, custom splash screen, and responsive design for mobile devices, ensuring touch-friendly interactions and adaptive layouts. Service worker cache version updated to `kudimanager-v4` on November 16, 2025, with automatic update support using `skipWaiting()` and `clients.claim()` to ensure users always receive the latest version without manual refresh. Old caches are automatically deleted on activation.
 
+**Branding & Logo Integration:**
+The KudiManager logo is consistently integrated across all application touchpoints with context-appropriate sizing and animations:
+- **Splash Screen**: 208px logo (w-52) centered with tagline, slide-in animation
+- **Login/Register Pages**: 112-128px responsive logo (w-28 sm:w-32) above forms with 0.8s fade-in animation
+- **Sidebar**: 44px logo (w-11) in header with "KudiManager" branding, visible on all devices
+- **Dashboard Header**: 32px logo (w-8) next to sidebar trigger, hidden on mobile to optimize space
+- **Loading Screen**: 96px logo (w-24) with animated emerald green spinner (0.9s rotation)
+- **Custom CSS Animations**: Defined keyframes for fadeIn and spin animations with dark mode support
+- **Logo Asset**: Stored at `attached_assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png`, imported via `@assets` alias throughout the application
+
 ### Backend Architecture
 The backend is an Express.js application written in TypeScript, providing a RESTful API with JSON responses. It integrates Paystack for subscription management, offers financial learning resources, performs Nigerian tax calculations, and utilizes Google Gemini for AI business advisory. Vendor suggestions are also a core feature. Authentication is managed via a JWT-based system, with bcrypt for password hashing, securing user registration, login, and protected API routes. Data is user-scoped to ensure privacy and isolation.
 

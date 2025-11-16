@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
 
 const BUSINESS_TYPES = [
   'Retail & Products',
@@ -119,7 +120,16 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+      <div className="w-full max-w-md">
+        <div className="flex justify-center mb-8 animate-in fade-in duration-700">
+          <img
+            src={logoPath}
+            alt="KudiManager Logo"
+            className="w-28 h-28 sm:w-32 sm:h-32"
+            data-testid="register-logo"
+          />
+        </div>
+        <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-2xl">Create an Account</CardTitle>
           <CardDescription>Start managing your business with KudiManager</CardDescription>
@@ -245,6 +255,7 @@ export default function Register() {
           </CardFooter>
         </form>
       </Card>
+      </div>
     </div>
   );
 }

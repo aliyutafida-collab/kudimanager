@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { logEvent } from '@/lib/firebase';
 
 const expenseCategories = ["Rent", "Utilities", "Salaries", "Marketing", "Supplies", "Transportation", "Other"];
 
@@ -31,6 +32,14 @@ export function AddExpenseDialog() {
       return response.json();
     },
     onSuccess: () => {
+      const amount = parseFloat(formData.amount);
+      
+      logEvent('add_expense', {
+        category: formData.category,
+        amount: amount,
+        description: formData.description,
+      });
+      
       queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });
       toast({
         title: "Expense added",

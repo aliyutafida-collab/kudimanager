@@ -23,7 +23,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       <img
         src={appIconPath}
         alt="KudiManager"
-        className="w-40 h-40 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000"
+        className="w-52 h-52 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000"
         data-testid="splash-logo"
       />
       <p

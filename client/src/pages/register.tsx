@@ -49,7 +49,7 @@ function validatePasswordStrength(password: string): { isValid: boolean; message
 
 export default function Register() {
   const [, setLocation] = useLocation();
-  const { register, user } = useAuth();
+  const { setUserData, user } = useAuth();
   const { toast } = useToast();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -134,7 +134,12 @@ export default function Register() {
 
       await setDoc(doc(db, 'users', user.uid), userProfile);
 
+      const token = await user.getIdToken();
+      
       localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+      localStorage.setItem('auth_token', token);
+      
+      setUserData(userProfile, token);
 
       toast({
         title: 'Registration successful',

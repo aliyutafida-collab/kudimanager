@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
 
 interface SubscriptionInfo {
   planType: "trial" | "basic" | "premium";
@@ -27,9 +29,10 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<User>;
   register: (name: string, email: string, password: string, businessType: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   refreshSubscription: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  setUserData: (userData: User, authToken: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -112,11 +115,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await login(email, password);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      if (auth) {
+        await signOut(auth);
+      }
+    } catch (error) {
+      console.error('Firebase sign out error:', error);
+    }
+    
     setUser(null);
     setToken(null);
     localStorage.removeItem('auth_token');
     localStorage.removeItem('kudiUser');
+  };
+
+  const setUserData = (userData: User, authToken: string) => {
+    setUser(userData);
+    setToken(authToken);
   };
 
   const refreshUser = async () => {
@@ -184,7 +200,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, refreshSubscription, refreshUser }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, refreshSubscription, refreshUser, setUserData }}>
       {children}
     </AuthContext.Provider>
   );

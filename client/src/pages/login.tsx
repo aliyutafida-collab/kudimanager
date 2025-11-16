@@ -13,7 +13,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const { login, user } = useAuth();
+  const { setUserData, user } = useAuth();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -68,8 +68,12 @@ export default function Login() {
         subscriptionEndsAt: userData.subscriptionEndsAt,
       };
 
+      const token = await user.getIdToken();
+      
       localStorage.setItem('kudiUser', JSON.stringify(userProfile));
-      localStorage.setItem('auth_token', await user.getIdToken());
+      localStorage.setItem('auth_token', token);
+      
+      setUserData(userProfile, token);
       
       logEvent('login_success', {
         user_id: userProfile.id,

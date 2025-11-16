@@ -15,6 +15,7 @@ import type { Sale, Expense, Product } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { formatCurrency } from "@/lib/currency";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { logEvent } from '@/lib/firebase';
 
 interface AIAdviceResponse {
   success: boolean;
@@ -56,7 +57,12 @@ export default function Dashboard() {
     // Get daily quote based on day of year
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
     setDailyQuoteKey(QUOTE_KEYS[dayOfYear % QUOTE_KEYS.length]);
-  }, []);
+    
+    // Log dashboard view event
+    logEvent('dashboard_view', {
+      language: i18n.language,
+    });
+  }, [i18n.language]);
 
   const { data: sales = [], isLoading: salesLoading } = useQuery<Sale[]>({
     queryKey: ["/api/sales"],

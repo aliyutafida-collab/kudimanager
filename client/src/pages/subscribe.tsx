@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { logEvent } from '@/lib/firebase';
 
 export default function Subscribe() {
   const { user, refreshUser } = useAuth();
@@ -43,6 +44,12 @@ export default function Subscribe() {
 
       // Refresh user data from server (server-trusted refresh)
       await refreshUser();
+
+      logEvent('subscription_purchase', {
+        plan_type: plan,
+        price: plan === 'basic' ? 2500 : 5000,
+        user_id: user.id,
+      });
 
       toast({
         title: "Subscription Activated!",

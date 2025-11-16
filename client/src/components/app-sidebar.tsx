@@ -13,6 +13,7 @@ import {
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from "@/components/ui/sidebar";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
+import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
 
 const menuItems = [
   { titleKey: "nav.dashboard", url: "/", icon: LayoutDashboard, testId: "link-dashboard" },
@@ -41,13 +42,16 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <span className="text-lg font-bold">K</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-semibold">KudiManager</span>
-            <span className="text-xs text-muted-foreground">{t('common.businessDashboard')}</span>
+        <div className="flex items-center gap-3">
+          <img
+            src={logoPath}
+            alt="KudiManager Logo"
+            className="w-11 h-11 flex-shrink-0"
+            data-testid="sidebar-logo"
+          />
+          <div className="flex flex-col min-w-0">
+            <span className="text-lg font-semibold truncate">KudiManager</span>
+            <span className="text-xs text-muted-foreground truncate">{t('common.businessDashboard')}</span>
           </div>
         </div>
       </SidebarHeader>

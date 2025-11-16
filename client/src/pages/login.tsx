@@ -38,8 +38,8 @@ export default function Login() {
       
       logEvent('login_success', {
         user_id: userData.id,
-        business_type: userData.business_type,
-        plan: userData.plan,
+        business_type: userData.businessType,
+        plan: userData.planType,
       });
       
       toast({

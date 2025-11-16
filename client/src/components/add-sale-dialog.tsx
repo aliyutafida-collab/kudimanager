@@ -9,6 +9,7 @@ import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Product } from "@shared/schema";
+import { logEvent } from '@/lib/firebase';
 
 export function AddSaleDialog() {
   const [open, setOpen] = useState(false);
@@ -42,7 +43,19 @@ export function AddSaleDialog() {
       });
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const quantity = parseInt(formData.quantity);
+      const unitPrice = parseFloat(formData.unitPrice);
+      const total = quantity * unitPrice;
+      
+      logEvent('add_sale', {
+        product_name: formData.productName,
+        quantity: quantity,
+        unit_price: unitPrice,
+        total: total,
+        has_customer: !!formData.customer,
+      });
+      
       queryClient.invalidateQueries({ queryKey: ["/api/sales"] });
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({

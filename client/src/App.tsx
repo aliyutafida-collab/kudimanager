@@ -18,6 +18,7 @@ import { PremiumRoute } from "@/components/premium-route";
 import { SplashScreen } from "@/components/splash-screen";
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
+import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
 import Dashboard from "@/pages/dashboard";
 import Sales from "@/pages/sales";
 import Expenses from "@/pages/expenses";
@@ -156,7 +157,13 @@ function AppContent() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen" data-testid="loading-auth">
+      <div className="flex flex-col items-center justify-center h-screen gap-4" data-testid="loading-auth">
+        <img
+          src={logoPath}
+          alt="KudiManager Logo"
+          className="w-24 h-24 animate-pulse"
+          data-testid="loading-logo"
+        />
         <p className="text-muted-foreground">Loading...</p>
       </div>
     );
@@ -176,7 +183,15 @@ function AppContent() {
         <AppSidebar />
         <div className="flex flex-col flex-1 overflow-hidden">
           <header className="flex items-center justify-between p-4 border-b bg-background gap-2">
-            <SidebarTrigger data-testid="button-sidebar-toggle" />
+            <div className="flex items-center gap-3">
+              <SidebarTrigger data-testid="button-sidebar-toggle" />
+              <img
+                src={logoPath}
+                alt="KudiManager"
+                className="w-8 h-8 hidden sm:block"
+                data-testid="header-logo"
+              />
+            </div>
             <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-end">
               <UserProfile />
               <LanguageSwitcher />

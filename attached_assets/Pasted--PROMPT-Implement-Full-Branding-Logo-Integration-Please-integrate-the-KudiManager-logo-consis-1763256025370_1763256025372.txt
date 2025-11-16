@@ -1,0 +1,128 @@
+💬 PROMPT — Implement Full Branding & Logo Integration
+
+Please integrate the KudiManager logo consistently throughout the entire app UI.
+
+1️⃣ Login Page
+
+Display logo centered above the login form
+
+Size: 120px
+
+Add fade-in animation:
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+Usage:
+
+<img src={logo} alt="KudiManager" className="login-logo fade-in" />
+
+2️⃣ Register Page
+
+Same logo placement as Login
+
+Align form underneath cleanly
+
+Keep branding visible on mobile
+
+3️⃣ Sidebar Top (Desktop + Mobile)
+
+Add the logo above menu items:
+
+<div className="sidebar-logo">
+  <img src={logoSmall} alt="KudiManager" />
+</div>
+
+
+Style:
+
+.sidebar-logo img {
+  width: 42px;
+  margin: 20px auto;
+  display: block;
+}
+
+4️⃣ Dashboard Header
+
+Add small logo on left:
+
+<img src={logoSmall} className="header-logo" alt="KM" />
+
+
+Style:
+
+.header-logo {
+  width: 32px;
+  margin-right: 10px;
+}
+
+5️⃣ Splash Screen / Loading Screen
+
+Center large logo (180–220px)
+
+Add simple loading animation
+
+Example:
+
+<div className="splash-container">
+  <img src={logoLarge} className="splash-logo" />
+  <div className="loader"></div>
+</div>
+
+
+Loader:
+
+.loader {
+  border: 4px solid #e0e0e0;
+  border-top-color: #007F5F;
+  width: 34px;
+  height: 34px;
+  margin-top: 10px;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+6️⃣ PWA install prompt icon
+
+Ensure the manifest.json has:
+
+{
+  "icons": [
+    {
+      "src": "/icon512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
+
+7️⃣ Final Checks:
+
+Logo looks sharp on iPhone + Android
+
+Logo loads instantly (cached in manifest)
+
+No distorted scaling
+
+Sidebar + dashboard align correctly
+
+Splash screen logo centered on all screen sizes
+
+Please apply the above changes and summarize implementation.

@@ -37,7 +37,6 @@ export function AddExpenseDialog() {
       logEvent('add_expense', {
         category: formData.category,
         amount: amount,
-        description: formData.description,
       });
       
       queryClient.invalidateQueries({ queryKey: ["/api/expenses"] });

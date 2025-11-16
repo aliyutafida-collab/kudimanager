@@ -7,7 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
-import { logEvent } from '@/lib/firebase';
+import { logEvent, auth, db } from '@/lib/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -33,28 +35,77 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
 
+    if (!auth || !db) {
+      toast({
+        title: 'Firebase not initialized',
+        description: 'Please try again later',
+        variant: 'destructive',
+      });
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const userData = await login(email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        throw new Error('User profile not found. Please contact support.');
+      }
+
+      const userData = userDoc.data();
+      const userProfile = {
+        id: user.uid,
+        email: user.email || email,
+        name: userData.name,
+        businessType: userData.businessType,
+        planType: userData.planType,
+        trialEndsAt: userData.trialEndsAt,
+        subscriptionStartedAt: userData.subscriptionStartedAt,
+        subscriptionEndsAt: userData.subscriptionEndsAt,
+      };
+
+      localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+      localStorage.setItem('auth_token', await user.getIdToken());
       
       logEvent('login_success', {
-        user_id: userData.id,
-        business_type: userData.businessType,
-        plan: userData.planType,
+        user_id: userProfile.id,
+        business_type: userProfile.businessType,
+        plan: userProfile.planType,
       });
       
       toast({
         title: 'Login successful',
-        description: `Welcome back, ${userData.name}!`,
+        description: `Welcome back, ${userProfile.name}!`,
       });
       setJustLoggedIn(true);
-    } catch (error) {
+    } catch (error: any) {
+      let errorMessage = 'Invalid email or password';
+      
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
+        errorMessage = 'Invalid email or password';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Invalid email or password';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Invalid email address format';
+      } else if (error.code === 'auth/user-disabled') {
+        errorMessage = 'This account has been disabled. Please contact support.';
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your connection.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       logEvent('login_failed', {
-        error_message: error instanceof Error ? error.message : 'Invalid email or password',
+        error_message: errorMessage,
       });
       
       toast({
         title: 'Login failed',
-        description: error instanceof Error ? error.message : 'Invalid email or password',
+        description: errorMessage,
         variant: 'destructive',
       });
       setIsLoading(false);

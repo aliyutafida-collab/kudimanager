@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -87,7 +88,16 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+      <div className="w-full max-w-md">
+        <div className="flex justify-center mb-8 animate-in fade-in duration-700">
+          <img
+            src={logoPath}
+            alt="KudiManager Logo"
+            className="w-28 h-28 sm:w-32 sm:h-32"
+            data-testid="login-logo"
+          />
+        </div>
+        <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-2xl">
             {showForgotPassword ? 'Reset Password' : 'Welcome to KudiManager'}
@@ -199,6 +209,7 @@ export default function Login() {
           </form>
         )}
       </Card>
+      </div>
     </div>
   );
 }

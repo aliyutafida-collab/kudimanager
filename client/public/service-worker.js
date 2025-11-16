@@ -1,4 +1,4 @@
-const CACHE_NAME = "kudimanager-v2";
+const CACHE_NAME = "kudimanager-v4";
 const urlsToCache = [
   "/",
   "/index.html",
@@ -38,18 +38,17 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (!cacheWhitelist.includes(cacheName)) {
-            console.log("Service Worker: Deleting old cache:", cacheName);
-            return caches.delete(cacheName);
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            console.log("Service Worker: Deleting old cache:", key);
+            return caches.delete(key);
           }
         })
-      );
-    })
+      )
+    )
   );
-  return self.clients.claim();
+  self.clients.claim();
 });

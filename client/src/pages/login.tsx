@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
+import { logEvent } from '@/lib/firebase';
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -34,12 +35,23 @@ export default function Login() {
 
     try {
       const userData = await login(email, password);
+      
+      logEvent('login_success', {
+        user_id: userData.id,
+        business_type: userData.business_type,
+        plan: userData.plan,
+      });
+      
       toast({
         title: 'Login successful',
         description: `Welcome back, ${userData.name}!`,
       });
       setJustLoggedIn(true);
     } catch (error) {
+      logEvent('login_failed', {
+        error_message: error instanceof Error ? error.message : 'Invalid email or password',
+      });
+      
       toast({
         title: 'Login failed',
         description: error instanceof Error ? error.message : 'Invalid email or password',

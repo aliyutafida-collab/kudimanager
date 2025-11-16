@@ -1,5 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics, logEvent as firebaseLogEvent, Analytics } from "firebase/analytics";
+import { getAuth, Auth } from "firebase/auth";
+import { getFirestore, Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,16 +14,20 @@ const firebaseConfig = {
 };
 
 let analytics: Analytics | null = null;
+let auth: Auth | null = null;
+let db: Firestore | null = null;
 
 try {
   const app = initializeApp(firebaseConfig);
   analytics = getAnalytics(app);
-  console.log("Firebase Analytics initialized successfully");
+  auth = getAuth(app);
+  db = getFirestore(app);
+  console.log("Firebase services initialized successfully");
 } catch (error) {
-  console.warn("Firebase Analytics initialization failed:", error);
+  console.warn("Firebase initialization failed:", error);
 }
 
-export { analytics };
+export { analytics, auth, db };
 
 export const logEvent = (eventName: string, eventParams?: Record<string, any>) => {
   if (analytics) {

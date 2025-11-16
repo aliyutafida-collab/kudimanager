@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { auth } from '@/lib/firebase';
-import { signOut } from 'firebase/auth';
+import { auth, db } from '@/lib/firebase';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 interface SubscriptionInfo {
   planType: "trial" | "basic" | "premium";
@@ -27,11 +28,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<User>;
-  register: (name: string, email: string, password: string, businessType: string) => Promise<void>;
   logout: () => Promise<void>;
-  refreshSubscription: () => Promise<void>;
-  refreshUser: () => Promise<void>;
   setUserData: (userData: User, authToken: string) => void;
 }
 
@@ -43,91 +40,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const storedToken = localStorage.getItem('auth_token');
-      const storedUser = localStorage.getItem('kudiUser');
-      
-      if (storedToken && storedUser) {
-        const savedUser = JSON.parse(storedUser);
-        setToken(storedToken);
-        setUser({
-          id: savedUser.id || '',
-          email: savedUser.email,
-          name: savedUser.name,
-          businessType: savedUser.business_type || savedUser.businessType,
-          planType: savedUser.plan || savedUser.planType || 'trial',
-          trialEndsAt: savedUser.trialEndsAt || savedUser.trial_ends_at,
-          subscriptionStartedAt: savedUser.subscriptionStartedAt || savedUser.subscription_started_at,
-          subscriptionEndsAt: savedUser.subscriptionEndsAt || savedUser.subscription_ends_at,
-          subscriptionInfo: savedUser.subscriptionInfo
-        });
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const idToken = await firebaseUser.getIdToken();
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            const userProfile: User = {
+              id: firebaseUser.uid,
+              email: userData.email,
+              name: userData.name,
+              businessType: userData.businessType,
+              planType: userData.planType,
+              trialEndsAt: userData.trialEndsAt,
+              subscriptionStartedAt: userData.subscriptionStartedAt,
+              subscriptionEndsAt: userData.subscriptionEndsAt,
+            };
+            
+            setUser(userProfile);
+            setToken(idToken);
+            
+            localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+            localStorage.setItem('auth_token', idToken);
+          }
+        } catch (error) {
+          console.error('Error loading user from Firestore:', error);
+          setUser(null);
+          setToken(null);
+          localStorage.removeItem('kudiUser');
+          localStorage.removeItem('auth_token');
+        }
+      } else {
+        setUser(null);
+        setToken(null);
+        localStorage.removeItem('kudiUser');
+        localStorage.removeItem('auth_token');
       }
-    } catch (error) {
-      console.error('Failed to load user from localStorage:', error);
-      localStorage.removeItem('kudiUser');
-      localStorage.removeItem('auth_token');
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string): Promise<User> => {
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Login failed');
-    }
-
-    const data = await response.json();
-    setToken(data.token);
-    setUser(data.user);
-    localStorage.setItem('auth_token', data.token);
-    localStorage.setItem('kudiUser', JSON.stringify({
-      id: data.user.id,
-      email: data.user.email,
-      name: data.user.name,
-      business_type: data.user.businessType,
-      plan: data.user.planType,
-      trialEndsAt: data.user.trialEndsAt,
-      subscriptionStartedAt: data.user.subscriptionStartedAt,
-      subscriptionEndsAt: data.user.subscriptionEndsAt,
-      subscriptionInfo: data.user.subscriptionInfo
-    }));
-    return data.user;
-  };
-
-  const register = async (name: string, email: string, password: string, businessType: string) => {
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, businessType }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Registration failed');
-    }
-
-    await login(email, password);
-  };
 
   const logout = async () => {
     try {
-      if (auth) {
-        await signOut(auth);
-      }
+      await signOut(auth);
     } catch (error) {
       console.error('Firebase sign out error:', error);
     }
-    
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('kudiUser');
   };
 
   const setUserData = (userData: User, authToken: string) => {
@@ -135,72 +98,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(authToken);
   };
 
-  const refreshUser = async () => {
-    if (!token) {
-      throw new Error('No authentication token available');
-    }
-
-    const response = await fetch('/api/me', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        // Token invalid/expired, logout
-        logout();
-        throw new Error('Session expired. Please login again.');
-      }
-      throw new Error('Failed to refresh user data');
-    }
-
-    const userData = await response.json();
-    
-    setUser(userData);
-    localStorage.setItem('kudiUser', JSON.stringify({
-      id: userData.id,
-      email: userData.email,
-      name: userData.name,
-      business_type: userData.businessType,
-      plan: userData.planType,
-      trialEndsAt: userData.trialEndsAt,
-      subscriptionStartedAt: userData.subscriptionStartedAt,
-      subscriptionEndsAt: userData.subscriptionEndsAt,
-      subscriptionInfo: userData.subscriptionInfo
-    }));
-  };
-
-  const refreshSubscription = async () => {
-    if (!token) return;
-    
-    try {
-      const response = await fetch('/api/user/subscription', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const subscriptionInfo = await response.json();
-        setUser(prevUser => prevUser ? { ...prevUser, subscriptionInfo } : null);
-        if (user) {
-          localStorage.setItem('kudiUser', JSON.stringify({
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            business_type: user.businessType,
-            plan: user.planType
-          }));
-        }
-      }
-    } catch (error) {
-      console.error('Failed to refresh subscription info:', error);
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, refreshSubscription, refreshUser, setUserData }}>
+    <AuthContext.Provider value={{ user, token, isLoading, logout, setUserData }}>
       {children}
     </AuthContext.Provider>
   );

@@ -6,10 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { logEvent } from '@/lib/firebase';
+import { logEvent, auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function Subscribe() {
-  const { user, refreshUser } = useAuth();
+  const { user, setUserData } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [activatingPlan, setActivatingPlan] = useState<string | null>(null);
@@ -42,8 +43,28 @@ export default function Subscribe() {
         throw new Error(error.error || 'Subscription failed');
       }
 
-      // Refresh user data from server (server-trusted refresh)
-      await refreshUser();
+      // Refresh user data from Firestore
+      if (auth && db && auth.currentUser) {
+        const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const userProfile = {
+            id: auth.currentUser.uid,
+            email: userData.email,
+            name: userData.name,
+            businessType: userData.businessType,
+            planType: userData.planType,
+            trialEndsAt: userData.trialEndsAt,
+            subscriptionStartedAt: userData.subscriptionStartedAt,
+            subscriptionEndsAt: userData.subscriptionEndsAt,
+          };
+          
+          const token = await auth.currentUser.getIdToken(true);
+          setUserData(userProfile, token);
+          localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+          localStorage.setItem('auth_token', token);
+        }
+      }
 
       logEvent('subscription_purchase', {
         plan_type: plan,

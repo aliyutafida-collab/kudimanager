@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
+import { auth, db } from '@/lib/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 const BUSINESS_TYPES = [
   'Retail & Products',
@@ -99,19 +102,61 @@ export default function Register() {
       return;
     }
 
+    if (!auth || !db) {
+      toast({
+        title: 'Firebase not initialized',
+        description: 'Please try again later',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      await register(name, email, password, businessType);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const trialEndsAt = new Date();
+      trialEndsAt.setDate(trialEndsAt.getDate() + 90);
+
+      const userProfile = {
+        id: user.uid,
+        name: name,
+        email: user.email || email,
+        businessType: businessType,
+        planType: 'trial',
+        trialEndsAt: trialEndsAt.toISOString(),
+        subscriptionStartedAt: null,
+        subscriptionEndsAt: null,
+        createdAt: new Date().toISOString(),
+      };
+
+      await setDoc(doc(db, 'users', user.uid), userProfile);
+
+      localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+
       toast({
         title: 'Registration successful',
         description: 'Welcome to KudiManager! Let\'s set up your business.',
       });
       setJustRegistered(true);
-    } catch (error) {
+    } catch (error: any) {
+      let errorMessage = 'Please try again';
+      
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'This email is already registered. Please sign in instead.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Invalid email address format.';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Password is too weak. Please use a stronger password.';
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your connection.';
+      }
+
       toast({
         title: 'Registration failed',
-        description: error instanceof Error ? error.message : 'Please try again',
+        description: errorMessage,
         variant: 'destructive',
       });
       setIsLoading(false);

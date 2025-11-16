@@ -161,9 +161,10 @@ function AppContent() {
         <img
           src={logoPath}
           alt="KudiManager Logo"
-          className="w-24 h-24 animate-pulse"
+          className="w-24 h-24"
           data-testid="loading-logo"
         />
+        <div className="spinner" data-testid="loading-spinner"></div>
         <p className="text-muted-foreground">Loading...</p>
       </div>
     );

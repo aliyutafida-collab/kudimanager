@@ -454,6 +454,45 @@
   }
 }
 
+/* Logo Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.spinner {
+  border: 4px solid hsl(var(--muted));
+  border-top-color: #007F5F;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.dark .spinner {
+  border-color: hsl(var(--muted));
+  border-top-color: #10b981;
+}
+
 /* Mobile Responsiveness Enhancements */
 @layer base {
   @media (max-width: 768px) {

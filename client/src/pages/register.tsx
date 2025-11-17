@@ -1,311 +1,94 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
-import { auth, db } from '@/lib/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-
-const BUSINESS_TYPES = [
-  'Retail & Products',
-  'Restaurants & Food Services',
-  'Hospitality',
-  'Services',
-  'Agriculture & Farming',
-];
-
-function validatePasswordStrength(password: string): { isValid: boolean; message: string } {
-  const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  
-  if (password.length < 8) {
-    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
-  }
-  if (!/[A-Z]/.test(password)) {
-    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
-  }
-  if (!/[a-z]/.test(password)) {
-    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
-  }
-  if (!/[0-9]/.test(password)) {
-    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
-  }
-  if (!/[@$!%*?&]/.test(password)) {
-    return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
-  }
-  
-  if (strongRegex.test(password)) {
-    return { isValid: true, message: 'Strong password.' };
-  }
-  
-  return { isValid: false, message: 'Password must be at least 8 characters with uppercase, lowercase, number, and special character.' };
-}
+import { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
-  const [, setLocation] = useLocation();
-  const { setUserData, user } = useAuth();
-  const { toast } = useToast();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [businessType, setBusinessType] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [justRegistered, setJustRegistered] = useState(false);
-  const [passwordTouched, setPasswordTouched] = useState(false);
-  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+  const navigate = useNavigate();
 
-  const passwordValidation = validatePasswordStrength(password);
-  const passwordsMatch = password === confirmPassword;
+  const [name, setName] = useState("");
+  const [businessType, setBusinessType] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (user && !justRegistered) {
-      setLocation('/');
-    } else if (justRegistered && user) {
-      setLocation('/setup-wizard');
-    }
-  }, [user, justRegistered, setLocation]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleRegister = async (e: any) => {
     e.preventDefault();
-
-    if (!passwordValidation.isValid) {
-      toast({
-        title: 'Invalid password',
-        description: passwordValidation.message,
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!passwordsMatch) {
-      toast({
-        title: 'Passwords do not match',
-        description: 'Please make sure both passwords are the same',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!businessType) {
-      toast({
-        title: 'Validation error',
-        description: 'Please select a business type',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!auth || !db) {
-      toast({
-        title: 'Firebase not initialized',
-        description: 'Please try again later',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    setIsLoading(true);
+    setError("");
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      // CREATE USER IN FIREBASE AUTH
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
 
-      const trialEndsAt = new Date();
-      trialEndsAt.setDate(trialEndsAt.getDate() + 90);
-
-      const userProfile = {
-        id: user.uid,
-        name: name,
-        email: user.email || email,
-        businessType: businessType,
-        planType: 'trial',
-        trialEndsAt: trialEndsAt.toISOString(),
-        subscriptionStartedAt: null,
-        subscriptionEndsAt: null,
-        createdAt: new Date().toISOString(),
-      };
-
-      await setDoc(doc(db, 'users', user.uid), userProfile);
-
-      const token = await user.getIdToken();
-      
-      localStorage.setItem('kudiUser', JSON.stringify(userProfile));
-      localStorage.setItem('auth_token', token);
-      
-      setUserData(userProfile, token);
-
-      toast({
-        title: 'Registration successful',
-        description: 'Welcome to KudiManager! Let\'s set up your business.',
+      // CREATE USER PROFILE IN FIRESTORE
+      await setDoc(doc(db, "users", uid), {
+        uid,
+        name,
+        email,
+        businessType,
+        plan: "trial",
+        subscribed: false,
+        trialStart: Date.now(),
+        trialEnd: Date.now() + 90 * 24 * 60 * 60 * 1000, // 90 days
       });
-      setJustRegistered(true);
-    } catch (error: any) {
-      let errorMessage = 'Please try again';
-      
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'This email is already registered. Please sign in instead.';
-      } else if (error.code === 'auth/invalid-email') {
-        errorMessage = 'Invalid email address format.';
-      } else if (error.code === 'auth/weak-password') {
-        errorMessage = 'Password is too weak. Please use a stronger password.';
-      } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = 'Network error. Please check your connection.';
-      }
 
-      toast({
-        title: 'Registration failed',
-        description: errorMessage,
-        variant: 'destructive',
-      });
-      setIsLoading(false);
+      // REDIRECT TO LOGIN PAGE
+      navigate("/login");
+
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md">
-        <div className="flex justify-center mb-8 animate-in fade-in duration-700">
-          <img
-            src={logoPath}
-            alt="KudiManager Logo"
-            className="w-28 h-28 sm:w-32 sm:h-32"
-            data-testid="register-logo"
-          />
-        </div>
-        <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="text-2xl">Create an Account</CardTitle>
-          <CardDescription>Start managing your business with KudiManager</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                data-testid="input-name"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                data-testid="input-email"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onBlur={() => setPasswordTouched(true)}
-                required
-                data-testid="input-password"
-              />
-              {passwordTouched && password && (
-                <div className={`flex items-start gap-2 mt-1 ${passwordValidation.isValid ? 'password-success' : 'password-error'}`}>
-                  {passwordValidation.isValid ? (
-                    <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                  ) : (
-                    <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                  )}
-                  <span>{passwordValidation.message}</span>
-                </div>
-              )}
-              {!passwordTouched && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Must be at least 8 characters with uppercase, lowercase, number, and special character
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                onBlur={() => setConfirmPasswordTouched(true)}
-                required
-                data-testid="input-confirm-password"
-              />
-              {confirmPasswordTouched && confirmPassword && (
-                <div className={`flex items-start gap-2 mt-1 ${passwordsMatch ? 'password-success' : 'password-error'}`}>
-                  {passwordsMatch ? (
-                    <>
-                      <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                      <span>Passwords match</span>
-                    </>
-                  ) : (
-                    <>
-                      <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                      <span>Passwords do not match</span>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="businessType">Business Type</Label>
-              <Select value={businessType} onValueChange={setBusinessType}>
-                <SelectTrigger id="businessType" data-testid="select-business-type">
-                  <SelectValue placeholder="Select your business type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {BUSINESS_TYPES.map((type) => (
-                    <SelectItem key={type} value={type} data-testid={`option-${type.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-              data-testid="button-register"
-            >
-              {isLoading ? 'Creating account...' : 'Create Account'}
-            </Button>
-            <p className="text-sm text-muted-foreground text-center">
-              Already have an account?{' '}
-              <button
-                type="button"
-                onClick={() => setLocation('/login')}
-                className="text-primary hover:underline"
-                data-testid="link-login"
-              >
-                Sign in here
-              </button>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
-      </div>
+    <div className="register-container">
+      <h2>Create Account</h2>
+
+      {error && <p className="error">{error}</p>}
+
+      <form onSubmit={handleRegister}>
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+
+        <input
+          type="text"
+          placeholder="Business Type (e.g., Restaurant, Boutique, POS)"
+          value={businessType}
+          onChange={(e) => setBusinessType(e.target.value)}
+          required
+        />
+
+        <input
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Password (min 6 characters)"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <button type="submit">
+          Register
+        </button>
+      </form>
+
+      <p className="link" onClick={() => navigate("/login")}>
+        Back to Login
+      </p>
     </div>
   );
 }

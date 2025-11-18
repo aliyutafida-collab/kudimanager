@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import Loading from "./components/Loading";
 import { useEffect, useState } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import "./lib/i18n";
@@ -92,6 +94,13 @@ function ProtectedRouter() {
         <Route component={NotFound} />
       </Switch>
     </ProtectedRoute>
+    return (
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          {/* all your existing routes */}
+        </Routes>
+      </Suspense>
+    );
   );
 }
 

@@ -1,8 +1,5 @@
-import { useEffect } from "react";
-import { initAnalytics } from "./analytics";
-import { Suspense } from "react";
+import { useEffect, Suspense, useState } from "react";
 import Loading from "./components/Loading";
-import { useEffect, useState } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import "./lib/i18n";
 import { useTranslation } from "react-i18next";
@@ -47,9 +44,6 @@ function Redirect({ to }: { to: string }) {
   }, [to, setLocation]);
   
   return null;
-  useEffect(() => {
-    initAnalytics();
-  }, []);
 }
 
 function PublicRouter() {
@@ -99,13 +93,6 @@ function ProtectedRouter() {
         <Route component={NotFound} />
       </Switch>
     </ProtectedRoute>
-    return (
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          {/* all your existing routes */}
-        </Routes>
-      </Suspense>
-    );
   );
 }
 

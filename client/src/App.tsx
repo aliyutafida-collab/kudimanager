@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { initAnalytics } from "./analytics";
 import { Suspense } from "react";
 import Loading from "./components/Loading";
 import { useEffect, useState } from "react";
@@ -45,6 +47,9 @@ function Redirect({ to }: { to: string }) {
   }, [to, setLocation]);
   
   return null;
+  useEffect(() => {
+    initAnalytics();
+  }, []);
 }
 
 function PublicRouter() {

@@ -1,8 +1,14 @@
+import express from "express";
 import { createServer } from "http";
-import app from "../api/app";
+import { mountApiRoutes } from "./api-wrapper";
 import { setupVite, serveStatic, log } from "./vite";
 
+const app = express();
+
 (async () => {
+  // Mount API routes at /api prefix for development
+  mountApiRoutes(app);
+  
   const server = createServer(app);
 
   // importantly only setup vite in development and after

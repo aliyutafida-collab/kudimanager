@@ -24,7 +24,14 @@ function getFullUrl(url: string): string {
   if (url.startsWith('http')) {
     return url;
   }
-  return `${API_BASE_URL}${url}`;
+  // If API_BASE_URL is empty (development), return url as-is
+  if (!API_BASE_URL) {
+    return url;
+  }
+  // Ensure exactly one slash between base URL and path
+  const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+  const path = url.startsWith('/') ? url : `/${url}`;
+  return `${baseUrl}${path}`;
 }
 
 export async function apiRequest(

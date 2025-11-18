@@ -75,7 +75,7 @@ async function subscriptionMiddleware(req: AuthRequest, res: Response, next: Nex
 
 export function registerRoutes(app: Express): void {
   // Authentication endpoints
-  app.post("/api/register", async (req, res) => {
+  app.post("/register", async (req, res) => {
     try {
       console.log("[REGISTER] Registration request received:", { email: req.body.email, name: req.body.name, businessType: req.body.businessType });
       const validatedData = registerSchema.parse(req.body);
@@ -115,7 +115,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.post("/api/login", async (req, res) => {
+  app.post("/login", async (req, res) => {
     try {
       console.log("[LOGIN] Login attempt:", { email: req.body.email });
       const validatedData = loginSchema.parse(req.body);
@@ -163,7 +163,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Get current user (protected) - for refreshing user data
-  app.get("/api/me", authMiddleware, async (req: AuthRequest, res) => {
+  app.get("/me", authMiddleware, async (req: AuthRequest, res) => {
     try {
       const user = await storage.getUserById(req.userId!);
       if (!user) {
@@ -190,7 +190,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Get subscription status (protected)
-  app.get("/api/user/subscription", authMiddleware, async (req: AuthRequest, res) => {
+  app.get("/user/subscription", authMiddleware, async (req: AuthRequest, res) => {
     try {
       const user = await storage.getUserById(req.userId!);
       if (!user) {
@@ -205,7 +205,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Mock subscription endpoint (for demo/development - replace with Paystack webhook in production)
-  app.post("/api/mock-subscribe", authMiddleware, async (req: AuthRequest, res) => {
+  app.post("/mock-subscribe", authMiddleware, async (req: AuthRequest, res) => {
     try {
       const { plan } = req.body;
       
@@ -244,7 +244,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Products endpoints (protected)
-  app.get("/api/products", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.get("/products", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const products = await storage.getProducts(req.userId!);
       res.json(products);
@@ -253,7 +253,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.get("/api/products/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.get("/products/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const product = await storage.getProduct(req.params.id, req.userId!);
       if (!product) {
@@ -265,7 +265,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.post("/api/products", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.post("/products", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const validatedData = insertProductSchema.parse(req.body);
       const product = await storage.createProduct(validatedData, req.userId!);
@@ -275,7 +275,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.patch("/api/products/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.patch("/products/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const product = await storage.updateProduct(req.params.id, req.userId!, req.body);
       if (!product) {
@@ -287,7 +287,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.delete("/api/products/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.delete("/products/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const deleted = await storage.deleteProduct(req.params.id, req.userId!);
       if (!deleted) {
@@ -300,7 +300,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Sales endpoints
-  app.get("/api/sales", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.get("/sales", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const sales = await storage.getSales(req.userId!);
       res.json(sales);
@@ -309,7 +309,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.get("/api/sales/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.get("/sales/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const sale = await storage.getSale(req.params.id, req.userId!);
       if (!sale) {
@@ -321,7 +321,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.post("/api/sales", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.post("/sales", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const validatedData = insertSaleSchema.parse(req.body);
       
@@ -354,7 +354,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.patch("/api/sales/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.patch("/sales/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const sale = await storage.updateSale(req.params.id, req.userId!, req.body);
       if (!sale) {
@@ -366,7 +366,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.delete("/api/sales/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.delete("/sales/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const deleted = await storage.deleteSale(req.params.id, req.userId!);
       if (!deleted) {
@@ -379,7 +379,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Expenses endpoints
-  app.get("/api/expenses", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.get("/expenses", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const expenses = await storage.getExpenses(req.userId!);
       res.json(expenses);
@@ -388,7 +388,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.get("/api/expenses/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.get("/expenses/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const expense = await storage.getExpense(req.params.id, req.userId!);
       if (!expense) {
@@ -400,7 +400,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.post("/api/expenses", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.post("/expenses", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const validatedData = insertExpenseSchema.parse(req.body);
       const expense = await storage.createExpense(validatedData, req.userId!);
@@ -410,7 +410,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.patch("/api/expenses/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.patch("/expenses/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const expense = await storage.updateExpense(req.params.id, req.userId!, req.body);
       if (!expense) {
@@ -422,7 +422,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.delete("/api/expenses/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.delete("/expenses/:id", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const deleted = await storage.deleteExpense(req.params.id, req.userId!);
       if (!deleted) {
@@ -435,7 +435,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Monthly reports endpoint
-  app.get("/api/reports/monthly", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
+  app.get("/reports/monthly", authMiddleware, subscriptionMiddleware, async (req: AuthRequest, res) => {
     try {
       const sales = await storage.getSales(req.userId!);
       const expenses = await storage.getExpenses(req.userId!);
@@ -489,7 +489,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Subscription endpoints
-  app.post("/api/subscribe", async (req, res) => {
+  app.post("/subscribe", async (req, res) => {
     try {
       console.log("[SUBSCRIBE] Request received:", req.body);
       const validatedData = subscribeSchema.parse(req.body);
@@ -522,7 +522,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.post("/api/paystack/webhook", async (req, res) => {
+  app.post("/paystack/webhook", async (req, res) => {
     try {
       console.log("[WEBHOOK] Paystack webhook received");
       
@@ -576,7 +576,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Learning & Tutorial API
-  app.get("/api/guide", async (req, res) => {
+  app.get("/guide", async (req, res) => {
     try {
       console.log("[GUIDE] Financial management guide requested");
       const guide = {
@@ -667,7 +667,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // Nigerian Tax Calculator
-  app.post("/api/tax", async (req, res) => {
+  app.post("/tax", async (req, res) => {
     try {
       console.log("[TAX] Tax calculation requested:", req.body);
       const validatedData = taxCalculationSchema.parse(req.body);
@@ -740,7 +740,7 @@ export function registerRoutes(app: Express): void {
   });
 
   // AI Business Advisory (Gemini)
-  app.post("/api/ai/advice", async (req, res) => {
+  app.post("/ai/advice", async (req, res) => {
     let validatedData;
     
     try {
@@ -831,7 +831,7 @@ Provide 3 specific, actionable recommendations. Be concise and practical. Focus 
   });
 
   // Vendor Suggestion System (Mock AI)
-  app.post("/api/vendors/suggest", async (req, res) => {
+  app.post("/vendors/suggest", async (req, res) => {
     try {
       console.log("[VENDORS] Vendor suggestion requested:", req.body);
       const validatedData = vendorSuggestionSchema.parse(req.body);

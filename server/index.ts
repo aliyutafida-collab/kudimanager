@@ -1,35 +1,33 @@
 import express from "express";
 import { createServer } from "http";
-import { mountApiRoutes } from "./api-wrapper";
-import { setupVite, serveStatic, log } from "./vite";
+import app from "./app";
 
-const app = express();
+// For Vercel serverless deployment, simply export the Express app
+export default app;
 
-(async () => {
-  // Mount API routes at /api prefix for development
-  mountApiRoutes(app);
+// For local development, run as a regular HTTP server
+if (process.env.NODE_ENV === "development" || !process.env.VERCEL) {
+  const { setupVite, serveStatic, log } = await import("./vite");
   
-  const server = createServer(app);
+  // Wrap the app with /api prefix for dev mode
+  const devApp = express();
+  devApp.use("/api", app);
+  
+  const server = createServer(devApp);
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
+  // Setup Vite middleware in development
+  if (process.env.NODE_ENV === "development") {
+    await setupVite(devApp, server);
   } else {
-    serveStatic(app);
+    serveStatic(devApp);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
   server.listen({
     port,
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    log(`[server] serving on port ${port}`);
   });
-})();
+}

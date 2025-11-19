@@ -1,0 +1,168 @@
+====================================================================
+KUDIMANAGER MOBILE APP - BUILD INSTRUCTIONS
+====================================================================
+
+This React Native mobile app can be built in several ways. Choose the
+method that works best for you:
+
+--------------------------------------------------------------------
+OPTION 1: EAS BUILD (EASIEST - RECOMMENDED)
+--------------------------------------------------------------------
+
+EAS (Expo Application Services) builds your app in the cloud without
+needing Android Studio or Xcode installed locally.
+
+REQUIREMENTS:
+  - Expo account (free): https://expo.dev
+  - EAS CLI installed globally
+
+STEPS:
+
+1. Install EAS CLI globally:
+   npm install -g eas-cli
+
+2. Login to your Expo account:
+   eas login
+
+3. Navigate to mobile directory:
+   cd mobile
+
+4. Install dependencies:
+   npm install
+
+5. Configure environment variables:
+   - Copy .env.example to .env
+   - Fill in your API URL and Firebase credentials
+
+6. Configure EAS Build:
+   eas build:configure
+
+7. Build Android APK:
+   eas build -p android --profile preview
+
+8. Wait for build to complete (10-20 minutes)
+   - Check status at: https://expo.dev
+   - Download APK when ready
+
+9. Build iOS (requires Apple Developer account):
+   eas build -p ios --profile production
+
+DOWNLOAD APK:
+  - Go to https://expo.dev
+  - Navigate to your project
+  - Click on "Builds"
+  - Download the APK file
+
+--------------------------------------------------------------------
+OPTION 2: LOCAL ANDROID BUILD (ADVANCED)
+--------------------------------------------------------------------
+
+This requires Android Studio and Android SDK installed on your machine.
+
+REQUIREMENTS:
+  - Android Studio
+  - Android SDK 33+
+  - Java JDK 17+
+
+STEPS:
+
+1. Install dependencies:
+   cd mobile
+   npm install
+
+2. Generate Android project:
+   expo prebuild --platform android
+
+3. Open Android Studio and load the android/ folder
+
+4. Build APK:
+   cd android
+   ./gradlew assembleRelease
+
+5. Find APK at:
+   android/app/build/outputs/apk/release/app-release.apk
+
+--------------------------------------------------------------------
+OPTION 3: DEVELOPMENT TESTING (NO BUILD NEEDED)
+--------------------------------------------------------------------
+
+For quick testing without creating a production build:
+
+1. Install Expo Go app on your phone:
+   - Android: https://play.google.com/store/apps/details?id=host.exp.exponent
+   - iOS: https://apps.apple.com/app/expo-go/id982107779
+
+2. Start development server:
+   cd mobile
+   npm start
+
+3. Scan QR code with Expo Go app
+
+NOTE: This requires Expo Go installed on the device. Not suitable
+for production distribution.
+
+--------------------------------------------------------------------
+IMPORTANT NOTES
+--------------------------------------------------------------------
+
+1. ENVIRONMENT VARIABLES:
+   - Must be prefixed with EXPO_PUBLIC_ to be accessible in app
+   - Required variables are listed in .env.example
+   - Use your existing Firebase credentials from web app
+
+2. API URL:
+   - For development: Use your Replit app URL
+   - For production: Use your deployed backend URL
+   - Must be HTTPS in production
+   - Must not be localhost when building for devices
+
+3. FIREBASE SETUP:
+   - Use the same Firebase project as your web app
+   - Ensure mobile platforms are enabled in Firebase console
+   - No additional configuration needed
+
+4. FIRST BUILD:
+   - First EAS build may take longer (20-30 minutes)
+   - Subsequent builds are faster (10-15 minutes)
+   - Builds are cached for efficiency
+
+5. TESTING:
+   - Test APK on Android device or emulator
+   - iOS requires macOS for local testing
+   - Use EAS Build for iOS builds without macOS
+
+--------------------------------------------------------------------
+TROUBLESHOOTING
+--------------------------------------------------------------------
+
+PROBLEM: EAS build fails
+SOLUTION: Check that eas.json is properly configured
+          Verify you're logged in: eas whoami
+          Check build logs at: https://expo.dev
+
+PROBLEM: App can't connect to API
+SOLUTION: Verify EXPO_PUBLIC_API_URL is correct
+          Check that API is accessible from mobile network
+          Verify CORS settings in backend
+
+PROBLEM: Firebase authentication not working
+SOLUTION: Verify all Firebase env variables are set
+          Check Firebase console allows mobile platforms
+          Ensure @react-native-async-storage is installed
+
+PROBLEM: Build is stuck or slow
+SOLUTION: EAS builds can take 10-30 minutes
+          Check build queue status at expo.dev
+          Cancel and retry if stuck >1 hour
+
+--------------------------------------------------------------------
+SUPPORT
+--------------------------------------------------------------------
+
+Expo Documentation: https://docs.expo.dev
+EAS Build Guide: https://docs.expo.dev/build/introduction/
+React Native Docs: https://reactnative.dev
+
+For KudiManager-specific issues, check the README.md file.
+
+====================================================================

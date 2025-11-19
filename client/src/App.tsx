@@ -93,7 +93,7 @@ function ProtectedRouter() {
         <Route component={NotFound} />
       </Switch>
     </ProtectedRoute>
-  );
+    };
 
   function UserProfile() {
   const { user, logout } = useAuth();

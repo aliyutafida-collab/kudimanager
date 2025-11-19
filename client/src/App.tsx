@@ -95,8 +95,7 @@ function ProtectedRouter() {
     </ProtectedRoute>
   );
 
-
-function UserProfile() {
+  function UserProfile() {
   const { user, logout } = useAuth();
   const [, setLocation] = useLocation();
   const { t } = useTranslation();

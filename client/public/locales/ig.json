@@ -33,7 +33,10 @@
     "welcome": "Nnọọ",
     "welcomeBack": "Nnọọ na nlọghachi, {{name}}!",
     "businessDashboard": "Ebe Nlekọta Azụmahịa",
-    "management": "Njikwa"
+    "management": "Njikwa",
+    "profile": "Profaịlụ",
+    "addProduct": "Tinye Ngwaahịa",
+    "updateInventory": "Melite Ngwa Ahịa"
   },
   "auth": {
     "login": "Banye",
@@ -53,6 +56,8 @@
     "signInHere": "Banye",
     "signUpHere": "Debanye aha",
     "createAccount": "Mepụta Akaụntụ",
+    "creatingAccount": "Na-emepụta akaụntụ...",
+    "signingIn": "Na-abanye...",
     "welcomeToKudi": "Nnọọ na KudiManager!",
     "passwordRequirements": "Okwuntughe ga-enwe opekata mpe mkpụrụedemede 8, gụnyere nnukwu mkpụrụedemede, obere mkpụrụedemede, nọmba, na akara pụrụ iche",
     "passwordsMatch": "Okwuntughe dabara",
@@ -63,7 +68,18 @@
     "resetInstructions": "Tinye adreesị ozi eletrọnikị gị, anyị ga-eziga gị njikọ ntọgharị",
     "sendResetLink": "Zipu Njikọ Ntọgharị",
     "resetLinkSent": "Ọ bụrụ na ozi eletrọnikị a dị, ezigala njikọ ntọgharị okwuntughe.",
-    "backToLogin": "Laghachi Na Banye"
+    "backToLogin": "Laghachi Na Banye",
+    "errors": {
+      "incorrectCredentials": "Ozi eletrọnikị ma ọ bụ okwuntughe ezighi ezi",
+      "emailRequired": "Biko tinye ozi eletrọnikị gị",
+      "passwordRequired": "Biko tinye okwuntughe gị",
+      "accountDisabled": "Emechiri akaụntụ a",
+      "tooManyAttempts": "Ọtụtụ mgbalị nke dara ada. Biko nwaa ọzọ mgbe emechara",
+      "networkError": "Njehie netwọk. Biko lelee njikọ gị",
+      "emailInUse": "Edebanye aha ozi eletrọnikị a rịị. Biko banye kama",
+      "invalidEmail": "Biko tinye adreesị ozi eletrọnikị ziri ezi",
+      "weakPassword": "Biko họrọ okwuntughe siri ike karịa"
+    }
   },
   "dashboard": {
     "pageTitle": "Ebe Nlekọta",

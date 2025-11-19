@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export function AddProductDialog() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     sku: "",
@@ -63,7 +65,7 @@ export function AddProductDialog() {
       <DialogTrigger asChild>
         <Button data-testid="button-add-product">
           <Plus className="h-4 w-4 mr-2" />
-          Add Product
+          {t('common.addProduct')}
         </Button>
       </DialogTrigger>
       <DialogContent data-testid="dialog-add-product">

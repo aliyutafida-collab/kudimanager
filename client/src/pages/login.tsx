@@ -84,18 +84,16 @@ export default function Login() {
       });
       setJustLoggedIn(true);
     } catch (error: any) {
-      let errorMessage = 'Invalid email or password';
+      let errorMessage = t('auth.errors.incorrectCredentials');
       
-      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
-        errorMessage = 'Invalid email or password';
-      } else if (error.code === 'auth/wrong-password') {
-        errorMessage = 'Incorrect password';
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        errorMessage = t('auth.errors.incorrectCredentials');
       } else if (error.code === 'auth/user-disabled') {
-        errorMessage = 'This account has been disabled';
+        errorMessage = t('auth.errors.accountDisabled');
       } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = 'Too many failed attempts. Please try again later';
+        errorMessage = t('auth.errors.tooManyAttempts');
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = 'Network error. Please check your connection';
+        errorMessage = t('auth.errors.networkError');
       }
       
       logEvent('login_failed', {
@@ -104,7 +102,7 @@ export default function Login() {
       });
       
       toast({
-        title: 'Login failed',
+        title: t('auth.login') + ' ' + t('common.error').toLowerCase(),
         description: errorMessage,
         variant: 'destructive',
       });
@@ -259,7 +257,7 @@ export default function Login() {
               disabled={isLoading}
               data-testid="button-login"
             >
-              {isLoading ? t('common.loading') : t('auth.login')}
+              {isLoading ? t('auth.signingIn') : t('auth.login')}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">

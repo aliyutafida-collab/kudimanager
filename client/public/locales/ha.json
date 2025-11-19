@@ -33,7 +33,10 @@
     "welcome": "Barka da zuwa",
     "welcomeBack": "Barka da dawowa, {{name}}!",
     "businessDashboard": "Allon Kasuwanci",
-    "management": "Gudanarwa"
+    "management": "Gudanarwa",
+    "profile": "Bayanan Sirri",
+    "addProduct": "Ƙara Kaya",
+    "updateInventory": "Sabunta Kaya"
   },
   "auth": {
     "login": "Shiga",
@@ -53,6 +56,8 @@
     "signInHere": "Shiga",
     "signUpHere": "Yi rajista",
     "createAccount": "Ƙirƙiri Asusu",
+    "creatingAccount": "Yana ƙirƙirar asusu...",
+    "signingIn": "Yana shiga...",
     "welcomeToKudi": "Barka da zuwa KudiManager!",
     "passwordRequirements": "Kalmar sirri dole ta kasance akalla haruffa 8, ciki har da manyan haruffa, ƙananan haruffa, lamba, da alamar musamman",
     "passwordsMatch": "Kalmomin sirri sun dace",
@@ -63,7 +68,18 @@
     "resetInstructions": "Shigar da adireshin imel ɗinku kuma za mu aiko muku da hanyar sake saitawa",
     "sendResetLink": "Aika Hanyar Sake Saitawa",
     "resetLinkSent": "Idan wannan imel yana wanzu, an aika hanyar sake saita kalmar sirri.",
-    "backToLogin": "Komawa zuwa Shiga"
+    "backToLogin": "Komawa zuwa Shiga",
+    "errors": {
+      "incorrectCredentials": "Imel ko kalmar sirri ba daidai ba",
+      "emailRequired": "Da fatan za a shigar da imel ɗinku",
+      "passwordRequired": "Da fatan za a shigar da kalmar sirri",
+      "accountDisabled": "An kashe wannan asusu",
+      "tooManyAttempts": "Yawan gwaje-gwajen da suka gaza. Da fatan za a sake gwadawa daga baya",
+      "networkError": "Matsalar hanyar sadarwa. Da fatan za a duba haɗin ku",
+      "emailInUse": "An riga an yi rajistar wannan imel. Da fatan za a shiga a maimakon haka",
+      "invalidEmail": "Da fatan za a shigar da ingantaccen adireshin imel",
+      "weakPassword": "Da fatan za a zaɓi ƙarfin kalmar sirri"
+    }
   },
   "dashboard": {
     "pageTitle": "Allon Bayani",

@@ -33,7 +33,10 @@
     "welcome": "Welcome",
     "welcomeBack": "Welcome back, {{name}}!",
     "businessDashboard": "Business Dashboard",
-    "management": "Management"
+    "management": "Management",
+    "profile": "Profile",
+    "addProduct": "Add Product",
+    "updateInventory": "Update Inventory"
   },
   "auth": {
     "login": "Sign In",
@@ -53,6 +56,8 @@
     "signInHere": "Sign in",
     "signUpHere": "Sign up",
     "createAccount": "Create Account",
+    "creatingAccount": "Creating account...",
+    "signingIn": "Signing in...",
     "welcomeToKudi": "Welcome to KudiManager!",
     "passwordRequirements": "Password must have at least 8 characters, including uppercase, lowercase, number, and special character",
     "passwordsMatch": "Passwords match",
@@ -63,7 +68,18 @@
     "resetInstructions": "Enter your email address and we'll send you a reset link",
     "sendResetLink": "Send Reset Link",
     "resetLinkSent": "If this email exists, a password reset link has been sent.",
-    "backToLogin": "Back to Login"
+    "backToLogin": "Back to Login",
+    "errors": {
+      "incorrectCredentials": "Incorrect email or password",
+      "emailRequired": "Please enter your email",
+      "passwordRequired": "Please enter your password",
+      "accountDisabled": "This account has been disabled",
+      "tooManyAttempts": "Too many failed attempts. Please try again later",
+      "networkError": "Network error. Please check your connection",
+      "emailInUse": "This email is already registered. Please login instead",
+      "invalidEmail": "Please enter a valid email address",
+      "weakPassword": "Please choose a stronger password"
+    }
   },
   "dashboard": {
     "pageTitle": "Dashboard",

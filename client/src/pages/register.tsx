@@ -15,6 +15,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { useTranslation } from 'react-i18next';
 import logoPath from '@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
@@ -56,6 +57,7 @@ function validatePassword(password: string): { isValid: boolean; message: string
 }
 
 export default function Register() {
+  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const { setUserData, user } = useAuth();
   const { toast } = useToast();
@@ -163,24 +165,24 @@ export default function Register() {
       setJustRegistered(true);
     } catch (error: any) {
       console.error('Registration error:', error);
-      let errorMessage = 'Please try again';
+      let errorMessage = t('common.error');
       
       if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'This email is already registered. Please login instead.';
+        errorMessage = t('auth.errors.emailInUse');
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = 'Please enter a valid email address.';
+        errorMessage = t('auth.errors.invalidEmail');
       } else if (error.code === 'auth/operation-not-allowed') {
         errorMessage = 'Email/password accounts are not enabled. Please contact support.';
       } else if (error.code === 'auth/weak-password') {
-        errorMessage = 'Please choose a stronger password.';
+        errorMessage = t('auth.errors.weakPassword');
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = 'Network error. Please check your connection.';
+        errorMessage = t('auth.errors.networkError');
       } else if (error.message) {
         errorMessage = error.message;
       }
 
       toast({
-        title: 'Registration failed',
+        title: t('auth.register') + ' ' + t('common.error').toLowerCase(),
         description: errorMessage,
         variant: 'destructive',
       });
@@ -202,15 +204,15 @@ export default function Register() {
             className="w-28 sm:w-32 mx-auto mb-4 animate-fade-in"
             data-testid="img-logo"
           />
-          <CardTitle className="text-2xl font-bold">Create Your Account</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('auth.registerTitle')}</CardTitle>
           <CardDescription>
-            Start managing your business finances in minutes
+            {t('auth.registerDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">{t('auth.name')}</Label>
               <Input
                 id="name"
                 type="text"
@@ -223,7 +225,7 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('auth.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -236,7 +238,7 @@ export default function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="business-type">Business Type</Label>
+              <Label htmlFor="business-type">{t('auth.businessType')}</Label>
               <Select value={businessType} onValueChange={setBusinessType} required disabled={isLoading}>
                 <SelectTrigger id="business-type" data-testid="select-business-type">
                   <SelectValue placeholder="Select your business type" />
@@ -251,7 +253,7 @@ export default function Register() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('auth.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -296,7 +298,7 @@ export default function Register() {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Label htmlFor="confirm-password">{t('auth.confirmPassword')}</Label>
               <div className="relative">
                 <Input
                   id="confirm-password"
@@ -327,13 +329,13 @@ export default function Register() {
               {confirmPassword && !passwordsMatch && (
                 <div className="flex items-center gap-2 text-sm mt-1">
                   <AlertCircle className="h-4 w-4 text-[#d93a3a]" />
-                  <span className="text-[#d93a3a]">Passwords do not match</span>
+                  <span className="text-[#d93a3a]">{t('auth.passwordsDontMatch')}</span>
                 </div>
               )}
               {confirmPassword && passwordsMatch && (
                 <div className="flex items-center gap-2 text-sm mt-1">
                   <CheckCircle2 className="h-4 w-4 text-[#007F5F]" />
-                  <span className="text-[#007F5F] font-medium">Passwords match</span>
+                  <span className="text-[#007F5F] font-medium">{t('auth.passwordsMatch')}</span>
                 </div>
               )}
             </div>
@@ -343,11 +345,11 @@ export default function Register() {
               disabled={isLoading || !passwordValidation.isValid || !passwordsMatch}
               data-testid="button-register"
             >
-              {isLoading ? 'Creating account...' : 'Create Account'}
+              {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            <span className="text-muted-foreground">Already have an account? </span>
+            <span className="text-muted-foreground">{t('auth.hasAccount')} </span>
             <button
               type="button"
               className="text-emerald-600 hover:text-emerald-700 hover:underline"
@@ -355,7 +357,7 @@ export default function Register() {
               disabled={isLoading}
               data-testid="link-login"
             >
-              Sign in
+              {t('auth.signInHere')}
             </button>
           </div>
         </CardContent>

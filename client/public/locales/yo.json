@@ -33,7 +33,10 @@
     "welcome": "Káàbọ̀",
     "welcomeBack": "Káàbọ̀ padà, {{name}}!",
     "businessDashboard": "Pátákó Iṣowo",
-    "management": "Ìṣàkóso"
+    "management": "Ìṣàkóso",
+    "profile": "Àkọsílẹ̀",
+    "addProduct": "Fi Ọjà kún",
+    "updateInventory": "Ṣe Àtúnṣe Ìkójọ Ọjà"
   },
   "auth": {
     "login": "Wọlé",
@@ -53,6 +56,8 @@
     "signInHere": "Wọlé",
     "signUpHere": "Forúkọsílẹ̀",
     "createAccount": "Ṣẹ̀dá Àkáǹtì",
+    "creatingAccount": "Ǎṣẹ̀dá àkáǹtì...",
+    "signingIn": "Ǹ wọlé...",
     "welcomeToKudi": "Káàbọ̀ sí KudiManager!",
     "passwordRequirements": "Ọ̀rọ̀ ìpamọ́ gbọ́dọ̀ ní ó kéré jù ọ̀rọ̀ mẹ́jọ, pẹ̀lú lẹ́tà ńlá, lẹ́tà kékeré, nọ́mbà, àti àmì pàtàkì",
     "passwordsMatch": "Àwọn ọ̀rọ̀ ìpamọ́ bá ara wọn mu",
@@ -63,7 +68,18 @@
     "resetInstructions": "Tẹ àdírẹ́ẹ̀sì ímeèlì rẹ wọlé àwa yóò sì fi líǹkì àtúnṣe ránṣẹ́ sí ọ",
     "sendResetLink": "Fi Líǹkì Àtúnṣe Ránṣẹ́",
     "resetLinkSent": "Tí ímeèlì yìí bá wà, a ti fi líǹkì àtúnṣe ọ̀rọ̀ ìpamọ́ ránṣẹ́.",
-    "backToLogin": "Padà sí Wọlé"
+    "backToLogin": "Padà sí Wọlé",
+    "errors": {
+      "incorrectCredentials": "Ímeèlì tàbí ọ̀rọ̀ ìpamọ́ kò tọ̀nà",
+      "emailRequired": "Jọ̀wọ́ tẹ ímeèlì rẹ wọlé",
+      "passwordRequired": "Jọ̀wọ́ tẹ ọ̀rọ̀ ìpamọ́ rẹ wọlé",
+      "accountDisabled": "A ti pa àkáǹtì yìí rẹ́",
+      "tooManyAttempts": "Ìgbìyànjú púpọ̀ tó kùnà. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i",
+      "networkError": "Àṣìṣe nẹ́tíwọ̀ọ̀kì. Jọ̀wọ́ ṣayẹwo ìsopọ̀ rẹ",
+      "emailInUse": "A ti forúkọsílẹ̀ ímeèlì yìí tẹ́lẹ̀. Jọ̀wọ́ wọlé dípò",
+      "invalidEmail": "Jọ̀wọ́ tẹ àdírẹ́ẹ̀sì ímeèlì tó tọ̀nà",
+      "weakPassword": "Jọ̀wọ́ yan ọ̀rọ̀ ìpamọ́ tó lágbára jù"
+    }
   },
   "dashboard": {
     "pageTitle": "Pátákó",

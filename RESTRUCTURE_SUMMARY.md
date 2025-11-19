@@ -120,15 +120,25 @@ kudimanager/
 {
   "version": 2,
   "builds": [
-    { "src": "client/package.json", "use": "@vercel/static-build" },
+    { 
+      "src": "client/package.json", 
+      "use": "@vercel/static-build",
+      "config": { "distDir": "client/dist" }
+    },
     { "src": "server/index.ts", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/server/index.ts" },
-    { "src": "/(.*)", "dest": "/client/dist/$1" }
+    { "src": "/(.*)", "dest": "/index.html", "status": 200 }
   ]
 }
 ```
+
+**Important Notes:**
+- `distDir: "client/dist"` tells @vercel/static-build where to find the built files
+- @vercel/static-build promotes the distDir contents to the deployment root
+- The SPA fallback route points to `/index.html` (not `/client/dist/index.html`)
+- This ensures client-side routing works correctly in the deployed application
 
 **`tsconfig.json`** - Updated includes:
 - Removed: `api/**/*`

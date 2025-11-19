@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import logoPath from '@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
@@ -190,6 +191,9 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 p-4">
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
       <Card className="w-full max-w-md animate-fade-in">
         <CardHeader className="space-y-1 text-center">
           <img 

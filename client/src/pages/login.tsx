@@ -7,12 +7,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useTranslation } from 'react-i18next';
 import logoPath from '@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png';
 import { logEvent, auth, db } from '@/lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
 export default function Login() {
+  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const { setUserData, user } = useAuth();
   const { toast } = useToast();
@@ -127,6 +130,9 @@ export default function Login() {
   if (showForgotPassword) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 p-4">
+        <div className="fixed top-4 right-4 z-50">
+          <LanguageSwitcher />
+        </div>
         <Card className="w-full max-w-md animate-fade-in">
           <CardHeader className="space-y-1 text-center">
             <img 
@@ -135,15 +141,15 @@ export default function Login() {
               className="w-28 sm:w-32 mx-auto mb-4 animate-fade-in"
               data-testid="img-logo"
             />
-            <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
+            <CardTitle className="text-2xl font-bold">{t('auth.resetTitle')}</CardTitle>
             <CardDescription>
-              Enter your email address and we'll send you a reset link
+              {t('auth.resetInstructions')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleForgotPassword} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="reset-email">Email</Label>
+                <Label htmlFor="reset-email">{t('auth.email')}</Label>
                 <Input
                   id="reset-email"
                   type="email"
@@ -155,7 +161,7 @@ export default function Login() {
                 />
               </div>
               <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" data-testid="button-send-reset">
-                Send Reset Link
+                {t('auth.sendResetLink')}
               </Button>
               <Button 
                 type="button" 
@@ -164,7 +170,7 @@ export default function Login() {
                 onClick={() => setShowForgotPassword(false)}
                 data-testid="button-back-to-login"
               >
-                Back to Login
+                {t('auth.backToLogin')}
               </Button>
             </form>
           </CardContent>
@@ -175,6 +181,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-gray-900 dark:to-gray-800 p-4">
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
       <Card className="w-full max-w-md animate-fade-in">
         <CardHeader className="space-y-1 text-center">
           <img 
@@ -183,15 +192,15 @@ export default function Login() {
             className="w-28 sm:w-32 mx-auto mb-4 animate-fade-in"
             data-testid="img-logo"
           />
-          <CardTitle className="text-2xl font-bold">Login to KudiManager</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('auth.loginTitle')}</CardTitle>
           <CardDescription>
-            Enter your credentials to access your business dashboard
+            {t('auth.loginDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('auth.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -204,7 +213,7 @@ export default function Login() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('auth.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -241,7 +250,7 @@ export default function Login() {
                 disabled={isLoading}
                 data-testid="button-forgot-password"
               >
-                Forgot password?
+                {t('auth.forgotPassword')}
               </button>
             </div>
             <Button 
@@ -250,11 +259,11 @@ export default function Login() {
               disabled={isLoading}
               data-testid="button-login"
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? t('common.loading') : t('auth.login')}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
+            <span className="text-muted-foreground">{t('auth.noAccount')} </span>
             <button
               type="button"
               className="text-emerald-600 hover:text-emerald-700 hover:underline"
@@ -262,7 +271,7 @@ export default function Login() {
               disabled={isLoading}
               data-testid="link-register"
             >
-              Sign up
+              {t('auth.signUpHere')}
             </button>
           </div>
         </CardContent>

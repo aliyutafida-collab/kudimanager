@@ -1,4 +1,5 @@
 import type { Express, Request, Response, NextFunction } from "express";
+import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { 
   insertProductSchema, 
@@ -17,8 +18,55 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { canAccessDashboard, getSubscriptionInfo } from "./subscription-utils";
 
-const JWT_SECRET = process.env.JWT_SECRET || "kudiman ager-secret-key-change-in-production";
+// Environment Variables - CRITICAL for production security
+const JWT_SECRET = process.env.JWT_SECRET || process.env.SESSION_SECRET || 'kudimanager-dev-secret-CHANGE-IN-PRODUCTION';
+if (JWT_SECRET === 'kudimanager-dev-secret-CHANGE-IN-PRODUCTION' && process.env.NODE_ENV === 'production') {
+  throw new Error('CRITICAL: JWT_SECRET or SESSION_SECRET environment variable must be set in production');
+}
 const SALT_ROUNDS = 10;
+
+// Rate Limiters for Production Security
+const authRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs for auth endpoints
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Too many authentication attempts. Please try again in 15 minutes."
+  },
+  skip: (req) => {
+    // Skip rate limiting in development
+    return process.env.NODE_ENV === 'development';
+  }
+});
+
+const paymentRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // Limit each IP to 10 requests per minute for payment webhooks
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Too many payment requests. Please try again later."
+  },
+  skip: (req) => {
+    // Skip rate limiting in development
+    return process.env.NODE_ENV === 'development';
+  }
+});
+
+const generalApiRateLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // Limit each IP to 100 requests per minute
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Too many requests. Please try again later."
+  },
+  skip: (req) => {
+    // Skip rate limiting in development
+    return process.env.NODE_ENV === 'development';
+  }
+});
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -74,8 +122,11 @@ async function subscriptionMiddleware(req: AuthRequest, res: Response, next: Nex
 }
 
 export function registerRoutes(app: Express): void {
-  // Authentication endpoints
-  app.post("/register", async (req, res) => {
+  // Apply general rate limiting to all API routes
+  app.use(generalApiRateLimiter);
+  
+  // Authentication endpoints with strict rate limiting
+  app.post("/register", authRateLimiter, async (req, res) => {
     try {
       console.log("[REGISTER] Registration request received:", { email: req.body.email, name: req.body.name, businessType: req.body.businessType });
       const validatedData = registerSchema.parse(req.body);
@@ -115,7 +166,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.post("/login", async (req, res) => {
+  app.post("/login", authRateLimiter, async (req, res) => {
     try {
       console.log("[LOGIN] Login attempt:", { email: req.body.email });
       const validatedData = loginSchema.parse(req.body);
@@ -522,7 +573,7 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-  app.post("/paystack/webhook", async (req, res) => {
+  app.post("/paystack/webhook", paymentRateLimiter, async (req, res) => {
     try {
       console.log("[WEBHOOK] Paystack webhook received");
       

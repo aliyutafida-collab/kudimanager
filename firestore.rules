@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isValidString(value, minLen, maxLen) {
+      return value is string && value.size() >= minLen && value.size() <= maxLen;
+    }
+    
+    function isValidNumber(value) {
+      return value is number;
+    }
+    
+    // Deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Users collection - users can only access their own data
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isAuthenticated() 
+        && request.resource.data.keys().hasAll(['email', 'name', 'businessType', 'planType', 'trialEndsAt'])
+        && isValidString(request.resource.data.email, 5, 100)
+        && isValidString(request.resource.data.name, 1, 100)
+        && isValidString(request.resource.data.businessType, 1, 50);
+      allow update: if isOwner(userId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['email', 'trialEndsAt']);
+      allow delete: if isOwner(userId);
+    }
+    
+    // Products collection - user-owned products
+    match /products/{productId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow list: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && isValidString(request.resource.data.name, 1, 200)
+        && isValidNumber(request.resource.data.price)
+        && isValidNumber(request.resource.data.quantity)
+        && request.resource.data.price >= 0
+        && request.resource.data.quantity >= 0;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    
+    // Sales collection - user-owned sales
+    match /sales/{saleId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow list: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && isValidNumber(request.resource.data.totalAmount)
+        && isValidNumber(request.resource.data.quantity)
+        && request.resource.data.totalAmount >= 0
+        && request.resource.data.quantity > 0;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    
+    // Expenses collection - user-owned expenses
+    match /expenses/{expenseId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow list: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && isValidString(request.resource.data.category, 1, 100)
+        && isValidString(request.resource.data.description, 1, 500)
+        && isValidNumber(request.resource.data.amount)
+        && request.resource.data.amount > 0;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    
+    // Subscriptions collection - user can only read/update their own
+    match /subscriptions/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if false; // Only created via backend
+      allow update: if false; // Only updated via backend webhook
+      allow delete: if false; // Never deleted
+    }
+    
+    // Public read-only collections (if any)
+    // match /vendors/{vendorId} {
+    //   allow read: if true;
+    //   allow write: if false; // Admin only via backend
+    // }
+  }
+}

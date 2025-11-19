@@ -94,7 +94,7 @@ function ProtectedRouter() {
       </Switch>
     </ProtectedRoute>
   );
-}
+
 
 function UserProfile() {
   const { user, logout } = useAuth();

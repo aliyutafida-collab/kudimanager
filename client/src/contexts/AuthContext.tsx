@@ -30,6 +30,7 @@ interface AuthContextType {
   isLoading: boolean;
   logout: () => Promise<void>;
   setUserData: (userData: User, authToken: string) => void;
+  refreshSubscription: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,8 +41,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth || !db) {
+      setIsLoading(false);
+      return;
+    }
+    
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
+      if (firebaseUser && db) {
         try {
           const idToken = await firebaseUser.getIdToken();
           const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
@@ -86,6 +92,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
   const logout = async () => {
+    if (!auth) return;
+    
     try {
       await signOut(auth);
     } catch (error) {
@@ -98,8 +106,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(authToken);
   };
 
+  const refreshSubscription = async () => {
+    if (!user || !auth || !auth.currentUser || !db) return;
+    
+    try {
+      const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const updatedUser: User = {
+          ...user,
+          planType: userData.planType,
+          trialEndsAt: userData.trialEndsAt,
+          subscriptionStartedAt: userData.subscriptionStartedAt,
+          subscriptionEndsAt: userData.subscriptionEndsAt,
+        };
+        
+        setUser(updatedUser);
+        localStorage.setItem('kudiUser', JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error('Error refreshing subscription:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, logout, setUserData }}>
+    <AuthContext.Provider value={{ user, token, isLoading, logout, setUserData, refreshSubscription }}>
       {children}
     </AuthContext.Provider>
   );

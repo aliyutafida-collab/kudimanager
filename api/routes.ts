@@ -1,5 +1,6 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import rateLimit from "express-rate-limit";
+import crypto from "crypto";
 import { storage } from "./storage";
 import { 
   insertProductSchema, 
@@ -11,12 +12,15 @@ import {
   aiAdviceSchema,
   vendorSuggestionSchema,
   registerSchema,
-  loginSchema
+  loginSchema,
+  paymentInitializeSchema,
+  paymentVerifySchema
 } from "@shared/schema";
 import { GoogleGenAI } from "@google/genai";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { canAccessDashboard, getSubscriptionInfo } from "./subscription-utils";
+import Paystack from "paystack";
 
 // Environment Variables - CRITICAL for production security
 const JWT_SECRET = process.env.JWT_SECRET || process.env.SESSION_SECRET || 'kudimanager-dev-secret-CHANGE-IN-PRODUCTION';
@@ -24,6 +28,13 @@ if (JWT_SECRET === 'kudimanager-dev-secret-CHANGE-IN-PRODUCTION' && process.env.
   throw new Error('CRITICAL: JWT_SECRET or SESSION_SECRET environment variable must be set in production');
 }
 const SALT_ROUNDS = 10;
+
+// Paystack Configuration
+const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET;
+if (!PAYSTACK_SECRET && process.env.NODE_ENV === 'production') {
+  console.warn('WARNING: PAYSTACK_SECRET not set. Payment features will not work.');
+}
+const paystack = PAYSTACK_SECRET ? Paystack(PAYSTACK_SECRET) : null;
 
 // Rate Limiters for Production Security
 const authRateLimiter = rateLimit({
@@ -539,6 +550,214 @@ export function registerRoutes(app: Express): void {
     }
   });
 
+  // Paystack Payment Routes
+  app.post("/payments/initialize", authMiddleware, paymentRateLimiter, async (req: AuthRequest, res) => {
+    try {
+      if (!paystack) {
+        return res.status(503).json({ 
+          error: "Payment service unavailable", 
+          message: "Paystack is not configured. Please contact support." 
+        });
+      }
+
+      console.log("[PAYMENT INIT] Request received:", { ...req.body, userId: req.userId });
+      const validatedData = paymentInitializeSchema.parse(req.body);
+
+      // Calculate amount in kobo (Paystack uses kobo, not naira) - round to avoid floating point issues
+      const amountInKobo = Math.round(validatedData.amount * 100);
+
+      // Build callback URL - must be publicly accessible and explicitly configured
+      const callbackUrl = process.env.PAYSTACK_CALLBACK_URL;
+      
+      if (!callbackUrl) {
+        console.error("[PAYMENT INIT] PAYSTACK_CALLBACK_URL not configured");
+        if (process.env.NODE_ENV === 'production') {
+          return res.status(500).json({ 
+            error: "Payment system misconfigured", 
+            message: "Please contact support." 
+          });
+        }
+        // Development fallback (not recommended for production)
+        console.warn("[PAYMENT INIT] Using fallback callback URL in development");
+      }
+
+      // Validate callback URL is a public HTTPS URL in production
+      const finalCallbackUrl = callbackUrl || `${req.protocol}://${req.get('host')}`;
+      
+      if (process.env.NODE_ENV === 'production') {
+        if (!finalCallbackUrl.startsWith('https://')) {
+          console.error("[PAYMENT INIT] Callback URL must use HTTPS in production:", finalCallbackUrl);
+          return res.status(500).json({ 
+            error: "Payment system misconfigured", 
+            message: "Please contact support." 
+          });
+        }
+        
+        // Validate callback URL is not localhost or private IP
+        const url = new URL(finalCallbackUrl);
+        const privateHosts = ['localhost', '127.0.0.1', '0.0.0.0', '::1', '10.', '172.', '192.168.'];
+        const isPrivate = privateHosts.some(host => url.hostname.startsWith(host));
+        
+        if (isPrivate) {
+          console.error("[PAYMENT INIT] Callback URL must be publicly accessible:", url.hostname);
+          return res.status(500).json({ 
+            error: "Payment system misconfigured", 
+            message: "Please contact support." 
+          });
+        }
+      }
+      
+      const initializeData = {
+        email: validatedData.email,
+        amount: amountInKobo,
+        // SECURITY: Only server-controlled metadata - do not trust client data
+        metadata: {
+          userId: req.userId,
+          userEmail: validatedData.email,
+          planType: validatedData.plan,
+        },
+        callback_url: `${finalCallbackUrl}/subscription`,
+      };
+
+      console.log("[PAYMENT INIT] Initializing Paystack transaction:", initializeData);
+
+      paystack.transaction.initialize(initializeData, (error: any, body: any) => {
+        if (error) {
+          console.error("[PAYMENT INIT] Paystack error:", error);
+          return res.status(500).json({ 
+            error: "Payment initialization failed", 
+            message: "Unable to initialize payment. Please try again later." 
+          });
+        }
+
+        console.log("[PAYMENT INIT] Success:", body.data);
+        res.json({
+          success: true,
+          authorization_url: body.data.authorization_url,
+          access_code: body.data.access_code,
+          reference: body.data.reference,
+        });
+      });
+    } catch (error) {
+      console.error("[PAYMENT INIT] Error:", error);
+      if (error instanceof Error && 'errors' in error) {
+        return res.status(400).json({ error: "Validation failed", details: error.message });
+      }
+      res.status(500).json({ error: "Payment initialization failed" });
+    }
+  });
+
+  app.post("/payments/verify", authMiddleware, paymentRateLimiter, async (req: AuthRequest, res) => {
+    try {
+      if (!paystack) {
+        return res.status(503).json({ 
+          error: "Payment service unavailable", 
+          message: "Paystack is not configured. Please contact support." 
+        });
+      }
+
+      console.log("[PAYMENT VERIFY] Request received:", req.body);
+      const validatedData = paymentVerifySchema.parse(req.body);
+
+      paystack.transaction.verify(validatedData.reference, async (error: any, body: any) => {
+        if (error) {
+          console.error("[PAYMENT VERIFY] Paystack error:", error);
+          return res.status(500).json({ 
+            error: "Payment verification failed", 
+            message: "Unable to verify payment. Please contact support." 
+          });
+        }
+
+        const transaction = body.data;
+        console.log("[PAYMENT VERIFY] Transaction data:", transaction);
+
+        if (transaction.status !== 'success') {
+          return res.json({
+            success: false,
+            status: transaction.status,
+            message: "Payment was not successful",
+          });
+        }
+
+        // SECURITY: Get authenticated user and verify they match the payment
+        const authenticatedUser = await storage.getUserById(req.userId!);
+        if (!authenticatedUser) {
+          console.error("[PAYMENT VERIFY] Authenticated user not found:", req.userId);
+          return res.status(401).json({ error: "Authentication failed" });
+        }
+
+        // CRITICAL SECURITY: Verify Paystack customer email matches authenticated user
+        const customerEmail = transaction.customer?.email;
+        if (!customerEmail) {
+          console.error("[PAYMENT VERIFY] No customer email in transaction");
+          return res.status(400).json({ error: "Invalid payment data" });
+        }
+
+        if (customerEmail.toLowerCase() !== authenticatedUser.email.toLowerCase()) {
+          console.error("[PAYMENT VERIFY] Email mismatch - authenticated user trying to verify someone else's payment:", {
+            authenticatedEmail: authenticatedUser.email,
+            paystackEmail: customerEmail
+          });
+          return res.status(403).json({ error: "Payment does not belong to this user" });
+        }
+
+        // Extract plan type from metadata (server-controlled at initialization)
+        const planType = transaction.metadata?.planType || 'basic';
+
+        // Additional validation: verify metadata consistency
+        const metadataUserId = transaction.metadata?.userId;
+        if (metadataUserId && metadataUserId !== authenticatedUser.id) {
+          console.error("[PAYMENT VERIFY] User ID mismatch in metadata:", {
+            authenticatedUserId: authenticatedUser.id,
+            metadataUserId
+          });
+          return res.status(403).json({ error: "Payment verification failed - user mismatch" });
+        }
+
+        // Update user subscription
+        try {
+
+          const updatedUser = await storage.updateUserPlan(authenticatedUser.id, planType);
+          if (!updatedUser) {
+            console.error("[PAYMENT VERIFY] Failed to update user plan:", authenticatedUser.id);
+            return res.status(500).json({ error: "Failed to activate subscription" });
+          }
+
+          const subscriptionInfo = getSubscriptionInfo(updatedUser);
+          console.log("[PAYMENT VERIFY] Subscription activated:", { 
+            userId: authenticatedUser.id, 
+            email: customerEmail,
+            plan: planType, 
+            reference: validatedData.reference 
+          });
+
+          res.json({
+            success: true,
+            status: transaction.status,
+            message: `Successfully subscribed to ${planType} plan`,
+            amount: transaction.amount / 100, // Convert from kobo to naira
+            user: {
+              id: updatedUser.id,
+              name: updatedUser.name,
+              email: updatedUser.email,
+              planType: updatedUser.planType,
+              subscriptionInfo,
+            },
+          });
+        } catch (storageError) {
+          console.error("[PAYMENT VERIFY] Storage error:", storageError);
+          res.status(500).json({ error: "Failed to activate subscription" });
+        }
+      });
+    } catch (error) {
+      console.error("[PAYMENT VERIFY] Error:", error);
+      if (error instanceof Error && 'errors' in error) {
+        return res.status(400).json({ error: "Validation failed", details: error.message });
+      }
+      res.status(500).json({ error: "Payment verification failed" });
+    }
+  });
+
   // Subscription endpoints
   app.post("/subscribe", async (req, res) => {
     try {
@@ -577,9 +796,43 @@ export function registerRoutes(app: Express): void {
     try {
       console.log("[WEBHOOK] Paystack webhook received");
       
-      console.warn("[WEBHOOK SECURITY] WARNING: Signature verification not implemented.");
-      console.warn("[WEBHOOK SECURITY] PRODUCTION TODO: Verify Paystack signature before processing.");
-      console.warn("[WEBHOOK SECURITY] Implementation: const crypto = require('crypto'); const hash = crypto.createHmac('sha512', PAYSTACK_SECRET_KEY).update(JSON.stringify(req.body)).digest('hex'); if (hash !== req.headers['x-paystack-signature']) return res.status(401).json({error: 'Invalid signature'});");
+      // CRITICAL SECURITY: Verify Paystack signature using raw body
+      if (!PAYSTACK_SECRET) {
+        console.error("[WEBHOOK] Cannot verify signature - PAYSTACK_SECRET not set");
+        return res.status(503).json({ error: "Webhook verification unavailable" });
+      }
+
+      const paystackSignature = req.headers['x-paystack-signature'];
+      if (!paystackSignature || typeof paystackSignature !== 'string') {
+        console.error("[WEBHOOK] No signature header provided");
+        return res.status(401).json({ error: "Invalid signature" });
+      }
+
+      // SECURITY: Explicitly verify raw body is available and untouched
+      // rawBody is set by express.json() verify callback in app.ts
+      if (!req.rawBody) {
+        console.error("[WEBHOOK] Raw body missing - signature cannot be verified");
+        return res.status(401).json({ error: "Invalid signature" });
+      }
+      
+      if (!Buffer.isBuffer(req.rawBody)) {
+        console.error("[WEBHOOK] Raw body is not a Buffer - possible tampering");
+        return res.status(401).json({ error: "Invalid signature" });
+      }
+
+      // Verify signature using HMAC SHA512 with raw request body
+      const hash = crypto
+        .createHmac('sha512', PAYSTACK_SECRET)
+        .update(req.rawBody as Buffer)
+        .digest('hex');
+
+      // Constant-time comparison to prevent timing attacks
+      if (!crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(paystackSignature))) {
+        console.error("[WEBHOOK] Invalid signature - potential forgery attempt");
+        return res.status(401).json({ error: "Invalid signature" });
+      }
+
+      console.log("[WEBHOOK] Signature verified successfully");
       
       const validatedData = paystackWebhookSchema.parse(req.body);
 

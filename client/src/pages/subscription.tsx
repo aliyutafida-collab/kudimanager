@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Check, Loader2, Crown, AlertTriangle, Clock, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLocation } from "wouter";
 
 interface SubscriptionInfo {
   planType: "trial" | "basic" | "premium";
@@ -17,14 +18,25 @@ interface SubscriptionInfo {
   subscriptionEndsAt: string | null;
 }
 
-interface SubscriptionResponse {
+interface PaymentInitializeResponse {
   success: boolean;
+  authorization_url: string;
+  access_code: string;
   reference: string;
-  amount: number;
-  plan: string;
-  email: string;
-  paystackUrl: string;
+}
+
+interface PaymentVerifyResponse {
+  success: boolean;
+  status: string;
   message: string;
+  amount: number;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    planType: string;
+    subscriptionInfo: SubscriptionInfo;
+  };
 }
 
 const plans = [
@@ -66,37 +78,89 @@ const plans = [
 ];
 
 export default function Subscription() {
-  const { user } = useAuth();
+  const { user, refreshSubscription } = useAuth();
   const { toast } = useToast();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [, setLocation] = useLocation();
 
   const { data: subscriptionInfo } = useQuery<SubscriptionInfo>({
     queryKey: ["/api/user/subscription"],
   });
 
-  const subscribeMutation = useMutation({
+  // Check URL parameters for payment redirect
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const reference = urlParams.get('reference');
+    
+    if (reference) {
+      // Remove the query params from URL
+      window.history.replaceState({}, '', '/subscription');
+      
+      // Verify the payment
+      verifyPaymentMutation.mutate(reference);
+    }
+  }, []);
+
+  const initializePaymentMutation = useMutation({
     mutationFn: async (plan: string) => {
-      const response = await apiRequest("POST", "/api/subscribe", {
+      const planPrices = { basic: 2500, premium: 5000 };
+      const amount = planPrices[plan as keyof typeof planPrices];
+      
+      const response = await apiRequest("POST", "/payments/initialize", {
         email: user?.email || "",
+        amount,
         plan,
       });
       return response.json();
     },
-    onSuccess: (data: SubscriptionResponse) => {
-      toast({
-        title: "Subscription Initiated",
-        description: `Your ${data.plan} plan subscription has been initiated. Reference: ${data.reference}`,
-      });
-      console.log("Paystack URL:", data.paystackUrl);
-      setSelectedPlan(null);
+    onSuccess: (data: PaymentInitializeResponse) => {
+      // Redirect to Paystack payment page
+      window.location.href = data.authorization_url;
     },
     onError: (error) => {
       toast({
-        title: "Subscription Failed",
-        description: error instanceof Error ? error.message : "Failed to process subscription",
+        title: "Payment Initialization Failed",
+        description: error instanceof Error ? error.message : "Failed to initialize payment",
         variant: "destructive",
       });
       setSelectedPlan(null);
+    },
+  });
+
+  const verifyPaymentMutation = useMutation({
+    mutationFn: async (reference: string) => {
+      const response = await apiRequest("POST", "/payments/verify", {
+        reference,
+      });
+      return response.json();
+    },
+    onSuccess: async (data: PaymentVerifyResponse) => {
+      if (data.success) {
+        // Refresh user data and subscription info
+        await refreshSubscription();
+        await queryClient.invalidateQueries({ queryKey: ["/api/user/subscription"] });
+        
+        toast({
+          title: "Payment Successful!",
+          description: `You've successfully subscribed to the ${data.user.planType} plan. Welcome!`,
+        });
+        
+        // Redirect to dashboard after successful payment
+        setTimeout(() => setLocation('/'), 2000);
+      } else {
+        toast({
+          title: "Payment Not Successful",
+          description: data.message || "Your payment could not be verified. Please contact support if you were charged.",
+          variant: "destructive",
+        });
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Payment Verification Failed",
+        description: error instanceof Error ? error.message : "Failed to verify payment",
+        variant: "destructive",
+      });
     },
   });
 
@@ -110,7 +174,7 @@ export default function Subscription() {
       return;
     }
     setSelectedPlan(plan);
-    subscribeMutation.mutate(plan);
+    initializePaymentMutation.mutate(plan);
   };
 
   const getTrialStatusBanner = () => {
@@ -237,16 +301,25 @@ export default function Subscription() {
                 className="w-full"
                 variant={planInfo.popular ? "default" : "outline"}
                 onClick={() => handleSubscribe(planInfo.plan)}
-                disabled={subscribeMutation.isPending && selectedPlan === planInfo.plan}
+                disabled={
+                  (initializePaymentMutation.isPending && selectedPlan === planInfo.plan) || 
+                  verifyPaymentMutation.isPending ||
+                  initializePaymentMutation.isPending
+                }
                 data-testid={planInfo.buttonTestId}
               >
-                {subscribeMutation.isPending && selectedPlan === planInfo.plan ? (
+                {initializePaymentMutation.isPending && selectedPlan === planInfo.plan ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Processing...
+                    Initializing Payment...
+                  </>
+                ) : verifyPaymentMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Verifying Payment...
                   </>
                 ) : (
-                  "Subscribe Now"
+                  "Subscribe with Paystack"
                 )}
               </Button>
             </CardFooter>

@@ -151,3 +151,22 @@ export const loginSchema = z.object({
 });
 
 export type LoginRequest = z.infer<typeof loginSchema>;
+
+// Paystack Payment Schemas
+export const paymentInitializeSchema = z.object({
+  email: z.string().email("Invalid email"),
+  amount: z.number().positive("Amount must be positive"),
+  plan: z.enum(["basic", "premium"]),
+  metadata: z.object({
+    userId: z.string().optional(),
+    planType: z.string(),
+  }).optional(),
+});
+
+export type PaymentInitializeRequest = z.infer<typeof paymentInitializeSchema>;
+
+export const paymentVerifySchema = z.object({
+  reference: z.string().min(1, "Reference is required"),
+});
+
+export type PaymentVerifyRequest = z.infer<typeof paymentVerifySchema>;

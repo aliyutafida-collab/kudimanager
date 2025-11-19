@@ -1,0 +1,91 @@
+================================================================================
+KUDIMANAGER ANDROID APK - BUILD INSTRUCTIONS
+================================================================================
+
+CURRENT STATUS:
+✅ Mobile app code created
+✅ Firebase credentials configured (.env file)
+✅ Build scripts ready
+✅ All dependencies configured
+
+WHAT YOU NEED TO DO:
+================================================================================
+
+STEP 1: Create Expo Account (2 minutes)
+----------------------------------------
+1. Go to: https://expo.dev/signup
+2. Sign up for FREE account (no credit card needed)
+3. Verify your email
+
+
+STEP 2: Get Your Expo Token (1 minute)
+----------------------------------------
+1. After logging in, go to:
+   https://expo.dev/accounts/[your-username]/settings/access-tokens
+
+2. Click "Create Token"
+3. Name it: "KudiManager Build"
+4. COPY the token (you'll only see it once!)
+
+
+STEP 3: Add Token to Replit (30 seconds)
+----------------------------------------
+1. In Replit, click "Tools" in the left sidebar
+2. Click "Secrets"
+3. Click "New Secret"
+4. Enter:
+   Key: EXPO_TOKEN
+   Value: [paste your token from Step 2]
+5. Click "Add Secret"
+
+
+STEP 4: Run the Build (1 command)
+----------------------------------------
+In the Replit Shell, run this single command:
+
+    cd mobile && bash quick-build.sh
+
+That's it! The script will:
+  • Verify your setup
+  • Install dependencies
+  • Submit the build to Expo
+  • Give you a link to monitor progress
+
+
+STEP 5: Download Your APK (10-20 minutes later)
+----------------------------------------
+1. The build takes 10-20 minutes
+2. Go to: https://expo.dev
+3. Click on "KudiManager" project
+4. Click "Builds"
+5. Wait for "Build Complete" ✅
+6. Click "Download" to get your APK file
+
+
+INSTALL APK ON ANDROID:
+----------------------------------------
+1. Transfer APK to your Android phone
+2. Settings → Security → Enable "Unknown Sources"
+3. Tap the APK file to install
+4. Open KudiManager app!
+
+
+TROUBLESHOOTING:
+================================================================================
+
+Problem: "EXPO_TOKEN not found"
+Solution: Make sure you added it to Replit Secrets (Step 3)
+
+Problem: Build fails
+Solution: Check https://expo.dev for error details
+
+Problem: Can't find builds
+Solution: Make sure you're logged into the same Expo account
+
+
+SUPPORT:
+================================================================================
+Expo Dashboard: https://expo.dev
+Expo Docs: https://docs.expo.dev
+
+================================================================================

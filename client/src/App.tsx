@@ -1,226 +1,37 @@
-import { useEffect, Suspense, useState } from "react";
+import { Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
 import Loading from "./components/Loading";
-import { Switch, Route, useLocation } from "wouter";
-import "./lib/i18n";
-import { useTranslation } from "react-i18next";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { ThemeProvider } from "@/hooks/use-theme";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitcher } from "@/components/language-switcher";
-import { Footer } from "@/components/footer";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import { ProtectedRoute } from "@/components/protected-route";
-import { PremiumRoute } from "@/components/premium-route";
-import { SplashScreen } from "@/components/splash-screen";
-import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
-import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
-import Dashboard from "@/pages/dashboard";
-import Sales from "@/pages/sales";
-import Expenses from "@/pages/expenses";
-import Inventory from "@/pages/inventory";
-import Reports from "@/pages/reports";
-import TaxCalculator from "@/pages/tax-calculator";
-import AIAdvisor from "@/pages/ai-advisor";
-import Vendors from "@/pages/vendors";
-import Learn from "@/pages/learn";
-import Subscription from "@/pages/subscription";
-import Subscribe from "@/pages/subscribe";
-import Login from "@/pages/login";
-import Register from "@/pages/register";
-import SetupWizard from "@/pages/setup-wizard";
-import NotFound from "@/pages/not-found";
+import ProtectedRoute from "./ProtectedRoute";
 
-function Redirect({ to }: { to: string }) {
-  const [, setLocation] = useLocation();
-  
-  useEffect(() => {
-    setLocation(to);
-  }, [to, setLocation]);
-  
-  return null;
-}
+import Home from "./pages/Home";
+import Learn from "./pages/Learn";
+import Subscription from "./pages/Subscription";
+import Subscribe from "./pages/Subscribe";
+import NotFound from "./pages/NotFound";
 
-function PublicRouter() {
-  return (
-    <Switch>
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
-      <Route>{() => <Redirect to="/login" />}</Route>
-    </Switch>
-  );
-}
-
-function ProtectedRouter() {
-  return (
-    <ProtectedRoute>
-      <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/setup-wizard" component={SetupWizard} />
-        <Route path="/sales" component={Sales} />
-        <Route path="/expenses" component={Expenses} />
-        <Route path="/inventory" component={Inventory} />
-        <Route path="/reports" component={Reports} />
-        <Route path="/tax-calculator">
-          {() => (
-            <PremiumRoute>
-              <TaxCalculator />
-            </PremiumRoute>
-          )}
-        </Route>
-        <Route path="/ai-advisor">
-          {() => (
-            <PremiumRoute>
-              <AIAdvisor />
-            </PremiumRoute>
-          )}
-        </Route>
-        <Route path="/vendors">
-          {() => (
-            <PremiumRoute>
-              <Vendors />
-            </PremiumRoute>
-          )}
-        </Route>
-        <Route path="/learn" component={Learn} />
-        <Route path="/subscription" component={Subscription} />
-        <Route path="/subscribe" component={Subscribe} />
-        <Route component={NotFound} />
-      </Switch>
-    </ProtectedRoute>
-    };
-
-  function UserProfile() {
-  const { user, logout } = useAuth();
-  const [, setLocation] = useLocation();
-  const { t } = useTranslation();
-
-  if (!user) return null;
-
-  const handleLogout = () => {
-    logout();
-    setLocation('/login');
-  };
-
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex items-center gap-2 text-sm">
-        <User className="w-4 h-4" />
-        <span className="font-medium" data-testid="text-username">{user.name}</span>
-      </div>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleLogout}
-        data-testid="button-logout"
-      >
-        <LogOut className="w-4 h-4 mr-2" />
-        {t('common.logout')}
-      </Button>
-    </div>
-  );
-}
-
-function AppContent() {
-  const { user, isLoading } = useAuth();
-  const [location, setLocation] = useLocation();
-  const [showSplash, setShowSplash] = useState(() => {
-    const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
-    return !hasSeenSplash;
-  });
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem('hasSeenSplash', 'true');
-    setShowSplash(false);
-  };
-
-  useEffect(() => {
-    if (!showSplash && !isLoading && location === '/' && !user) {
-      setLocation('/login');
-    }
-  }, [showSplash, isLoading, location, user, setLocation]);
-
-  const isAuthPage = location === '/login' || location === '/register';
-  const style = {
-    "--sidebar-width": "16rem",
-    "--sidebar-width-icon": "3rem",
-  };
-
-  if (showSplash) {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen gap-4" data-testid="loading-auth">
-        <img
-          src={logoPath}
-          alt="KudiManager Logo"
-          className="w-24 h-24"
-          data-testid="loading-logo"
-        />
-        <div className="spinner" data-testid="loading-spinner"></div>
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-
-  if (isAuthPage || !user) {
-    return (
-      <main className="flex-1">
-        <PublicRouter />
-      </main>
-    );
-  }
-
-  return (
-    <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-screen w-full">
-        <AppSidebar />
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <header className="flex items-center justify-between p-4 border-b bg-background gap-2">
-            <div className="flex items-center gap-3">
-              <SidebarTrigger data-testid="button-sidebar-toggle" />
-              <img
-                src={logoPath}
-                alt="KudiManager"
-                className="w-8 h-8 hidden sm:block"
-                data-testid="header-logo"
-              />
-            </div>
-            <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-end">
-              <UserProfile />
-              <LanguageSwitcher />
-              <ThemeToggle />
-            </div>
-          </header>
-          <main className="flex-1 overflow-auto p-6">
-            <ProtectedRouter />
-          </main>
-          <Footer />
-        </div>
-      </div>
-    </SidebarProvider>
-  );
-}
+import UserProfile from "./components/UserProfile";
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ThemeProvider>
-          <AuthProvider>
-            <AppContent />
-            <Toaster />
-          </AuthProvider>
-        </ThemeProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/subscription" element={<Subscription />} />
+          <Route path="/subscribe" element={<Subscribe />} />
+          <Route path="/profile" element={<UserProfile />} />
+        </Route>
+
+        {/* Not Found */}
+        <Route path="*" element={<NotFound />} />
+
+      </Routes>
+    </Suspense>
   );
 }
 

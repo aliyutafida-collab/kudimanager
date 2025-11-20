@@ -2,32 +2,19 @@ import express from "express";
 import { createServer } from "http";
 import app from "./app";
 
-// For Vercel serverless deployment, simply export the Express app
+// Export Express app for Vercel Serverless
 export default app;
 
-// For local development, run as a regular HTTP server
-if (process.env.NODE_ENV === "development" || !process.env.VERCEL) {
-  const { setupVite, serveStatic, log } = await import("./vite");
-  
-  // Wrap the app with /api prefix for dev mode
+// Local development server
+if (process.env.NODE_ENV !== "production") {
   const devApp = express();
-  devApp.use("/api", app);
-  
   const server = createServer(devApp);
 
-  // Setup Vite middleware in development
-  if (process.env.NODE_ENV === "development") {
-    await setupVite(devApp, server);
-  } else {
-    serveStatic(devApp);
-  }
+  // Prefix API routes with /api
+  devApp.use("/api", app);
 
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`[server] serving on port ${port}`);
+  const port = parseInt(process.env.PORT || "5050", 10);
+  server.listen(port, () => {
+    console.log("Dev server running on http://localhost:" + port);
   });
 }

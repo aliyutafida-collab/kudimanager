@@ -115,30 +115,67 @@ kudimanager/
 
 #### Updated Files:
 
-**`vercel.json`** - New deployment configuration:
+**`vercel.json`** - Deployment configuration for monorepo:
 ```json
 {
   "version": 2,
   "builds": [
-    { 
-      "src": "client/package.json", 
+    {
+      "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "client/dist" }
+      "config": {
+        "distDir": "client/dist"
+      }
     },
-    { "src": "server/index.ts", "use": "@vercel/node" }
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["server/**"]
+      }
+    }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/server/index.ts" },
-    { "src": "/(.*)", "dest": "/index.html", "status": 200 }
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/index.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html",
+      "status": 200
+    }
   ]
 }
 ```
 
+**How It Works:**
+
+1. **Client Build (`@vercel/static-build`)**:
+   - Detects `client/package.json`
+   - Runs `npm run build` in the client workspace
+   - Vite builds to `client/dist/`
+   - `distDir: "client/dist"` tells Vercel where to find the output
+   - Vercel promotes `client/dist/` contents to deployment root
+   - Static files served from `/` (e.g., `/index.html`, `/assets/*`)
+
+2. **Server Build (`@vercel/node`)**:
+   - Detects `server/index.ts` 
+   - Automatically transpiles TypeScript
+   - Creates serverless function from the default export
+   - `includeFiles: ["server/**"]` ensures all server files are included
+   - Handles all `/api/*` routes
+
+3. **Routing**:
+   - `/api/*` → Routes to serverless function (`server/index.ts`)
+   - `/*` → Serves static files from promoted `client/dist/` (fallback to `/index.html`)
+   - SPA client-side routing works via fallback to `/index.html`
+
 **Important Notes:**
-- `distDir: "client/dist"` tells @vercel/static-build where to find the built files
-- @vercel/static-build promotes the distDir contents to the deployment root
-- The SPA fallback route points to `/index.html` (not `/client/dist/index.html`)
-- This ensures client-side routing works correctly in the deployed application
+- @vercel/static-build automatically runs the `build` script from `client/package.json`
+- @vercel/node handles TypeScript transpilation automatically
+- The SPA fallback route points to `/index.html` (promoted from `client/dist/index.html`)
+- Server exports Express app as `export default app` for serverless compatibility
 
 **`tsconfig.json`** - Updated includes:
 - Removed: `api/**/*`

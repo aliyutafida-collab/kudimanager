@@ -1,0 +1,352 @@
+📄 1. PRIVACY POLICY (paste into /privacy)
+
+PRIVACY POLICY — KUDIMANAGER
+Last Updated: {{ insert today’s date }}
+
+This Privacy Policy explains how KudiManager, operated by Zanikon Investment Limited, collects, uses, stores, and protects your information when you use our services.
+
+1. Information We Collect
+
+We collect the following information:
+
+a) Personal Information
+
+Full name
+
+Email address
+
+Phone number
+
+Business name & category
+
+Password (encrypted)
+
+b) Business & Financial Information
+
+Sales records
+
+Inventory details
+
+Expenses
+
+Reports generated
+
+AI advisory interactions
+
+c) Device & Technical Data
+
+IP address
+
+Browser type
+
+Language settings
+
+Device identifiers
+
+Usage logs
+
+Your financial data belongs to you. We only access it to provide services.
+
+2. How We Use Your Information
+
+We use data to:
+
+Provide the KudiManager service
+
+Generate financial insights & reports
+
+Manage subscriptions and payments
+
+Calculate taxes & compliance suggestions
+
+Improve business performance analytics
+
+Communicate account updates
+
+Prevent fraud or misuse
+
+3. Legal Basis
+
+We process your data under:
+
+Consent
+
+Contractual obligation
+
+Legitimate business interest
+
+Compliance with Nigerian NDPR law
+
+4. Data Sharing
+
+We do not sell your data.
+
+We only share with:
+
+Paystack or Flutterwave (for payments)
+
+Firebase (secure authentication + database)
+
+Email/SMS service providers
+
+Regulatory bodies when required by law
+
+All partners follow strong encryption & security standards.
+
+5. Data Storage & Security
+
+Data is stored securely via:
+
+Industry-standard encryption
+
+Secure servers
+
+Access control
+
+Regular security audits
+
+6. Data Retention
+
+We retain data as long as your account is active or as required by law.
+
+7. User Rights
+
+You may:
+
+Request your data
+
+Request deletion
+
+Update personal info
+
+Withdraw consent
+
+Opt out of marketing
+
+Contact: support@kudimanager.com
+
+8. Children’s Privacy
+
+KudiManager is not for children under 13.
+
+9. Changes to This Policy
+
+We may update this policy and will notify users when major changes occur.
+
+10. Contact
+
+Zanikon Investment Limited
+Abuja, Nigeria
+Email: support@kudimanager.com
+
+📄 2. TERMS & CONDITIONS (paste into /terms)
+
+TERMS & CONDITIONS — KUDIMANAGER
+Last Updated: {{ date }}
+
+These Terms govern your use of KudiManager. By using the platform, you agree to them.
+
+1. Definitions
+
+“Service” — KudiManager application (web + mobile)
+
+“User” — any registered or unregistered person using KudiManager
+
+“We”, “Us”, “Our” — Zanikon Investment Limited
+
+2. User Obligations
+
+You agree to:
+
+Provide accurate information
+
+Use the platform legally
+
+Not misuse or attempt to hack the system
+
+3. Subscription & Payments
+
+First 3 months are free
+
+After that, subscription must be renewed
+
+N2,500 monthly basic plan
+
+N5,000 premium (AI reports, detailed analytics)
+
+Payments are processed via Paystack / Flutterwave
+
+No refunds for already active subscription periods
+
+4. Acceptable Use
+
+You may not:
+
+Copy, reverse engineer or resell the app
+
+Upload harmful content or viruses
+
+Access data that isn’t yours
+
+5. Financial & Tax Advice Disclaimer
+
+KudiManager provides automated AI suggestions, not certified tax or financial advice.
+
+Users remain responsible for:
+
+Paying correct taxes
+
+Following legal and financial regulations
+
+6. Termination
+
+We may suspend or terminate accounts that violate our policies.
+
+7. Limitation of Liability
+
+Zanikon Investment Limited is not liable for:
+
+Incorrect financial inputs by users
+
+Business losses
+
+Downtime due to internet or provider issues
+
+8. Governing Law
+
+These Terms follow the laws of the Federal Republic of Nigeria.
+
+9. Contact
+
+support@kudimanager.com
+
+📄 3. REFUND POLICY (paste into /refund)
+
+REFUND & CANCELLATION POLICY — KUDIMANAGER
+Last Updated: {{ date }}
+
+1. Subscription Refunds
+
+KudiManager offers digital services billed monthly or annually.
+
+We do not offer refunds for:
+
+Partially used subscription periods
+
+Mistaken payments by users
+
+AI-generated insights
+
+Refunds may be granted if:
+
+There is a proven technical fault caused by us
+
+Duplicate billing occurred
+
+2. Cancellations
+
+Users can cancel anytime from the subscription page
+
+Services remain active until the end of the billing cycle
+
+No fees for cancellation
+
+3. Payment Disputes
+
+Handled through:
+
+Paystack dispute channels
+
+Flutterwave dispute channels
+
+4. Business Users
+
+All business users must comply with Paystack/Flutterwave policies.
+
+📄 4. NDPR DATA PROTECTION POLICY (paste into /data-protection)
+
+NDPR DATA PROTECTION POLICY — KUDIMANAGER
+Last Updated: {{ date }}
+
+This policy ensures KudiManager complies with the Nigerian Data Protection Regulation (NDPR).
+
+1. Data Controller
+
+Zanikon Investment Limited
+Email: support@kudimanager.com
+
+2. What Data We Process
+
+Personal identification data
+
+Financial records input by users
+
+Device information
+
+Usage analytics
+
+3. Consent
+
+User consent is required for:
+
+Marketing communication
+
+AI advisory emails
+
+Data analytics
+
+4. Data Minimization
+
+We process only what is required for service delivery.
+
+5. Data Protection Principles
+
+We follow NDPR principles:
+
+Lawfulness
+
+Transparency
+
+Security
+
+Data minimization
+
+Accuracy
+
+6. Third-Party Processors
+
+We use:
+
+Paystack
+
+Flutterwave
+
+Firebase
+
+SendGrid/SMTP
+
+Vercel servers
+
+All third parties are compliant with NDPR/GDPR standards.
+
+7. User Rights Under NDPR
+
+Users may request:
+
+Data access
+
+Correction
+
+Export
+
+Deletion
+
+Requests: support@kudimanager.com
+
+8. Breach Notification
+
+We will notify affected users within 72 hours of any data breach.
+
+9. Enforcement
+
+Zanikon Investment Limited will enforce disciplinary actions for internal breaches.

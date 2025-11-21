@@ -19,11 +19,50 @@ export default function Refund() {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="space-y-8">
-          {/* Legal Text Placeholder */}
-          <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-8">
-            <p className="text-sm text-blue-700 dark:text-blue-300 font-mono whitespace-pre-wrap break-words">
-              === INSERT REFUND POLICY TEXT HERE ===
-            </p>
+          {/* Legal Text */}
+          <div className="prose dark:prose-invert max-w-none">
+            <div className="space-y-4 text-sm leading-relaxed">
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">1. Subscription Refunds</h2>
+                <p className="mb-3 text-muted-foreground">KudiManager offers digital services billed monthly or annually.</p>
+                
+                <h3 className="font-semibold mt-4 mb-2">We do not offer refunds for:</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Partially used subscription periods</li>
+                  <li>Mistaken payments by users</li>
+                  <li>AI-generated insights</li>
+                </ul>
+
+                <h3 className="font-semibold mt-4 mb-2">Refunds may be granted if:</h3>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>There is a proven technical fault caused by us</li>
+                  <li>Duplicate billing occurred</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">2. Cancellations</h2>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Users can cancel anytime from the subscription page</li>
+                  <li>Services remain active until the end of the billing cycle</li>
+                  <li>No fees for cancellation</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">3. Payment Disputes</h2>
+                <p className="mb-2">Handled through:</p>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Paystack dispute channels</li>
+                  <li>Flutterwave dispute channels</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">4. Business Users</h2>
+                <p className="text-muted-foreground">All business users must comply with Paystack/Flutterwave policies.</p>
+              </div>
+            </div>
           </div>
 
           {/* Quick Links */}

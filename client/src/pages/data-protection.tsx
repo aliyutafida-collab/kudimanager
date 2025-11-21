@@ -21,11 +21,91 @@ export default function DataProtection() {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="space-y-8">
-          {/* Legal Text Placeholder */}
-          <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-8">
-            <p className="text-sm text-blue-700 dark:text-blue-300 font-mono whitespace-pre-wrap break-words">
-              === INSERT DATA PROTECTION POLICY TEXT HERE ===
-            </p>
+          {/* Legal Text */}
+          <div className="prose dark:prose-invert max-w-none">
+            <div className="space-y-4 text-sm leading-relaxed">
+              <p className="text-muted-foreground">This policy ensures KudiManager complies with the Nigerian Data Protection Regulation (NDPR).</p>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">1. Data Controller</h2>
+                <p className="text-muted-foreground">
+                  Zanikon Investment Limited<br />
+                  Email: support@kudimanager.com
+                </p>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">2. What Data We Process</h2>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Personal identification data</li>
+                  <li>Financial records input by users</li>
+                  <li>Device information</li>
+                  <li>Usage analytics</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">3. Consent</h2>
+                <p className="mb-2">User consent is required for:</p>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Marketing communication</li>
+                  <li>AI advisory emails</li>
+                  <li>Data analytics</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">4. Data Minimization</h2>
+                <p className="text-muted-foreground">We process only what is required for service delivery.</p>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">5. Data Protection Principles</h2>
+                <p className="mb-2">We follow NDPR principles:</p>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Lawfulness</li>
+                  <li>Transparency</li>
+                  <li>Security</li>
+                  <li>Data minimization</li>
+                  <li>Accuracy</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">6. Third-Party Processors</h2>
+                <p className="mb-2">We use:</p>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Paystack</li>
+                  <li>Flutterwave</li>
+                  <li>Firebase</li>
+                  <li>SendGrid/SMTP</li>
+                  <li>Vercel servers</li>
+                </ul>
+                <p className="mt-3 text-muted-foreground">All third parties are compliant with NDPR/GDPR standards.</p>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">7. User Rights Under NDPR</h2>
+                <p className="mb-2">Users may request:</p>
+                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <li>Data access</li>
+                  <li>Correction</li>
+                  <li>Export</li>
+                  <li>Deletion</li>
+                </ul>
+                <p className="mt-3 text-muted-foreground">Requests: support@kudimanager.com</p>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">8. Breach Notification</h2>
+                <p className="text-muted-foreground">We will notify affected users within 72 hours of any data breach.</p>
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-6 mb-3">9. Enforcement</h2>
+                <p className="text-muted-foreground">Zanikon Investment Limited will enforce disciplinary actions for internal breaches.</p>
+              </div>
+            </div>
           </div>
 
           {/* Quick Links */}

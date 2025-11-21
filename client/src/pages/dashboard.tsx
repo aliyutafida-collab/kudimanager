@@ -237,7 +237,16 @@ export default function Dashboard() {
                 <Package className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
               )}
               <p className="text-sm flex-1">
-                {reminder ? t(reminder.key, reminder.options || {}) : t('dashboard.reminders.allHealthy')}
+                {reminder ? (
+                  <>
+                    {reminder.options 
+                      ? t(reminder.key, reminder.options)
+                      : t(reminder.key)
+                    }
+                  </>
+                ) : (
+                  t('dashboard.reminders.allHealthy')
+                )}
               </p>
               <Button
                 variant="ghost"

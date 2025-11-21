@@ -28,6 +28,10 @@ import AIAdvisor from "@/pages/ai-advisor";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 import SetupWizard from "@/pages/setup-wizard";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
+import Refund from "@/pages/refund";
+import DataProtection from "@/pages/data-protection";
 import NotFound from "@/pages/not-found";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -190,6 +194,30 @@ export default function App() {
               </Route>
 
               {/* 404 - Catch all unknown routes */}
+              <Route path="/privacy">
+                <div className="w-full">
+                  <Privacy />
+                </div>
+              </Route>
+
+              <Route path="/terms">
+                <div className="w-full">
+                  <Terms />
+                </div>
+              </Route>
+
+              <Route path="/refund">
+                <div className="w-full">
+                  <Refund />
+                </div>
+              </Route>
+
+              <Route path="/data-protection">
+                <div className="w-full">
+                  <DataProtection />
+                </div>
+              </Route>
+
               <Route path="/:rest*" component={NotFound} />
             </Switch>
             <Toaster />

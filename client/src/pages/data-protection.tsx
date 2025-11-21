@@ -1,0 +1,85 @@
+import logoUrl from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
+
+export default function DataProtection() {
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Logo and Header */}
+      <div className="bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 dark:to-background border-b">
+        <div className="max-w-4xl mx-auto px-4 py-12">
+          <div className="flex items-center justify-center mb-6">
+            <img src={logoUrl} alt="KudiManager" className="w-20 h-20" />
+          </div>
+          <h1 className="text-4xl font-bold text-center mb-2">
+            Data Protection & NDPR
+          </h1>
+          <p className="text-center text-muted-foreground">
+            Last Updated: November 21, 2025
+          </p>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="space-y-8">
+          {/* Legal Text Placeholder */}
+          <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-8">
+            <p className="text-sm text-blue-700 dark:text-blue-300 font-mono whitespace-pre-wrap break-words">
+              === INSERT DATA PROTECTION POLICY TEXT HERE ===
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div className="border-t pt-8 mt-12">
+            <h2 className="text-2xl font-bold mb-4">Quick Links</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <a
+                href="/privacy"
+                className="p-4 border rounded-lg hover:bg-accent dark:hover:bg-accent/50 transition-colors"
+              >
+                <h3 className="font-semibold mb-1">Privacy Policy</h3>
+                <p className="text-sm text-muted-foreground">
+                  See how we handle your data
+                </p>
+              </a>
+              <a
+                href="/terms"
+                className="p-4 border rounded-lg hover:bg-accent dark:hover:bg-accent/50 transition-colors"
+              >
+                <h3 className="font-semibold mb-1">Terms & Conditions</h3>
+                <p className="text-sm text-muted-foreground">
+                  Read our terms of service
+                </p>
+              </a>
+              <a
+                href="/refund"
+                className="p-4 border rounded-lg hover:bg-accent dark:hover:bg-accent/50 transition-colors"
+              >
+                <h3 className="font-semibold mb-1">Refund Policy</h3>
+                <p className="text-sm text-muted-foreground">
+                  Learn about refunds and cancellations
+                </p>
+              </a>
+            </div>
+          </div>
+
+          {/* Contact Section */}
+          <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-lg p-6">
+            <h3 className="font-bold mb-2">Have Questions?</h3>
+            <p className="text-sm text-muted-foreground">
+              Contact us at:{" "}
+              <a
+                href="mailto:support@kudimanager.com"
+                className="text-emerald-600 dark:text-emerald-400 hover:underline"
+              >
+                support@kudimanager.com
+              </a>
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Response time: 7 business days
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

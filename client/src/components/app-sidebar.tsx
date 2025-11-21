@@ -13,7 +13,7 @@ import {
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from "@/components/ui/sidebar";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
+import logoPath from "@assets/kudimanager-logo.png";
 
 const menuItems = [
   { titleKey: "nav.dashboard", url: "/", icon: LayoutDashboard, testId: "link-dashboard" },

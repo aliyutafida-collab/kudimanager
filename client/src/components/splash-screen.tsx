@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import appIconPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
+import appIconPath from "@assets/kudimanager-logo.png";
 
 interface SplashScreenProps {
   onComplete: () => void;

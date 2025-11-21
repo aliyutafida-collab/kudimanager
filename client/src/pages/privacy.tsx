@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import logoUrl from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
+import logoUrl from "@assets/kudimanager-logo.png";
 
 export default function Privacy() {
   const { t } = useTranslation();

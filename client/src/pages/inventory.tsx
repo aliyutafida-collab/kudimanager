@@ -4,7 +4,7 @@ import { AddProductDialog } from "@/components/add-product-dialog";
 import { InventoryTable } from "@/components/inventory-table";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import type { Product } from "@shared/schema";
+import type { Product } from "@/types/schemas";
 
 export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState("");

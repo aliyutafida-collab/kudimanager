@@ -4,7 +4,7 @@ import { AddExpenseDialog } from "@/components/add-expense-dialog";
 import { ExpensesTable } from "@/components/expenses-table";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import type { Expense } from "@shared/schema";
+import type { Expense } from "@/types/schemas";
 
 export default function Expenses() {
   const [searchQuery, setSearchQuery] = useState("");

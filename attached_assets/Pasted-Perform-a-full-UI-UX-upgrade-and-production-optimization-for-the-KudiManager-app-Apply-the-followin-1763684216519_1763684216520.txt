@@ -1,0 +1,56 @@
+Perform a full UI/UX upgrade and production optimization for the KudiManager app. Apply the following improvements across the entire project:
+
+1. GLOBAL UI/UX POLISH
+- Make the interface modern, clean, and consistent using Tailwind best practices.
+- Improve spacing, alignment, padding, and typography.
+- Ensure uniform button styles, card styles, and table spacing across all pages.
+- Ensure the app logo appears on ALL pages including Login, Register, Setup Wizard, Dashboard, and any empty states.
+- Add a global header layout for all protected pages if needed.
+
+2. DARK MODE SUPPORT
+- Add a full light/dark mode system using Tailwind’s dark mode class.
+- Add a visible toggle (e.g., sun/moon icon) in the top-right of the app.
+- Save the user’s preference in localStorage.
+- Apply dark mode styles to sidebar, dashboard, forms, buttons, cards, and tables.
+
+3. DASHBOARD REDESIGN (WORLD-CLASS QUALITY)
+- Improve dashboard cards for Sales, Expenses, Inventory, and Profit.
+- Add professional icons.
+- Upgrade charts using Chart.js or Recharts.
+- Improve typography, grid spacing, and responsiveness.
+- Ensure the dashboard works on mobile and desktop.
+
+4. MOBILE NAVIGATION UPGRADE
+- Add a responsive mobile navigation menu.
+- When on small screens, collapse the sidebar into a hamburger menu.
+- Add smooth slide-in animation.
+- Ensure all routes work correctly on mobile.
+
+5. MULTILINGUAL SUPPORT (ENGLISH + FRENCH)
+- Ensure translation system works across all pages.
+- Add French translations for all new UI text.
+- Add auto-language detection: if browser language starts with "fr", default to French.
+- Keep manual override toggle so user can switch languages.
+
+6. PASSWORD EYE TOGGLE
+- Add "show/hide password" eye icon to all password fields in Login, Register, and Setup pages.
+
+7. SECURITY, FORMS & UX
+- Improve form validation (email, password strength, required fields).
+- Add toast notifications for success/error using react-hot-toast or the existing toast system.
+
+8. VERCEL PRODUCTION OPTIMIZATION
+- Fix all build issues for both client and server.
+- Ensure vite.config.ts alias resolution uses:
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+- Run a full local build of both client and server.
+- Ensure the Vercel monorepo deployment works: client/dist served as frontend, server/dist used for backend.
+- Optimize static assets, enable caching, and ensure 404, redirects, and routing are correct.
+
+9. FINAL CHECK
+- Ensure the app builds without errors.
+- Ensure all improvements are functional.
+- Commit and push all changes.
+
+Make sure nothing breaks existing functionality.

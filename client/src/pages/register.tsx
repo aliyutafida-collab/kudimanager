@@ -16,7 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useTranslation } from 'react-i18next';
-import logoPath from '@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png';
+import logoPath from '@assets/kudimanager-logo.png';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';

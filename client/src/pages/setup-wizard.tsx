@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { CheckCircle2, Package, Loader2 } from "lucide-react";
-import logoPath from "@assets/ChatGPT Image Nov 10, 2025, 03_16_37 AM_1762741083316.png";
+import logoPath from "@assets/kudimanager-logo.png";
 
 type ProductFormValues = z.infer<typeof insertProductSchema>;
 

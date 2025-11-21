@@ -11,7 +11,7 @@ import { SalesTable } from "@/components/sales-table";
 import { ExpensesTable } from "@/components/expenses-table";
 import { TrialBanner } from "@/components/trial-banner";
 import { CurrencyDisplay } from "@/components/currency-display";
-import type { Sale, Expense, Product } from "@/types/schemas";
+import type { Sale, Expense, Product } from "@/lib/schema.types";
 import { apiRequest } from "@/lib/queryClient";
 import { formatCurrency } from "@/lib/currency";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';

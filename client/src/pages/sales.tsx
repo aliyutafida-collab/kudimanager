@@ -4,7 +4,7 @@ import { AddSaleDialog } from "@/components/add-sale-dialog";
 import { SalesTable } from "@/components/sales-table";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import type { Sale } from "@/types/schemas";
+import type { Sale } from "@/lib/schema.types";
 
 export default function Sales() {
   const [searchQuery, setSearchQuery] = useState("");

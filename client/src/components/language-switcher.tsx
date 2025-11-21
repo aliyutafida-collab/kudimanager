@@ -17,6 +17,7 @@ export function LanguageSwitcher() {
       data-testid="select-language"
     >
       <option value="en">English</option>
+      <option value="fr">Français</option>
       <option value="ha">Hausa</option>
       <option value="yo">Yoruba</option>
       <option value="ig">Igbo</option>

@@ -7,8 +7,8 @@ import { CurrencyDisplay } from "@/components/currency-display";
 interface Product {
   id: string;
   name: string;
-  sku: string;
-  category: string;
+  sku?: string;
+  category?: string;
   price: number;
   quantity: number;
   lowStockThreshold: number;

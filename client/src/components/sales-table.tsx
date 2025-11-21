@@ -7,7 +7,7 @@ import { CurrencyDisplay } from "@/components/currency-display";
 interface Sale {
   id: string;
   date: string;
-  customer: string;
+  customer?: string;
   productName: string;
   quantity: number;
   unitPrice: number;

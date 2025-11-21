@@ -29,6 +29,25 @@ import Register from "@/pages/register";
 import SetupWizard from "@/pages/setup-wizard";
 import NotFound from "@/pages/not-found";
 
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ThemeToggle } from "@/components/theme-toggle";
+
+// Header with theme toggle
+function Header() {
+  return (
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex h-14 items-center justify-between px-4 gap-2">
+        <div className="flex items-center gap-2">
+          <SidebarTrigger data-testid="button-sidebar-toggle" />
+        </div>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+        </div>
+      </div>
+    </header>
+  );
+}
+
 // Protected layout with sidebar
 function ProtectedLayout({ children }: { children: ReactNode }) {
   return (
@@ -43,25 +62,6 @@ function ProtectedLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
     </SidebarProvider>
-  );
-}
-
-// Header with theme toggle and logo
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { ThemeToggle } from "@/components/theme-toggle";
-
-function Header() {
-  return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 items-center justify-between px-4 gap-2">
-        <div className="flex items-center gap-2">
-          <SidebarTrigger data-testid="button-sidebar-toggle" />
-        </div>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-        </div>
-      </div>
-    </header>
   );
 }
 

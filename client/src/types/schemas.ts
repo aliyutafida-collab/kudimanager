@@ -5,23 +5,23 @@ export interface Product {
   id: string;
   userId: string;
   name: string;
-  sku?: string;
-  category?: string;
+  sku?: string | undefined;
+  category?: string | undefined;
   price: string;
   quantity: number;
-  lowStockThreshold?: number;
+  lowStockThreshold?: number | undefined;
 }
 
 export interface Sale {
   id: string;
   userId: string;
-  productId?: string;
+  productId?: string | undefined;
   productName: string;
-  customer?: string;
+  customer?: string | undefined;
   quantity: number;
   unitPrice: string;
   total: string;
-  date: Date;
+  date: string | Date;
 }
 
 export interface Expense {
@@ -30,7 +30,7 @@ export interface Expense {
   description: string;
   category: string;
   amount: string;
-  date: Date;
+  date: string | Date;
 }
 
 // Zod schemas for validation

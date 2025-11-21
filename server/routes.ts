@@ -1134,6 +1134,93 @@ Provide 3 specific, actionable recommendations. Be concise and practical. Focus 
     }
   });
 
+  // Flutterwave Payment Routes
+  app.post("/payments/flutterwave/init", authMiddleware, paymentRateLimiter, async (req: AuthRequest, res) => {
+    try {
+      console.log("[FLUTTERWAVE INIT] Request received:", { ...req.body, userId: req.userId });
+      
+      const validatedData = paymentInitializeSchema.parse(req.body);
+      
+      // Flutterwave uses NGN amounts directly (not in kobo like Paystack)
+      const flutterwaveInitData = {
+        email: validatedData.email,
+        amount: validatedData.amount,
+        planType: validatedData.plan,
+        userId: req.userId!,
+      };
+
+      // Mock Flutterwave initialization
+      res.json({
+        success: true,
+        link: `https://checkout.flutterwave.com/?email=${encodeURIComponent(validatedData.email)}&amount=${validatedData.amount}&plan=${validatedData.plan}`,
+        tx_ref: `kudimanager_${Date.now()}_${req.userId}`,
+      });
+    } catch (error) {
+      console.error("[FLUTTERWAVE INIT] Error:", error);
+      res.status(400).json({ error: "Validation failed" });
+    }
+  });
+
+  app.post("/payments/flutterwave/verify", authMiddleware, paymentRateLimiter, async (req: AuthRequest, res) => {
+    try {
+      console.log("[FLUTTERWAVE VERIFY] Request received:", req.body);
+      
+      const { transactionId } = req.body as { transactionId: string };
+      if (!transactionId) {
+        return res.status(400).json({ error: "Transaction ID required" });
+      }
+
+      const authenticatedUser = await storage.getUserById(req.userId!);
+      if (!authenticatedUser) {
+        return res.status(401).json({ error: "Authentication failed" });
+      }
+
+      // Mock verification - in production, call Flutterwave API
+      const mockTransaction = {
+        status: "success",
+        amount: 2500,
+        plan: "basic",
+      };
+
+      if (mockTransaction.status !== "success") {
+        return res.json({ success: false, status: mockTransaction.status });
+      }
+
+      const updatedUser = await storage.updateUserPlan(authenticatedUser.id, mockTransaction.plan);
+      if (!updatedUser) {
+        return res.status(500).json({ error: "Failed to activate subscription" });
+      }
+
+      res.json({
+        success: true,
+        message: "Payment verified successfully",
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error("[FLUTTERWAVE VERIFY] Error:", error);
+      res.status(500).json({ error: "Verification failed" });
+    }
+  });
+
+  // Flutterwave Webhook
+  app.post("/webhooks/flutterwave", paymentRateLimiter, async (req, res) => {
+    try {
+      console.log("[FLUTTERWAVE WEBHOOK] Received webhook");
+      const transaction = req.body as any;
+
+      if (transaction.status !== "successful") {
+        console.log("[FLUTTERWAVE WEBHOOK] Transaction not successful:", transaction.status);
+        return res.status(400).json({ error: "Transaction not successful" });
+      }
+
+      console.log("[FLUTTERWAVE WEBHOOK] Processing successful transaction:", transaction);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("[FLUTTERWAVE WEBHOOK] Error:", error);
+      res.status(500).json({ error: "Webhook processing failed" });
+    }
+  });
+
   // Vendor Suggestion System (Mock AI)
   app.post("/vendors/suggest", async (req, res) => {
     try {

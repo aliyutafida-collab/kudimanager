@@ -21,6 +21,7 @@ import Reports from "@/pages/reports";
 import Learn from "@/pages/learn";
 import Subscription from "@/pages/subscription";
 import Subscribe from "@/pages/subscribe";
+import Billing from "@/pages/billing";
 import TaxCalculator from "@/pages/tax-calculator";
 import Vendors from "@/pages/vendors";
 import AIAdvisor from "@/pages/ai-advisor";
@@ -152,6 +153,14 @@ export default function App() {
                 <ProtectedRoute allowExpired={true}>
                   <ProtectedLayout>
                     <Subscribe />
+                  </ProtectedLayout>
+                </ProtectedRoute>
+              </Route>
+
+              <Route path="/billing">
+                <ProtectedRoute>
+                  <ProtectedLayout>
+                    <Billing />
                   </ProtectedLayout>
                 </ProtectedRoute>
               </Route>

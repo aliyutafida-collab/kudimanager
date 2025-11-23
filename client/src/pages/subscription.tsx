@@ -191,7 +191,7 @@ export default function Subscription() {
                   Your Trial Has Ended
                 </p>
                 <p className="text-sm text-red-700 dark:text-red-300">
-                  Subscribe to one of our plans below to continue managing your business with KudiManager
+                  Subscribe to one of our plans below to continue managing your business with MaiCa
                 </p>
               </div>
             </div>

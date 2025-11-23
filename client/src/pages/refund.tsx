@@ -1,4 +1,4 @@
-import logoUrl from "@assets/kudimanager-logo.png";
+import logoUrl from "@assets/maica-logo.png";
 
 export default function Refund() {
   return (
@@ -7,7 +7,7 @@ export default function Refund() {
       <div className="bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 dark:to-background border-b">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="flex items-center justify-center mb-6">
-            <img src={logoUrl} alt="KudiManager" className="w-20 h-20" />
+            <img src={logoUrl} alt="MaiCa" className="w-20 h-20" />
           </div>
           <h1 className="text-4xl font-bold text-center mb-2">Refund Policy</h1>
           <p className="text-center text-muted-foreground">
@@ -24,7 +24,7 @@ export default function Refund() {
             <div className="space-y-4 text-sm leading-relaxed">
               <div>
                 <h2 className="text-lg font-semibold mt-6 mb-3">1. Subscription Refunds</h2>
-                <p className="mb-3 text-muted-foreground">KudiManager offers digital services billed monthly or annually.</p>
+                <p className="mb-3 text-muted-foreground">MaiCa offers digital services billed monthly or annually.</p>
                 
                 <h3 className="font-semibold mt-4 mb-2">We do not offer refunds for:</h3>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
@@ -105,10 +105,10 @@ export default function Refund() {
             <p className="text-sm text-muted-foreground">
               Contact us at:{" "}
               <a
-                href="mailto:support@kudimanager.com"
+                href="mailto:support@maica.com"
                 className="text-emerald-600 dark:text-emerald-400 hover:underline"
               >
-                support@kudimanager.com
+                support@maica.com
               </a>
             </p>
             <p className="text-sm text-muted-foreground mt-2">

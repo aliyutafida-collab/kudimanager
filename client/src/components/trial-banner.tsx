@@ -37,7 +37,7 @@ export function TrialBanner({ subscriptionInfo }: TrialBannerProps) {
                 Subscription Expired
               </p>
               <p className="text-sm text-red-700 dark:text-red-300">
-                Your subscription has ended. Renew now to continue using KudiManager
+                Your subscription has ended. Renew now to continue using MaiCa
               </p>
             </div>
           </div>
@@ -91,7 +91,7 @@ export function TrialBanner({ subscriptionInfo }: TrialBannerProps) {
                 Trial Ending Soon
               </p>
               <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                Only {trialDaysRemaining} days left! Subscribe now to keep using KudiManager
+                Only {trialDaysRemaining} days left! Subscribe now to keep using MaiCa
               </p>
             </div>
           </div>
@@ -117,7 +117,7 @@ export function TrialBanner({ subscriptionInfo }: TrialBannerProps) {
                 Trial Expired
               </p>
               <p className="text-sm text-red-700 dark:text-red-300">
-                Your free trial has ended. Subscribe to continue managing your business with KudiManager
+                Your free trial has ended. Subscribe to continue managing your business with MaiCa
               </p>
             </div>
           </div>

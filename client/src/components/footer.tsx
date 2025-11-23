@@ -7,7 +7,7 @@ export function Footer() {
         <div className="flex flex-col items-center justify-center gap-2 text-sm text-muted-foreground">
           <p className="flex items-center gap-2">
             Built with <Heart className="w-4 h-4 text-destructive fill-destructive" /> by{" "}
-            <span className="font-semibold text-foreground">KudiManager</span>
+            <span className="font-semibold text-foreground">MaiCa</span>
           </p>
           <p>Empowering Nigerian SMEs</p>
         </div>

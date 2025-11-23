@@ -1,4 +1,4 @@
-import logoUrl from "@assets/kudimanager-logo.png";
+import logoUrl from "@assets/maica-logo.png";
 
 export default function DataProtection() {
   return (
@@ -7,7 +7,7 @@ export default function DataProtection() {
       <div className="bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 dark:to-background border-b">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="flex items-center justify-center mb-6">
-            <img src={logoUrl} alt="KudiManager" className="w-20 h-20" />
+            <img src={logoUrl} alt="MaiCa" className="w-20 h-20" />
           </div>
           <h1 className="text-4xl font-bold text-center mb-2">
             Data Protection & NDPR
@@ -24,13 +24,13 @@ export default function DataProtection() {
           {/* Legal Text */}
           <div className="prose dark:prose-invert max-w-none">
             <div className="space-y-4 text-sm leading-relaxed">
-              <p className="text-muted-foreground">This policy ensures KudiManager complies with the Nigerian Data Protection Regulation (NDPR).</p>
+              <p className="text-muted-foreground">This policy ensures MaiCa complies with the Nigerian Data Protection Regulation (NDPR).</p>
 
               <div>
                 <h2 className="text-lg font-semibold mt-6 mb-3">1. Data Controller</h2>
                 <p className="text-muted-foreground">
                   Zanikon Investment Limited<br />
-                  Email: support@kudimanager.com
+                  Email: support@maica.com
                 </p>
               </div>
 
@@ -93,7 +93,7 @@ export default function DataProtection() {
                   <li>Export</li>
                   <li>Deletion</li>
                 </ul>
-                <p className="mt-3 text-muted-foreground">Requests: support@kudimanager.com</p>
+                <p className="mt-3 text-muted-foreground">Requests: support@maica.com</p>
               </div>
 
               <div>
@@ -148,10 +148,10 @@ export default function DataProtection() {
             <p className="text-sm text-muted-foreground">
               Contact us at:{" "}
               <a
-                href="mailto:support@kudimanager.com"
+                href="mailto:support@maica.com"
                 className="text-emerald-600 dark:text-emerald-400 hover:underline"
               >
-                support@kudimanager.com
+                support@maica.com
               </a>
             </p>
             <p className="text-sm text-muted-foreground mt-2">

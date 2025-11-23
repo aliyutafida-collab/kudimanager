@@ -16,7 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useTranslation } from 'react-i18next';
-import logoPath from '@assets/kudimanager-logo.png';
+import logoPath from '@assets/maica-logo.png';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
@@ -153,14 +153,14 @@ export default function Register() {
 
       const token = await user.getIdToken();
       
-      localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+      localStorage.setItem('maicaUser', JSON.stringify(userProfile));
       localStorage.setItem('auth_token', token);
       
       setUserData(userProfile, token);
 
       toast({
         title: 'Registration successful',
-        description: 'Welcome to KudiManager! Let\'s set up your business.',
+        description: 'Welcome to MaiCa! Let\'s set up your business.',
       });
       setJustRegistered(true);
     } catch (error: any) {
@@ -200,7 +200,7 @@ export default function Register() {
         <CardHeader className="space-y-1 text-center">
           <img 
             src={logoPath} 
-            alt="KudiManager Logo" 
+            alt="MaiCa Logo" 
             className="w-28 sm:w-32 mx-auto mb-4 animate-fade-in"
             data-testid="img-logo"
           />
@@ -285,8 +285,8 @@ export default function Register() {
                 <div className="flex items-center gap-2 text-sm mt-1">
                   {passwordValidation.isValid ? (
                     <>
-                      <CheckCircle2 className="h-4 w-4 text-[#007F5F]" />
-                      <span className="text-[#007F5F] font-medium">{passwordValidation.message}</span>
+                      <CheckCircle2 className="h-4 w-4 text-[#0096C7]" />
+                      <span className="text-[#0096C7] font-medium">{passwordValidation.message}</span>
                     </>
                   ) : (
                     <>
@@ -334,8 +334,8 @@ export default function Register() {
               )}
               {confirmPassword && passwordsMatch && (
                 <div className="flex items-center gap-2 text-sm mt-1">
-                  <CheckCircle2 className="h-4 w-4 text-[#007F5F]" />
-                  <span className="text-[#007F5F] font-medium">{t('auth.passwordsMatch')}</span>
+                  <CheckCircle2 className="h-4 w-4 text-[#0096C7]" />
+                  <span className="text-[#0096C7] font-medium">{t('auth.passwordsMatch')}</span>
                 </div>
               )}
             </div>

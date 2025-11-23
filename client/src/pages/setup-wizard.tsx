@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { CheckCircle2, Package, Loader2 } from "lucide-react";
-import logoPath from "@assets/kudimanager-logo.png";
+import logoPath from "@assets/maica-logo.png";
 
 type ProductFormValues = z.infer<typeof insertProductSchema>;
 
@@ -87,12 +87,12 @@ export default function SetupWizard() {
         <CardHeader className="text-center space-y-4">
           <img 
             src={logoPath} 
-            alt="KudiManager Logo" 
+            alt="MaiCa Logo" 
             className="w-20 h-20 mx-auto"
             data-testid="img-setup-logo"
           />
           <div>
-            <CardTitle className="text-2xl">Welcome to KudiManager</CardTitle>
+            <CardTitle className="text-2xl">Welcome to MaiCa</CardTitle>
             <CardDescription>
               {step === 1 ? "Let's set up your inventory to get started" : "Add your first products"}
             </CardDescription>
@@ -113,7 +113,7 @@ export default function SetupWizard() {
               </div>
 
               <div className="space-y-3">
-                <h4 className="font-medium">What you can do with KudiManager:</h4>
+                <h4 className="font-medium">What you can do with MaiCa:</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-primary mt-0.5" />

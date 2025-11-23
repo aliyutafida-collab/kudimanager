@@ -234,7 +234,7 @@ export default function Billing() {
             },
             {
               q: "Is there a free trial?",
-              a: "Yes! All new users get 90 days free trial to explore KudiManager.",
+              a: "Yes! All new users get 90 days free trial to explore MaiCa.",
             },
             {
               q: "What payment methods are accepted?",

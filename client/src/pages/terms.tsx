@@ -1,4 +1,4 @@
-import logoUrl from "@assets/kudimanager-logo.png";
+import logoUrl from "@assets/maica-logo.png";
 
 export default function Terms() {
   return (
@@ -7,7 +7,7 @@ export default function Terms() {
       <div className="bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 dark:to-background border-b">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="flex items-center justify-center mb-6">
-            <img src={logoUrl} alt="KudiManager" className="w-20 h-20" />
+            <img src={logoUrl} alt="MaiCa" className="w-20 h-20" />
           </div>
           <h1 className="text-4xl font-bold text-center mb-2">Terms & Conditions</h1>
           <p className="text-center text-muted-foreground">
@@ -22,13 +22,13 @@ export default function Terms() {
           {/* Legal Text */}
           <div className="prose dark:prose-invert max-w-none">
             <div className="space-y-4 text-sm leading-relaxed">
-              <p>These Terms govern your use of KudiManager. By using the platform, you agree to them.</p>
+              <p>These Terms govern your use of MaiCa. By using the platform, you agree to them.</p>
 
               <div>
                 <h2 className="text-lg font-semibold mt-6 mb-3">1. Definitions</h2>
                 <div className="space-y-2 text-muted-foreground">
-                  <p><strong>"Service"</strong> — KudiManager application (web + mobile)</p>
-                  <p><strong>"User"</strong> — any registered or unregistered person using KudiManager</p>
+                  <p><strong>"Service"</strong> — MaiCa application (web + mobile)</p>
+                  <p><strong>"User"</strong> — any registered or unregistered person using MaiCa</p>
                   <p><strong>"We", "Us", "Our"</strong> — Zanikon Investment Limited</p>
                 </div>
               </div>
@@ -67,7 +67,7 @@ export default function Terms() {
 
               <div>
                 <h2 className="text-lg font-semibold mt-6 mb-3">5. Financial & Tax Advice Disclaimer</h2>
-                <p className="mb-3 text-muted-foreground">KudiManager provides automated AI suggestions, not certified tax or financial advice.</p>
+                <p className="mb-3 text-muted-foreground">MaiCa provides automated AI suggestions, not certified tax or financial advice.</p>
                 <p className="mb-2">Users remain responsible for:</p>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                   <li>Paying correct taxes</li>
@@ -97,7 +97,7 @@ export default function Terms() {
 
               <div>
                 <h2 className="text-lg font-semibold mt-6 mb-3">9. Contact</h2>
-                <p className="text-muted-foreground">support@kudimanager.com</p>
+                <p className="text-muted-foreground">support@maica.com</p>
               </div>
             </div>
           </div>
@@ -142,10 +142,10 @@ export default function Terms() {
             <p className="text-sm text-muted-foreground">
               Contact us at:{" "}
               <a
-                href="mailto:support@kudimanager.com"
+                href="mailto:support@maica.com"
                 className="text-emerald-600 dark:text-emerald-400 hover:underline"
               >
-                support@kudimanager.com
+                support@maica.com
               </a>
             </p>
             <p className="text-sm text-muted-foreground mt-2">

@@ -61,7 +61,7 @@ export default function Subscribe() {
           
           const token = await auth.currentUser.getIdToken(true);
           setUserData(userProfile, token);
-          localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+          localStorage.setItem('maicaUser', JSON.stringify(userProfile));
           localStorage.setItem('auth_token', token);
         }
       }

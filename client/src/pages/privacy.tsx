@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import logoUrl from "@assets/kudimanager-logo.png";
+import logoUrl from "@assets/maica-logo.png";
 
 export default function Privacy() {
   const { t } = useTranslation();
@@ -10,7 +10,7 @@ export default function Privacy() {
       <div className="bg-gradient-to-b from-emerald-50 to-background dark:from-emerald-950/20 dark:to-background border-b">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="flex items-center justify-center mb-6">
-            <img src={logoUrl} alt="KudiManager" className="w-20 h-20" />
+            <img src={logoUrl} alt="MaiCa" className="w-20 h-20" />
           </div>
           <h1 className="text-4xl font-bold text-center mb-2">Privacy Policy</h1>
           <p className="text-center text-muted-foreground">
@@ -26,7 +26,7 @@ export default function Privacy() {
           <div className="prose dark:prose-invert max-w-none">
             <div className="space-y-4 text-sm leading-relaxed">
               <p>
-                This Privacy Policy explains how KudiManager, operated by Zanikon Investment Limited, collects, uses, stores, and protects your information when you use our services.
+                This Privacy Policy explains how MaiCa, operated by Zanikon Investment Limited, collects, uses, stores, and protects your information when you use our services.
               </p>
 
               <div>
@@ -71,7 +71,7 @@ export default function Privacy() {
                 <h2 className="text-lg font-semibold mt-6 mb-3">2. How We Use Your Information</h2>
                 <p className="mb-2">We use data to:</p>
                 <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Provide the KudiManager service</li>
+                  <li>Provide the MaiCa service</li>
                   <li>Generate financial insights & reports</li>
                   <li>Manage subscriptions and payments</li>
                   <li>Calculate taxes & compliance suggestions</li>
@@ -131,12 +131,12 @@ export default function Privacy() {
                   <li>Withdraw consent</li>
                   <li>Opt out of marketing</li>
                 </ul>
-                <p className="mt-3 text-muted-foreground">Contact: support@kudimanager.com</p>
+                <p className="mt-3 text-muted-foreground">Contact: support@maica.com</p>
               </div>
 
               <div>
                 <h2 className="text-lg font-semibold mt-6 mb-3">8. Children's Privacy</h2>
-                <p className="text-muted-foreground">KudiManager is not for children under 13.</p>
+                <p className="text-muted-foreground">MaiCa is not for children under 13.</p>
               </div>
 
               <div>
@@ -149,7 +149,7 @@ export default function Privacy() {
                 <p className="text-muted-foreground">
                   Zanikon Investment Limited<br />
                   Abuja, Nigeria<br />
-                  Email: support@kudimanager.com
+                  Email: support@maica.com
                 </p>
               </div>
             </div>
@@ -195,10 +195,10 @@ export default function Privacy() {
             <p className="text-sm text-muted-foreground">
               Contact us at:{" "}
               <a
-                href="mailto:support@kudimanager.com"
+                href="mailto:support@maica.com"
                 className="text-emerald-600 dark:text-emerald-400 hover:underline"
               >
-                support@kudimanager.com
+                support@maica.com
               </a>
             </p>
             <p className="text-sm text-muted-foreground mt-2">

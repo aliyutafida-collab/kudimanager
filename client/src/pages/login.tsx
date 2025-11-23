@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useTranslation } from 'react-i18next';
-import logoPath from '@assets/kudimanager-logo.png';
+import logoPath from '@assets/maica-logo.png';
 import { logEvent, auth, db } from '@/lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -67,7 +67,7 @@ export default function Login() {
 
       const token = await user.getIdToken();
       
-      localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+      localStorage.setItem('maicaUser', JSON.stringify(userProfile));
       localStorage.setItem('auth_token', token);
       
       setUserData(userProfile, token);
@@ -135,7 +135,7 @@ export default function Login() {
           <CardHeader className="space-y-1 text-center">
             <img 
               src={logoPath} 
-              alt="KudiManager Logo" 
+              alt="MaiCa Logo" 
               className="w-28 sm:w-32 mx-auto mb-4 animate-fade-in"
               data-testid="img-logo"
             />
@@ -186,7 +186,7 @@ export default function Login() {
         <CardHeader className="space-y-1 text-center">
           <img 
             src={logoPath} 
-            alt="KudiManager Logo" 
+            alt="MaiCa Logo" 
             className="w-28 sm:w-32 mx-auto mb-4 animate-fade-in"
             data-testid="img-logo"
           />

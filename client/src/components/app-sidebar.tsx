@@ -13,7 +13,7 @@ import {
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar } from "@/components/ui/sidebar";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import logoPath from "@assets/kudimanager-logo.png";
+import logoPath from "@assets/maica-logo.png";
 
 const menuItems = [
   { titleKey: "nav.dashboard", url: "/", icon: LayoutDashboard, testId: "link-dashboard" },
@@ -45,12 +45,12 @@ export function AppSidebar() {
         <div className="flex items-center gap-3">
           <img
             src={logoPath}
-            alt="KudiManager Logo"
+            alt="MaiCa Logo"
             className="w-11 h-11 flex-shrink-0"
             data-testid="sidebar-logo"
           />
           <div className="flex flex-col min-w-0">
-            <span className="text-lg font-semibold truncate">KudiManager</span>
+            <span className="text-lg font-semibold truncate">MaiCa</span>
             <span className="text-xs text-muted-foreground truncate">{t('common.businessDashboard')}</span>
           </div>
         </div>

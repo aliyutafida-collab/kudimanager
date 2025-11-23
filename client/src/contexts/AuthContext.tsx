@@ -68,20 +68,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(userProfile);
             setToken(idToken);
             
-            localStorage.setItem('kudiUser', JSON.stringify(userProfile));
+            localStorage.setItem('maicaUser', JSON.stringify(userProfile));
             localStorage.setItem('auth_token', idToken);
           }
         } catch (error) {
           console.error('Error loading user from Firestore:', error);
           setUser(null);
           setToken(null);
-          localStorage.removeItem('kudiUser');
+          localStorage.removeItem('maicaUser');
           localStorage.removeItem('auth_token');
         }
       } else {
         setUser(null);
         setToken(null);
-        localStorage.removeItem('kudiUser');
+        localStorage.removeItem('maicaUser');
         localStorage.removeItem('auth_token');
       }
       setIsLoading(false);
@@ -123,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
         
         setUser(updatedUser);
-        localStorage.setItem('kudiUser', JSON.stringify(updatedUser));
+        localStorage.setItem('maicaUser', JSON.stringify(updatedUser));
       }
     } catch (error) {
       console.error('Error refreshing subscription:', error);

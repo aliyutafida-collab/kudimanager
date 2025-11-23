@@ -357,9 +357,9 @@ export default function Dashboard() {
                   type="monotone" 
                   dataKey="sales"
                   name={t('dashboard.chart.sales')}
-                  stroke="#0096C7" 
+                  stroke="#1BA7C4" 
                   strokeWidth={2}
-                  dot={{ fill: '#0096C7' }}
+                  dot={{ fill: '#1BA7C4' }}
                 />
                 <Line 
                   type="monotone" 

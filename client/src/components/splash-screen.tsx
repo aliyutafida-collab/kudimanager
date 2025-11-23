@@ -17,7 +17,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
   return (
     <div
       className="fixed inset-0 flex flex-col items-center justify-center animate-in fade-in duration-1000"
-      style={{ backgroundColor: "#0096C7" }}
+      style={{ backgroundColor: "#1BA7C4" }}
       data-testid="splash-screen"
     >
       <img

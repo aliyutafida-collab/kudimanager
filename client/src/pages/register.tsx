@@ -285,8 +285,8 @@ export default function Register() {
                 <div className="flex items-center gap-2 text-sm mt-1">
                   {passwordValidation.isValid ? (
                     <>
-                      <CheckCircle2 className="h-4 w-4 text-[#0096C7]" />
-                      <span className="text-[#0096C7] font-medium">{passwordValidation.message}</span>
+                      <CheckCircle2 className="h-4 w-4 text-[#1BA7C4]" />
+                      <span className="text-[#1BA7C4] font-medium">{passwordValidation.message}</span>
                     </>
                   ) : (
                     <>
@@ -334,8 +334,8 @@ export default function Register() {
               )}
               {confirmPassword && passwordsMatch && (
                 <div className="flex items-center gap-2 text-sm mt-1">
-                  <CheckCircle2 className="h-4 w-4 text-[#0096C7]" />
-                  <span className="text-[#0096C7] font-medium">{t('auth.passwordsMatch')}</span>
+                  <CheckCircle2 className="h-4 w-4 text-[#1BA7C4]" />
+                  <span className="text-[#1BA7C4] font-medium">{t('auth.passwordsMatch')}</span>
                 </div>
               )}
             </div>
